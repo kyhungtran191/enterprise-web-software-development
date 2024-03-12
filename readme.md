@@ -1,1 +1,1 @@
-# This is source code of subject of group in Greenwich university
+# This is source code of subject in Greenwich university
