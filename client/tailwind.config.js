@@ -17,6 +17,12 @@ module.exports = {
       },
     },
     extend: {
+      screens: {
+        "medium": "990px"
+      },
+      fontFamily: {
+        'body': ['Poppins'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
