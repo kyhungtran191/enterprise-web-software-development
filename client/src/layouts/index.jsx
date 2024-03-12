@@ -6,7 +6,7 @@ export default function GeneralLayout({ children }) {
     return (
         <>
             <Header></Header>
-            <div>{children}</div>
+            <div className='mt-[72px]'>{children}</div>
             <Footer></Footer>
         </>
     )
