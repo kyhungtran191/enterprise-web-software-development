@@ -1,10 +1,7 @@
-import Home from "./pages/general/Home"
-import Login from "./pages/general/Login"
+import AdminLayout from '@/layouts/AdminLayout.jsx'
 
 function App() {
-  return (
-    <Home></Home>
-  )
+  return <AdminLayout />
 }
 
 export default App
