@@ -11,33 +11,45 @@ import {
   Settings,
   CalendarDays
 } from 'lucide-react'
+
+import DynamicBreadcrumb from '@/components/DynamicBreadcrumbs'
+import { Button } from '@/components/ui/button'
+
 const AdminLayout = () => {
+  // TODO: This links array should be defined by fetching user roles
   const links = [
     {
       title: 'Dashboard',
-      icon: CircleGauge
+      icon: CircleGauge,
+      href: '/admin/dashboard'
     },
     {
       title: 'Contributions',
-      icon: BookText
+      icon: BookText,
+      href: '/admin/contributions'
     },
     {
       title: 'Academic Years',
-      icon: CalendarDays
+      icon: CalendarDays,
+      href: '/admin/academic-years'
     },
     {
       title: 'Users',
-      icon: User
+      icon: User,
+      href: '/admin/users'
     },
     {
       title: 'Roles & Permissions',
-      icon: UserCog
+      icon: UserCog,
+      href: '/admin/roles'
     },
     {
       title: 'Settings',
-      icon: Settings
+      icon: Settings,
+      href: '/admin/settings'
     }
   ]
+
   return (
     <>
       <Header />
@@ -49,7 +61,11 @@ const AdminLayout = () => {
               className={'min-w-1/4 w-1/5 hidden lg:block'}
             />
             <Separator orientation='vertical' />
-            <div className=''>
+            <div className='p-4 w-full'>
+              <div className='flex flex-row justify-between'>
+                <DynamicBreadcrumb />
+                <Button>Add new</Button>
+              </div>
               <div className='h-full px-4 py-6 lg:px-8'>List roles</div>
             </div>
           </div>
