@@ -1,17 +1,20 @@
 import React from 'react'
 import { Badge } from './ui/badge'
 
-export default function Article({ isRevert = false }) {
+export default function Article({ isRevert = false, className, status }) {
   return (
-    <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3`}>
-      <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className={`${isRevert ? "w-[100%] md:w-[40%] h-[300px] md:h-[220px]" : "w-full h-[600px"}  object-cover rounded-lg`} />
+    <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className}`}>
+      <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className={`${isRevert ? "w-[100%] md:w-[40%] h-[300px] md:h-[260px]" : "w-full h-[600px"}  object-cover rounded-lg`} />
       <div className="flex-1">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className='flex items-center gap-1 medium:gap-2'>
             <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className="flex-shrink-0 object-cover w-12 h-12 rounded-full" />
             <h3 className='text-sm font-semibold medium:text-base'>Justin Tran</h3>
           </div>
-          <Badge variant="outline">Marketing</Badge>
+          <div className=''>
+            {status && <Badge variant="outline" className={"text-blue-600 mx-1"}>Pending</Badge>}
+            <Badge variant="outline">Marketing</Badge>
+          </div>
         </div>
         <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque porro quam, reprehenderit nam aut minus sit cum sunt doloremque. Ipsa sequi temporibus incidunt officia. Iusto amet ipsam distinctio maxime pariatur.
           Nesciunt, laboriosam libero. Magni, impedit vel harum saepe labore libero laudantium vero ad unde, alias excepturi autem quaerat ullam laboriosam modi accusantium ratione illum facere assumenda natus nihil aliquam eum.

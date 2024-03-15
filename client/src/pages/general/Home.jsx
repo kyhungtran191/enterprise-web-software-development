@@ -12,15 +12,12 @@ import {
 } from "@/components/ui/carousel"
 import Contributor from '@/components/contributor'
 import Article from '@/components/article'
+import Search from '@/components/Search'
 export default function Home() {
   return <GeneralLayout>
     <div className="container">
       {/* Search  */}
-      <div className="flex items-center w-full px-5 py-4 border rounded-lg gap-x-2">
-        <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
-        <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?" />
-      </div>
-
+      <Search></Search>
       {/* Faculty */}
       <section className="my-4">
         <h2 className='text-2xl font-bold'>Faculty</h2>
@@ -75,9 +72,6 @@ export default function Home() {
           <Article></Article>
         </div>
       </section>
-
-
-    </div >
-
-  </GeneralLayout >
+    </div>
+  </GeneralLayout>
 }
