@@ -6,7 +6,7 @@ export default function GeneralLayout({ children }) {
   return (
     <>
       <Header></Header>
-      <div className='mt-[72px]'>{children}</div>
+      <div className='flex flex-col min-h-screen mt-5'>{children}</div>
       <Footer></Footer>
     </>
   )

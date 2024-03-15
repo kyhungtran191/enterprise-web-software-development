@@ -5,11 +5,12 @@ import { Sidebar } from '@/layouts/partials/Sidebar.jsx'
 import { Separator } from '@/components/ui/separator'
 import {
   CircleGauge,
-  User,
   BookText,
   UserCog,
   Settings,
   CalendarDays,
+  Heart,
+  User,
   MoreHorizontal,
   ArrowUpDown
 } from 'lucide-react'
@@ -25,8 +26,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-const AdminLayout = () => {
+
+const AdminLayout = ({ children }) => {
   // TODO: This links array should be defined by fetching user roles
+  // Mock Admin Sidebar options
   const links = [
     {
       title: 'Dashboard',
@@ -57,6 +60,26 @@ const AdminLayout = () => {
       title: 'Settings',
       icon: Settings,
       href: '/admin/settings'
+    },
+    {
+      title: 'Recents Posts',
+      icon: CircleGauge,
+      href: '/student-manage/recent'
+    },
+    {
+      title: 'Profile',
+      icon: UserCog,
+      href: '/student-manage/profile'
+    },
+    {
+      title: 'Favorites',
+      icon: Heart,
+      href: '/student-manage/academic-years'
+    },
+    {
+      title: 'Settings',
+      icon: Settings,
+      href: '/student-manage/settings'
     }
   ]
   const columns = [
@@ -147,7 +170,7 @@ const AdminLayout = () => {
   return (
     <>
       <Header />
-      <div className='border-t h-full'>
+      <div className='flex flex-col h-full min-h-screen border-t'>
         <div className='bg-background'>
           <div className='flex flex-row'>
             <Sidebar
@@ -155,7 +178,7 @@ const AdminLayout = () => {
               className={'min-w-1/4 w-1/5 hidden lg:block'}
             />
             <Separator orientation='vertical' />
-            <div className='p-4 w-full'>
+            <div className='w-full p-4'>
               <div className='flex flex-row justify-between'>
                 <DynamicBreadcrumb />
                 <Button>Add new</Button>

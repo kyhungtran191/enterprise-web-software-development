@@ -19,11 +19,11 @@ export default function Header() {
         <div className='flex items-center'>
           <Link to='/' className='flex items-center justify-center gap-4'>
             <img
-              src='./logo.png'
+              src='../logo.png'
               alt='logo'
               className='flex-shrink-0 object-cover w-10 h-10 sm:h-16 sm:w-16'
             />
-            <h1 className='text-lg font-bold text-center sm:text-xl'>
+            <h1 className='text-sm font-bold text-center sm:text-xl'>
               Magazine University System
             </h1>
           </Link>
