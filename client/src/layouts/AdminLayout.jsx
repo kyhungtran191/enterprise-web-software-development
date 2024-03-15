@@ -30,58 +30,62 @@ import {
 const AdminLayout = ({ children }) => {
   // TODO: This links array should be defined by fetching user roles
   // Mock Admin Sidebar options
-  const links = [
-    {
-      title: 'Dashboard',
-      icon: CircleGauge,
-      href: '/admin/dashboard'
-    },
-    {
-      title: 'Contributions',
-      icon: BookText,
-      href: '/admin/contributions'
-    },
-    {
-      title: 'Academic Years',
-      icon: CalendarDays,
-      href: '/admin/academic-years'
-    },
-    {
-      title: 'Users',
-      icon: User,
-      href: '/admin/users'
-    },
-    {
-      title: 'Roles & Permissions',
-      icon: UserCog,
-      href: '/admin/roles'
-    },
-    {
-      title: 'Settings',
-      icon: Settings,
-      href: '/admin/settings'
-    },
-    {
-      title: 'Recents Posts',
-      icon: CircleGauge,
-      href: '/student-manage/recent'
-    },
-    {
-      title: 'Profile',
-      icon: UserCog,
-      href: '/student-manage/profile'
-    },
-    {
-      title: 'Favorites',
-      icon: Heart,
-      href: '/student-manage/academic-years'
-    },
-    {
-      title: 'Settings',
-      icon: Settings,
-      href: '/student-manage/settings'
-    }
-  ]
+  const isAdmin = true
+  const links = isAdmin
+    ? [
+        {
+          title: 'Dashboard',
+          icon: CircleGauge,
+          href: '/admin/dashboard'
+        },
+        {
+          title: 'Contributions',
+          icon: BookText,
+          href: '/admin/contributions'
+        },
+        {
+          title: 'Academic Years',
+          icon: CalendarDays,
+          href: '/admin/academic-years'
+        },
+        {
+          title: 'Users',
+          icon: User,
+          href: '/admin/users'
+        },
+        {
+          title: 'Roles & Permissions',
+          icon: UserCog,
+          href: '/admin/roles'
+        },
+        {
+          title: 'Settings',
+          icon: Settings,
+          href: '/admin/settings'
+        }
+      ]
+    : [
+        {
+          title: 'Recents Posts',
+          icon: CircleGauge,
+          href: '/student-manage/recent'
+        },
+        {
+          title: 'Profile',
+          icon: UserCog,
+          href: '/student-manage/profile'
+        },
+        {
+          title: 'Favorites',
+          icon: Heart,
+          href: '/student-manage/academic-years'
+        },
+        {
+          title: 'Settings',
+          icon: Settings,
+          href: '/student-manage/settings'
+        }
+      ]
   const columns = [
     {
       accessorKey: 'status',
