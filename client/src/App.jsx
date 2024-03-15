@@ -3,7 +3,7 @@ import Home from './pages/general/Home'
 import StudentContribution from './pages/client/StudentContribution'
 
 function App() {
-  return <StudentContribution></StudentContribution>
+  return <AdminLayout></AdminLayout>
 }
 
 export default App

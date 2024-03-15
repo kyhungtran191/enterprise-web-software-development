@@ -10,71 +10,167 @@ import {
   Settings,
   CalendarDays,
   Heart,
-  User
+  User,
+  MoreHorizontal,
+  ArrowUpDown
 } from 'lucide-react'
 
 import DynamicBreadcrumb from '@/components/DynamicBreadcrumbs'
 import { Button } from '@/components/ui/button'
+import { DataTable } from '@/components/Table'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 const AdminLayout = ({ children }) => {
   // TODO: This links array should be defined by fetching user roles
   // Mock Admin Sidebar options
-  // const links = [
-  //   {
-  //     title: 'Dashboard',
-  //     icon: CircleGauge,
-  //     href: '/admin/dashboard'
-  //   },
-  //   {
-  //     title: 'Contributions',
-  //     icon: BookText,
-  //     href: '/admin/contributions'
-  //   },
-  //   {
-  //     title: 'Academic Years',
-  //     icon: CalendarDays,
-  //     href: '/admin/academic-years'
-  //   },
-  //   {
-  //     title: 'Users',
-  //     icon: User,
-  //     href: '/admin/users'
-  //   },
-  //   {
-  //     title: 'Roles & Permissions',
-  //     icon: UserCog,
-  //     href: '/admin/roles'
-  //   },
-  //   {
-  //     title: 'Settings',
-  //     icon: Settings,
-  //     href: '/admin/settings'
-  //   }
-  // ]
-
-  const links = [
+  const isAdmin = true
+  const links = isAdmin
+    ? [
+        {
+          title: 'Dashboard',
+          icon: CircleGauge,
+          href: '/admin/dashboard'
+        },
+        {
+          title: 'Contributions',
+          icon: BookText,
+          href: '/admin/contributions'
+        },
+        {
+          title: 'Academic Years',
+          icon: CalendarDays,
+          href: '/admin/academic-years'
+        },
+        {
+          title: 'Users',
+          icon: User,
+          href: '/admin/users'
+        },
+        {
+          title: 'Roles & Permissions',
+          icon: UserCog,
+          href: '/admin/roles'
+        },
+        {
+          title: 'Settings',
+          icon: Settings,
+          href: '/admin/settings'
+        }
+      ]
+    : [
+        {
+          title: 'Recents Posts',
+          icon: CircleGauge,
+          href: '/student-manage/recent'
+        },
+        {
+          title: 'Profile',
+          icon: UserCog,
+          href: '/student-manage/profile'
+        },
+        {
+          title: 'Favorites',
+          icon: Heart,
+          href: '/student-manage/academic-years'
+        },
+        {
+          title: 'Settings',
+          icon: Settings,
+          href: '/student-manage/settings'
+        }
+      ]
+  const columns = [
     {
-      title: 'Recents Posts',
-      icon: CircleGauge,
-      href: '/student-manage/recent'
+      accessorKey: 'status',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Status
+            <ArrowUpDown className='ml-2 h-4 w-4' />
+          </Button>
+        )
+      }
     },
     {
-      title: 'Profile',
-      icon: UserCog,
-      href: '/student-manage/profile'
+      accessorKey: 'email',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Email
+            <ArrowUpDown className='ml-2 h-4 w-4' />
+          </Button>
+        )
+      }
     },
     {
-      title: 'Favorites',
-      icon: Heart,
-      href: '/student-manage/academic-years'
+      accessorKey: 'amount',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Amount
+            <ArrowUpDown className='ml-2 h-4 w-4' />
+          </Button>
+        )
+      }
     },
     {
-      title: 'Settings',
-      icon: Settings,
-      href: '/student-manage/settings'
+      id: 'actions',
+      cell: ({ row }) => {
+        const payment = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant='ghost' className='h-8 w-8 p-0'>
+                <span className='sr-only'>Open menu</span>
+                <MoreHorizontal className='h-4 w-4' />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end'>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.id)}
+              >
+                Copy payment ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      }
     }
   ]
-
+  const data = [
+    {
+      id: '728ed52f',
+      amount: 100,
+      status: 'pending',
+      email: 'm@example.com'
+    },
+    {
+      id: '489e1d42',
+      amount: 125,
+      status: 'processing',
+      email: 'example@gmail.com'
+    }
+  ]
   return (
     <>
       <Header />
@@ -91,7 +187,9 @@ const AdminLayout = ({ children }) => {
                 <DynamicBreadcrumb />
                 <Button>Add new</Button>
               </div>
-              <div className='h-full px-4 py-6 lg:px-8'>{children}</div>
+              <div className='h-full px-4 py-6 lg:px-8'>
+                <DataTable columns={columns} data={data} />
+              </div>
             </div>
           </div>
         </div>
