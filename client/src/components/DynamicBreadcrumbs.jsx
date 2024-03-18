@@ -40,7 +40,7 @@ const DynamicBreadcrumb = () => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href='/'>Home</BreadcrumbLink>
+          <BreadcrumbLink href='/admin'>Home</BreadcrumbLink>
         </BreadcrumbItem>
         {location.pathname !== '/' && <BreadcrumbSeparator />}
         {breadcrumbItems}
