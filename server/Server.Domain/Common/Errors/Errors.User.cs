@@ -1,0 +1,25 @@
+
+using ErrorOr;
+
+namespace Server.Domain.Common.Errors;
+
+public static partial class Errors
+{
+    public static class User 
+    {
+        public static Error DuplicateEmail => Error.Validation(
+            code: "User.DuplicateEmail",
+            description: "User already exists."
+        );
+
+        public static Error CannotFound => Error.NotFound(
+            code: "User.CannotFound",
+            description: "User can not found."
+        );
+
+          public static Error InactiveOrEnableLocked => Error.Validation(
+            code: "User.InactiveOrEnableLocked",
+            description: "User is inactive or locked, please contact with Admin."
+        );
+    }
+}

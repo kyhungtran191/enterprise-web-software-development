@@ -1,0 +1,5 @@
+@host=http://localhost:5272
+@contentType=application/json
+
+GET {{host}}/debug/routes
+content-type: {{contentType}}
