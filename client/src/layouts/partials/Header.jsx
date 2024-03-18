@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 
 export default function Header() {
   return (
-    <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black '>
+    <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black'>
       <nav className='container h-full flex justify-between items-center leading-[72px] relative'>
         <div className='flex items-center'>
           <Link to='/' className='flex items-center justify-center gap-4'>
