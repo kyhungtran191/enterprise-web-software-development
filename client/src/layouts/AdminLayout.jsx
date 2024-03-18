@@ -17,15 +17,9 @@ import {
 
 import DynamicBreadcrumb from '@/components/DynamicBreadcrumbs'
 import { Button } from '@/components/ui/button'
-import { DataTable } from '@/components/Table'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+import { Checkbox } from '@/components/ui/checkbox'
+import { CustomTable } from '@/components/CustomTable.jsx'
+import { AuthorizeDialog } from '@/components/AuthorizeDialog'
 
 const AdminLayout = ({ children }) => {
   // TODO: This links array should be defined by fetching user roles
@@ -86,44 +80,54 @@ const AdminLayout = ({ children }) => {
           href: '/student-manage/settings'
         }
       ]
+
   const columns = [
     {
-      accessorKey: 'status',
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+          className='mx-4'
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false
+    },
+    {
+      accessorKey: 'name',
       header: ({ column }) => {
         return (
           <Button
             variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Status
+            Name
             <ArrowUpDown className='ml-2 h-4 w-4' />
           </Button>
         )
       }
     },
     {
-      accessorKey: 'email',
+      accessorKey: 'displayName',
       header: ({ column }) => {
         return (
           <Button
             variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Email
-            <ArrowUpDown className='ml-2 h-4 w-4' />
-          </Button>
-        )
-      }
-    },
-    {
-      accessorKey: 'amount',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant='ghost'
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Amount
+            Display Name
             <ArrowUpDown className='ml-2 h-4 w-4' />
           </Button>
         )
@@ -132,27 +136,11 @@ const AdminLayout = ({ children }) => {
     {
       id: 'actions',
       cell: ({ row }) => {
-        const payment = row.original
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='ghost' className='h-8 w-8 p-0'>
-                <span className='sr-only'>Open menu</span>
-                <MoreHorizontal className='h-4 w-4' />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <AuthorizeDialog
+            role={row.original.displayName}
+            permissions={permissionList}
+          />
         )
       }
     }
@@ -160,15 +148,31 @@ const AdminLayout = ({ children }) => {
   const data = [
     {
       id: '728ed52f',
-      amount: 100,
-      status: 'pending',
-      email: 'm@example.com'
+      name: 'Admin',
+      displayName: 'Administrator'
     },
     {
-      id: '489e1d42',
-      amount: 125,
-      status: 'processing',
-      email: 'example@gmail.com'
+      id: '728ed52f',
+      name: 'Student',
+      displayName: 'Student'
+    }
+  ]
+  const permissionList = [
+    {
+      id: '1',
+      name: 'View contribution'
+    },
+    {
+      id: '2',
+      name: 'Create contribution'
+    },
+    {
+      id: '3',
+      name: 'Edit contribution'
+    },
+    {
+      id: '4',
+      name: 'Delete contribution'
     }
   ]
   return (
@@ -182,15 +186,17 @@ const AdminLayout = ({ children }) => {
               className={'min-w-1/4 w-1/5 hidden lg:block'}
             />
             <Separator orientation='vertical' />
-            <div className='w-full p-4'>
+            {/* Replace with correct tablle */}
+            {/* <div className='w-full p-4'>
               <div className='flex flex-row justify-between'>
                 <DynamicBreadcrumb />
                 <Button>Add new</Button>
               </div>
               <div className='h-full px-4 py-6 lg:px-8'>
-                <DataTable columns={columns} data={data} />
+                <CustomTable columns={columns} data={data} />
               </div>
-            </div>
+            </div> */}
+            {children}
           </div>
         </div>
       </div>
