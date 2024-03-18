@@ -1,0 +1,100 @@
+﻿using System.ComponentModel;
+
+namespace Server.Domain.Common.Constants
+{
+    public static class Permissions
+    {
+        public static class Dashboard
+        {
+            [Description("View dashboard")]
+            public const string View = "Permissions.Dashboard.View";
+        }
+
+        public static class Roles
+        {
+            [Description("View Roles")]
+            public const string View = "Permissions.Roles.View";
+
+            [Description("Create New Role")]
+            public const string Create = "Permissions.Roles.Create";
+
+            [Description("Edit Role")]
+            public const string Edit = "Permissions.Roles.Edit";
+
+            [Description("Delete Role")]
+            public const string Delete = "Permissions.Roles.Delete";
+        }
+
+        public static class Users
+        {
+            [Description("View Users")]
+            public const string View = "Permissions.Users.View";
+
+            [Description("Create New User")]
+            public const string Create = "Permissions.Users.Create";
+
+            [Description("Edit User")]
+            public const string Edit = "Permissions.Users.Edit";
+
+            [Description("Delete User")]
+            public const string Delete = "Permissions.Users.Delete";
+        }
+
+        // public static class PostCategories
+        // {
+        //     [Description("Xem danh mục bài viết")]
+        //     public const string View = "Permissions.PostCategories.View";
+
+        //     [Description("Tạo danh mục bài viết")]
+        //     public const string Create = "Permissions.PostCategories.Create";
+
+        //     [Description("Sửa danh mục bài viết")]
+        //     public const string Edit = "Permissions.PostCategories.Edit";
+
+        //     [Description("Xóa danh mục bài viết")]
+        //     public const string Delete = "Permissions.PostCategories.Delete";
+        // }
+
+        // public static class Posts
+        // {
+        //     [Description("Xem bài viết")]
+        //     public const string View = "Permissions.Posts.View";
+
+        //     [Description("Tạo bài viết")]
+        //     public const string Create = "Permissions.Posts.Create";
+
+        //     [Description("Sửa bài viết")]
+        //     public const string Edit = "Permissions.Posts.Edit";
+
+        //     [Description("Xóa bài viết")]
+        //     public const string Delete = "Permissions.Posts.Delete";
+
+        //     [Description("Duyệt bài viết")]
+        //     public const string Approve = "Permissions.Posts.Approve";
+        // }
+
+        // public static class Series
+        // {
+        //     [Description("Xem loạt bài")]
+        //     public const string View = "Permissions.Series.View";
+
+        //     [Description("Tạo loạt bài")]
+        //     public const string Create = "Permissions.Series.Create";
+
+        //     [Description("Sửa loạt bài")]
+        //     public const string Edit = "Permissions.Series.Edit";
+
+        //     [Description("Xóa loạt bài")]
+        //     public const string Delete = "Permissions.Series.Delete";
+        // }
+
+        // public static class Royalty
+        // {
+        //     [Description("Xem nhuận bút")]
+        //     public const string View = "Permissions.Royalty.View";
+
+        //     [Description("Thanh toán nhuận bút")]
+        //     public const string Pay = "Permissions.Royalty.Pay";
+        // }
+    }
+}
