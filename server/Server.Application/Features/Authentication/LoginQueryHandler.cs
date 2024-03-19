@@ -32,7 +32,7 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<LoginResult
             return Errors.User.CannotFound;
         }
 
-        if (user.IsActive == false || user.LockoutEnabled)
+        if (user.IsActive == false)
         {
             return Errors.User.InactiveOrEnableLocked;
         }

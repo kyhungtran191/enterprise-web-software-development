@@ -17,7 +17,12 @@ public static partial class Errors
             description: "User can not found."
         );
 
-          public static Error InactiveOrEnableLocked => Error.Validation(
+        public static Error CannotCreateNewUser => Error.Failure(
+            code: "User.CannotCreateNewUser",
+            description: "New user can not create."
+        );
+
+        public static Error InactiveOrEnableLocked => Error.Validation(
             code: "User.InactiveOrEnableLocked",
             description: "User is inactive or locked, please contact with Admin."
         );

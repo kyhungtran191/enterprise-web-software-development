@@ -1,21 +1,23 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
+using Server.Domain.Common.Converters;
 
 namespace Server.Domain.Entity.Identity;
 
 [Table("AppUsers")]
 public class AppUser : IdentityUser<Guid>
-{
-    public Guid? FacultyId { get; set; }
+{    
+    public string? Faculty { get; set; }
 
     [Required]
     [MaxLength(100)]
-    public required string FirstName { get; set; }
+    public string FirstName { get; set; } = default!;
 
     [Required]
     [MaxLength(100)]
-    public required string LastName { get; set; }
+    public string LastName { get; set; } = default!;
 
     public bool IsActive { get; set; }
     public DateTime? Dob { get; set; }

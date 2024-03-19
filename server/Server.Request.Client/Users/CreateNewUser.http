@@ -1,0 +1,12 @@
+@host=http://localhost:5272
+@adminPath=api/admin/auth
+@contentType=application/json
+
+Post {{host}}/{{adminPath}}/users HTTP/1.1
+content-type: {{contentType}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NmY5YzcyNy1hNDFlLTRkNDctYTU4MC1mOGVhMmYzZDFjMGIiLCJpZCI6IjU2ZjljNzI3LWE0MWUtNGQ0Ny1hNTgwLWY4ZWEyZjNkMWMwYiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBbiIsImZhbWlseV9uYW1lIjoiTWluaCIsInJvbGVzIjoiQWRtaW4iLCJwZXJtaXNzaW9ucyI6IltdIiwianRpIjoiNjEwNWNhNDQtY2ViZi00MDllLWFjNGMtYjkwNTU1MzQ0M2YxIiwiZXhwIjoxNzEwNzMzNDIwLCJpc3MiOiJTZXJ2ZXIiLCJhdWQiOiJTZXJ2ZXIifQ.3tHar1n9Jd9F3BVW7IVf12VnU__66e7GFjgbVc2mKmI
+
+{
+    "email": "admin@gmail.com",
+    "password": "Admin123@"
+}

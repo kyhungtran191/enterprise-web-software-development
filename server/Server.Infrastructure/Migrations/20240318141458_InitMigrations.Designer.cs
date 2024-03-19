@@ -12,8 +12,8 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240317221933_Adding_Access_Token_field_in_Users")]
-    partial class Adding_Access_Token_field_in_Users
+    [Migration("20240318141458_InitMigrations")]
+    partial class InitMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,7 +138,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("EndClosureDate")
@@ -175,7 +175,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("FacultyId")
@@ -228,7 +228,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -329,7 +329,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -359,9 +359,9 @@ namespace Server.Infrastructure.Migrations
 
             modelBuilder.Entity("Server.Domain.Entity.Content.Faculty", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -369,7 +369,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Icon")
@@ -377,12 +377,7 @@ namespace Server.Infrastructure.Migrations
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
+                    b.HasKey("Name");
 
                     b.ToTable("Faculties");
                 });
@@ -402,7 +397,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
@@ -425,7 +420,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -493,8 +488,8 @@ namespace Server.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("FacultyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Faculty")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -565,7 +560,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
@@ -595,7 +590,7 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateDeleted")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateEdited")
+                    b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("FinalClosureDate")
