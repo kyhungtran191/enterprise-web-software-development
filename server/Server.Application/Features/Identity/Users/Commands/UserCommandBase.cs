@@ -1,8 +1,11 @@
-namespace Server.Contracts.Identity.Users;
+using ErrorOr;
+using MediatR;
+using Server.Application.Wrappers;
 
-public class UpdateUserRequest
+namespace Server.Application.Features.Identity.Users.Commands;
+
+public class UserCommandBase : IRequest<ErrorOr<IResponseWrapper>>
 {
-    public Guid Id { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? PhoneNumber { get; set; }

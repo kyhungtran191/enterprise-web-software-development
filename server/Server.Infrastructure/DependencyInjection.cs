@@ -13,9 +13,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Server.Application.Common.Interfaces.Authentication;
+using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
+using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
 
 namespace Server.Infrastructure;
@@ -25,6 +27,8 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        
+        services.AddRepositories();
 
         services
             .AddDatabase(configuration)
@@ -36,7 +40,34 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddAuth(this IServiceCollection services, 
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        var concreteServices = typeof(FalcutyRepository).Assembly.GetTypes()
+            .Where(x => x.GetInterfaces().Any(i => i.Name == typeof(IRepository<,>).Name)
+                && !x.IsAbstract
+                && x.IsClass
+                && !x.IsGenericType);
+
+        foreach (var concreteService in concreteServices)
+        {
+            var allInterfaces = concreteService.GetInterfaces();
+
+            var directInterface =
+                allInterfaces
+                .Except(allInterfaces
+                    .SelectMany(t => t.GetInterfaces()))
+                .FirstOrDefault();
+
+            if (directInterface != null)
+            {
+                services.Add(new ServiceDescriptor(directInterface, concreteService, ServiceLifetime.Scoped));
+            }
+        }
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuth(this IServiceCollection services,
                                              ConfigurationManager configuration)
     {
         services.AddSingleton<ITokenService, TokenService>();

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Common.Dtos.Users;
@@ -8,6 +9,7 @@ public class UserDto
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? UserName { get; set; }
+    public string? Faculty { get; set; }
     public string? Email { get; set; }
     public string? PhoneNumber { get; set; }
     public DateTime DateCreated { get; set; }

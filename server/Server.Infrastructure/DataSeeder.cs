@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Identity;
+using Server.Application.Common.Interfaces.Persistence;
 using Server.Domain.Common.Constants;
+using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
 namespace Server.Infrastructure;
 
 public static class DataSeeder
 {
+
     public static async Task SeedAsync(AppDbContext context,
                                        RoleManager<AppRole> roleManager)
     {
@@ -36,7 +39,7 @@ public static class DataSeeder
             {
                 Id = userId,
                 FirstName = "An",
-                LastName = "Minh",
+                LastName = "Minh",                
                 Email = userEmail,
                 NormalizedEmail = userEmail.ToUpperInvariant(),
                 UserName = userName,
@@ -65,6 +68,28 @@ public static class DataSeeder
         if (permissions.Any() == false)
         {
         }
+    }
+
+    public static async Task SeedFaculty(AppDbContext context, IFacultyRepository facultyRepository)
+    {
+        var facultyName = "Marketing";
+        
+        var facultyFromDb = facultyRepository.Find(x => x.Name == facultyName);
+
+        if (!facultyFromDb.Any())
+        {
+            facultyRepository.Add(new Faculty
+            {
+                Name = facultyName,
+                Icon = "Icon",
+            });
+            await context.SaveChangesAsync();
+        } else {
+            // facultyRepository.Remove(facultyFromDb.SingleOrDefault()!);
+            // await context.SaveChangesAsync();
+        }
+
+        await Task.CompletedTask;
     }
 
 }
