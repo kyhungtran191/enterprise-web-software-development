@@ -29,24 +29,31 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
+import { useState } from 'react'
 
 const formSchema = z.object({
   username: z.string().min(2, {
     message: 'Username must be at least 6 characters.'
   }),
+  displayName: z.string({ required_error: 'A display name is required.' }),
   gender: z.enum(['male', 'female']),
   email: z.string().email(),
   dob: z.date({
     required_error: 'A date of birth is required.'
   }),
+  type: z.enum(['student', 'marketingCoordiantor', 'marketingManager']),
   faculty: z.enum(['marketing', 'business', 'design', 'it'])
 })
 
 export function NewUserForm() {
+  const [userType, setUserType] = useState('')
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
+      displayName: '',
+      type: '',
       gender: '',
       email: '',
       dob: '',
@@ -61,6 +68,19 @@ export function NewUserForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
+        <FormField
+          control={form.control}
+          name='displayName'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Display Name</FormLabel>
+              <FormControl>
+                <Input placeholder='Display Name' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name='username'
@@ -159,7 +179,32 @@ export function NewUserForm() {
             </FormItem>
           )}
         />
-
+        <FormField
+          control={form.control}
+          name='type'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>User Type</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger className='w-min-[180px] w-full'>
+                    <SelectValue placeholder='Select user type' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='student'>Student</SelectItem>
+                    <SelectItem value='marketingCoordinator'>
+                      Marketing Coordinator
+                    </SelectItem>
+                    <SelectItem value='marketingManager'>
+                      Marketing Manager
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name='faculty'
