@@ -1,19 +1,30 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import AdminLayout from '@/layouts/AdminLayout.jsx'
-import Home from './pages/general/Home'
-import StudentContribution from './pages/client/StudentContribution'
-import { RolesTable } from './components/RolesTable'
-import { UsersTable } from './components/UsersTable'
+import { Route, Routes } from "react-router-dom"
+import AdminLayout from "./layouts/AdminLayout"
+import useRoutesElements from "@/useRouteElements";
+import { RolesTable } from "./components/RolesTable";
+import { UsersTable } from "./components/UsersTable";
+import GeneralLayout from "./layouts";
+import Home from "./pages/general/Home";
+import StudentContribution from "./pages/client/manage/StudentContribution";
+import Login from "./pages/general/Login";
+
 
 function App() {
+  // const routes = useRoutesElements()
   return (
-    <AdminLayout>
-      <Routes>
-        <Route path='/admin/roles' element={<RolesTable />} />
-        <Route path='/admin/users' element={<UsersTable />} />
-      </Routes>
-    </AdminLayout>
+
+    <Routes>
+      <Route path='/admin/roles' element={<AdminLayout>
+        <RolesTable />
+      </AdminLayout>} />
+      <Route path='/admin/users' element={<AdminLayout><UsersTable /></AdminLayout>} />
+      <Route path="/" element={<GeneralLayout><Home></Home></GeneralLayout>}>
+      </Route>
+      <Route path="/manage/recent" element={<StudentContribution></StudentContribution>}>
+      </Route>
+      <Route path="/login" element={<Login></Login>}>
+      </Route>
+    </Routes>
   )
 }
 
