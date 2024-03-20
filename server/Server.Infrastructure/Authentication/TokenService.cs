@@ -40,6 +40,8 @@ public class TokenService : ITokenService
             ValidateAudience = true, //you might want to validate the audience and issuer depending on your use case
             ValidateIssuer = true,
             ValidateIssuerSigningKey = true,
+            ValidAudience = _jwtSettings.Audience,
+            ValidIssuer = _jwtSettings.Issuer,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
             ValidateLifetime = true //here we are saying that we don't care about the token's expiration date,
         };
