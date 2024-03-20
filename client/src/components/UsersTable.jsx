@@ -4,6 +4,16 @@ import { CustomTable } from '@/components/CustomTable.jsx'
 import { AuthorizeDialog } from '@/components/AuthorizeDialog'
 import { ArrowUpDown } from 'lucide-react'
 import DynamicBreadcrumb from './DynamicBreadcrumbs'
+import { NewUserDialog } from './NewUserDialog'
+import { Pencil, UserRoundX, EllipsisVertical, User } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+
 export function UsersTable() {
   const columns = [
     {
@@ -86,11 +96,45 @@ export function UsersTable() {
       }
     },
     {
+      accessorKey: 'status',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Status
+            <ArrowUpDown className='ml-2 h-4 w-4' />
+          </Button>
+        )
+      }
+    },
+    {
       id: 'actions',
       cell: ({ row }) => {
         return (
           // change this to actions for users
-          <AuthorizeDialog role={row.original.displayName} permissions={[]} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <EllipsisVertical className='cursor-pointer' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className='w-56'>
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <User className='mr-2 h-4 w-4' />
+                  <span>View user</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Pencil className='mr-2 h-4 w-4' />
+                  <span>Edit user</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <UserRoundX className='mr-2 h-4 w-4' />
+                  <span>Deactivate user</span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )
       }
     }
@@ -98,14 +142,18 @@ export function UsersTable() {
   const data = [
     {
       id: '728ed52f',
+      username: 'khang1233',
       displayName: 'Nguyen Minh Khang',
+      status: 'Active',
       email: 'khang@gmail.com',
       faculty: 'IT'
     },
     {
       id: '728ed52f',
+      username: 'hung1233',
       displayName: 'Tran Ky Hung',
       email: 'hung@gmail.com',
+      status: 'Inactive',
       faculty: 'IT'
     }
   ]
@@ -114,7 +162,7 @@ export function UsersTable() {
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
-        <Button>Add new</Button>
+        <NewUserDialog />
       </div>
       <div className='h-full px-4 py-6 lg:px-8'>
         <CustomTable columns={columns} data={data} />
