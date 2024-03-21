@@ -28,7 +28,7 @@ export default function Header() {
             </h1>
           </Link>
         </div>
-        <div className='items-center hidden ml-8 lg:flex absolute left-[50%] -transition-x-1/2'>
+        {/* <div className='items-center hidden ml-8 lg:flex absolute left-[50%] -transition-x-1/2'>
           {Array(5)
             .fill(0)
             .map((item, index) => (
@@ -36,7 +36,7 @@ export default function Header() {
                 {index}
               </div>
             ))}
-        </div>
+        </div> */}
         <div className='flex items-center gap-x-5'>
           <Switch />
           <Popover>
@@ -58,15 +58,19 @@ export default function Header() {
                   <p className='text-sm text-muted-foreground'>Student</p>
                 </div>
                 <div className='gap-2 text-slate-700'>
-                  <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='mage:user-fill'></Icon>My Profile
-                  </div>
+                  <Link to="/manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                    <Icon icon='mage:user-fill'></Icon>Recent Post
+                  </Link>
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                     <Icon icon='iconoir:post-solid'></Icon>Contribution
                   </div>
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                     <Icon icon='icon-park-solid:like'></Icon>Liked Contribution
                   </div>
+                  <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                    <Icon icon='mage:user-fill'></Icon>Admin
+                  </Link>
+
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                     <Icon icon='solar:logout-2-bold'></Icon>Logout
                   </div>

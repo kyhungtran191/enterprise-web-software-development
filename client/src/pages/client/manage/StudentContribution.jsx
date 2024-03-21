@@ -27,7 +27,7 @@ import Article from '@/components/article'
 export default function StudentContribution() {
   const [position, setPosition] = React.useState('publish')
   return (
-    <AdminLayout>
+    <AdminLayout isAdmin={false}>
       <div className="flex flex-col p-4 my-5">
         <div className='flex flex-wrap items-center gap-3'>
           <Search className={'md:max-w-[70%]'}></Search>

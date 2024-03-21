@@ -47,8 +47,8 @@ export default function Home() {
     {/* Featured */}
     <section className="my-4 ">
       <h2 className='my-2 text-2xl font-bold'>Featured Article</h2>
-      <div class="grid grid-rows-3 grid-cols-12 gap-4">
-        <div class="row-span-3 col-span-12 medium:col-span-6">
+      <div className="grid grid-cols-12 grid-rows-3 gap-4">
+        <div className="col-span-12 row-span-3 medium:col-span-6">
           <Article></Article>
         </div>
         <div className="col-span-12 row-span-1 medium:col-span-6">

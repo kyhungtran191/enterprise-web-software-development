@@ -7,6 +7,7 @@ import GeneralLayout from "./layouts";
 import Home from "./pages/general/Home";
 import StudentContribution from "./pages/client/manage/StudentContribution";
 import Login from "./pages/general/Login";
+import Profile from "./pages/client/manage/Profile";
 
 
 function App() {
@@ -23,6 +24,8 @@ function App() {
       <Route path="/manage/recent" element={<StudentContribution></StudentContribution>}>
       </Route>
       <Route path="/login" element={<Login></Login>}>
+      </Route>
+      <Route path="/manage/profile" element={<Profile></Profile>}>
       </Route>
     </Routes>
   )
