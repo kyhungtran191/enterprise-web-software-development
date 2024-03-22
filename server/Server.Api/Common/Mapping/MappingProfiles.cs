@@ -1,4 +1,5 @@
 using AutoMapper;
+using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Faculties;
 using Server.Application.Common.Dtos.Users;
 using Server.Application.Features.Authentication;
@@ -62,5 +63,8 @@ public class MappingProfiles : Profile
         CreateMap<UpdateFacultyRequest, UpdateFacultyCommand>();
         CreateMap<DeleteFacultyRequest, DeleteFacultyCommand>();
         CreateMap<GetAllFacultiesPagingRequest, GetAllFacultiesPagingQuery>();
+
+        // Roles
+        CreateMap<AppRole, RoleDto>();
     }    
 }

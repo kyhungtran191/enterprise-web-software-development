@@ -23,7 +23,7 @@ public static class DataSeeder
             NormalizedName = Roles.Admin.ToUpperInvariant(),
             DisplayName = "Admisnistrator",
         };
-
+        
         if (!context.Roles.Any())
         {
             await context.Roles.AddAsync(role);
