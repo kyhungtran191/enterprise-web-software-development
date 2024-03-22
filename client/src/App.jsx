@@ -13,7 +13,6 @@ import Profile from "./pages/client/manage/Profile";
 function App() {
   // const routes = useRoutesElements()
   return (
-
     <Routes>
       <Route path='/admin/roles' element={<AdminLayout>
         <RolesTable />
@@ -27,6 +26,7 @@ function App() {
       </Route>
       <Route path="/manage/profile" element={<Profile></Profile>}>
       </Route>
+      <Route path="*" element={<div className="flex items-center justify-center w-full min-h-screen m-auto text-4xl font-bold">404</div>}></Route>
     </Routes>
   )
 }

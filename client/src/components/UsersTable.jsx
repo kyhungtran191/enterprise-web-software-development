@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { CustomTable } from '@/components/CustomTable.jsx'
-import { AuthorizeDialog } from '@/components/AuthorizeDialog'
 import { ArrowUpDown } from 'lucide-react'
 import DynamicBreadcrumb from './DynamicBreadcrumbs'
 import { NewUserDialog } from './NewUserDialog'
@@ -13,8 +12,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { UserDialog } from './UserDialog'
+import { useState } from 'react'
 
 export function UsersTable() {
+  const [isOpenViewUser, setIsOpenViewUser] = useState(false)
+  const [viewUser, setViewUser] = useState({})
+  const handleViewUser = (user) => {
+    setIsOpenViewUser(true)
+    setViewUser(user)
+  }
   const columns = [
     {
       id: 'select',
@@ -82,6 +89,20 @@ export function UsersTable() {
       }
     },
     {
+      accessorKey: 'type',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            User Type
+            <ArrowUpDown className='ml-2 h-4 w-4' />
+          </Button>
+        )
+      }
+    },
+    {
       accessorKey: 'faculty',
       header: ({ column }) => {
         return (
@@ -113,16 +134,15 @@ export function UsersTable() {
       id: 'actions',
       cell: ({ row }) => {
         return (
-          // change this to actions for users
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <EllipsisVertical className='cursor-pointer' />
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleViewUser(row.original)}>
                   <User className='mr-2 h-4 w-4' />
-                  <span>View user</span>
+                  <span>View User</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Pencil className='mr-2 h-4 w-4' />
@@ -144,14 +164,20 @@ export function UsersTable() {
       id: '728ed52f',
       username: 'khang1233',
       displayName: 'Nguyen Minh Khang',
+      gender: 'Male',
       status: 'Active',
+      type: 'Student',
       email: 'khang@gmail.com',
+      dob: '2003-22-03',
       faculty: 'IT'
     },
     {
       id: '728ed52f',
       username: 'hung1233',
       displayName: 'Tran Ky Hung',
+      type: 'Student',
+      gender: 'Male',
+      dob: '2003-22-03',
       email: 'hung@gmail.com',
       status: 'Inactive',
       faculty: 'IT'
@@ -167,6 +193,11 @@ export function UsersTable() {
       <div className='h-full px-4 py-6 lg:px-8'>
         <CustomTable columns={columns} data={data} />
       </div>
+      <UserDialog
+        isOpen={isOpenViewUser}
+        handleOpenChange={setIsOpenViewUser}
+        user={viewUser}
+      />
     </div>
   )
 }

@@ -5,7 +5,7 @@ export default function Article({ isRevert = false, className, status }) {
   return (
     <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className}`}>
       <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className={`${isRevert ? "w-[100%] md:w-[40%] h-[300px] md:h-[300px]" : "w-full h-[600px"}  object-cover rounded-lg`} />
-      <div className="flex-1">
+      <div className="flex-1 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className='flex items-center gap-1 medium:gap-2'>
             <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className="flex-shrink-0 object-cover w-12 h-12 rounded-full" />
