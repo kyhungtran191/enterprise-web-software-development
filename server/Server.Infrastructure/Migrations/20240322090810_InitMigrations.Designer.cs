@@ -12,7 +12,7 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240322041925_InitMigrations")]
+    [Migration("20240322090810_InitMigrations")]
     partial class InitMigrations
     {
         /// <inheritdoc />

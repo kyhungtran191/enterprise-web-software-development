@@ -1,6 +1,8 @@
+using System.Reflection;
 using AutoMapper;
 using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +11,7 @@ using Server.Application.Common.Extensions;
 using Server.Application.Wrappers;
 using Server.Application.Wrappers.PagedResult;
 using Server.Contracts.Identity.Roles;
+using Server.Domain.Common.Constants;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 
@@ -31,6 +34,7 @@ public class RolesController : AdminApiController
         => Problem(new List<Error> { error });
 
     [HttpPost]
+    [Authorize(Permissions.Roles.Create)]
     public async Task<IActionResult> CreateRole([FromBody] CreateUpdateRoleRequest createUpdateRoleRequest)
     {
         var roleExists = await _roleManager.FindByNameAsync(createUpdateRoleRequest.Name);
@@ -50,6 +54,7 @@ public class RolesController : AdminApiController
     }
 
     [HttpPut("{id}")]
+    [Authorize(Permissions.Roles.Edit)]
     public async Task<IActionResult> UpdateRole(string id, [FromBody] CreateUpdateRoleRequest createUpdateRoleRequest)
     {
         if (string.IsNullOrEmpty(id))
@@ -72,6 +77,7 @@ public class RolesController : AdminApiController
     }
 
     [HttpDelete]
+    [Authorize(Permissions.Roles.Delete)]
     public async Task<IActionResult> DeleteRoles([FromQuery] Guid[] roleIds)
     {
         foreach (var roleId in roleIds)
@@ -95,6 +101,7 @@ public class RolesController : AdminApiController
     }
 
     [HttpGet("{id}")]
+    [Authorize(Permissions.Roles.View)]
     public async Task<IActionResult> GetRoleById(string id)
     {
         if (string.IsNullOrEmpty(id))
@@ -115,6 +122,7 @@ public class RolesController : AdminApiController
     }
 
     [HttpGet]
+    [Authorize(Permissions.Roles.View)]
     public async Task<ActionResult<List<RoleDto>>> GetAllRoles()
     {
         var model = await _mapper.ProjectTo<RoleDto>(_roleManager.Roles).ToListAsync();
@@ -124,6 +132,7 @@ public class RolesController : AdminApiController
 
     [HttpGet]
     [Route("paging")]
+    [Authorize(Permissions.Roles.View)]
     public async Task<ActionResult<PagedResult<RoleDto>>> GetAllRolesPaging(string? keyword,
                                                                             int pageIndex = 1,
                                                                             int pageSize = 10)
@@ -155,5 +164,82 @@ public class RolesController : AdminApiController
         };
 
         return Ok(ResponseWrapper<PagedResult<RoleDto>>.Success(response));
+    }
+
+
+    [HttpGet("{id}/permisisons")]
+    [Authorize(Permissions.Roles.View)]
+    public async Task<IActionResult> GetAllRolePermissions(string id)
+    {
+        var allPermissions = new List<RoleClaimsDto>();
+
+        var permissionsNestedType = typeof(Permissions).GetTypeInfo().DeclaredNestedTypes;
+
+        foreach (var permissionType in permissionsNestedType)
+        {
+            allPermissions.GetPermissionsByType(permissionType);
+        }
+
+        var role = await _roleManager.FindByIdAsync(id);
+
+        if (role is null)
+        {
+            return ProblemWithError(Errors.Roles.NotFound);
+        }
+
+        var curentRoleClaims = await _roleManager.GetClaimsAsync(role);
+
+        var currentRoleClaimValues = curentRoleClaims.Select(crl => crl.Value);
+        var allPermissionValues = allPermissions.Select(x => x.Value);
+
+        var authorizedClaims = currentRoleClaimValues.Intersect(allPermissionValues).ToHashSet();
+
+        // check selected role
+        foreach (var permission in allPermissions)
+        {
+            if (authorizedClaims.Contains(permission.Value))
+            {
+                permission.Selected = true;
+            }
+        }
+
+        return Ok(ResponseWrapper<PermissionDto>.Success(new PermissionDto
+        {
+            RoleId = role.Id.ToString(),
+            RoleClaims = allPermissions,
+        }));
+    }
+
+    [HttpPut]
+    [Authorize(Permissions.Roles.Edit)]
+    public async Task<IActionResult> SavePermissions([FromBody] PermissionDto permission)
+    {
+        var role = await _roleManager.FindByIdAsync(permission.RoleId);
+
+        if (role is null)
+        {
+            return ProblemWithError(Errors.Roles.NotFound);
+        }
+
+        var userPermissionsModified =
+            permission
+            .RoleClaims
+            .Where(rl => rl.Selected)
+            .Select(rl => rl.Value)
+            .ToList();
+
+        var currentlyUserPermissions = await _roleManager.GetClaimsAsync(role);
+
+        foreach (var userPermission in currentlyUserPermissions)
+        {
+            await _roleManager.RemoveClaimAsync(role, userPermission);
+        }
+
+        foreach (var userPermissionModified in userPermissionsModified)
+        {
+            await _roleManager.AddPermissionClaim(role, userPermissionModified!);
+        }
+
+        return Ok(ResponseWrapper.Success(message: "Save perrmissions successfully!"));
     }
 }

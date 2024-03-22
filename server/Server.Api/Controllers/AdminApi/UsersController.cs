@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.Identity.Users.Commands.CreateUser;
 using Server.Application.Features.Identity.Users.Commands.DeleteUserById;
@@ -7,6 +8,7 @@ using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
 using Server.Contracts.Identity.Users;
+using Server.Domain.Common.Constants;
 
 namespace Server.Api.Controllers.AdminApi;
 
@@ -19,6 +21,7 @@ public class UsersController : AdminApiController
     }
 
     [HttpPost]
+    [Authorize(Permissions.Users.Create)]
     public async Task<IActionResult> CreateUser(CreateUserRequest createUserRequest)
     {
         var command = _mapper.Map<CreateUserCommand>(createUserRequest);
@@ -31,7 +34,8 @@ public class UsersController : AdminApiController
         );
     }
 
-    [HttpPatch]
+    [HttpPut]
+    [Authorize(Permissions.Users.Edit)]
     public async Task<IActionResult> UpdateUser(UpdateUserRequest updateUserRequest)
     {
         var command = _mapper.Map<UpdateUserCommand>(updateUserRequest);
@@ -45,6 +49,7 @@ public class UsersController : AdminApiController
     }
 
     [HttpGet]
+    [Authorize(Permissions.Users.View)]
     public async Task<IActionResult> GetAllUsersPaging([FromQuery] GetAllUserPagingRequest getAllUserPagingRequest)
     {
         var query = _mapper.Map<GetAllUserPagingQuery>(getAllUserPagingRequest);
@@ -59,6 +64,7 @@ public class UsersController : AdminApiController
 
     [HttpGet]
     [Route("{id}")]
+    [Authorize(Permissions.Users.View)]
     public async Task<IActionResult> GetUserById([FromRoute] GetUserByIdRequest getUserByIdRequest)
     {
         var query = _mapper.Map<GetUserByIdQuery>(getUserByIdRequest);
@@ -73,6 +79,7 @@ public class UsersController : AdminApiController
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Permissions.Users.Delete)]
     public async Task<IActionResult> DeleteUserById([FromRoute] DeleteUserByIdRequest deleteUserByIdRequest)
     {
         var query = _mapper.Map<DeleteUserByIdCommand>(deleteUserByIdRequest);

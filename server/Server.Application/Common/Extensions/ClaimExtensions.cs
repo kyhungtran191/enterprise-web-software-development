@@ -17,6 +17,7 @@ public static class ClaimExtensions
         foreach (FieldInfo field in fields)
         {
             string displayName = field.GetValue(null)!.ToString()!;
+
             var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), true);
 
             if (attributes.Length > 0)
