@@ -14,7 +14,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
             .Build();
 
         var builder = new DbContextOptionsBuilder<AppDbContext>();
-        builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        builder.UseSqlServer(configuration.GetConnectionString("VuDevConnection"));
 
         return new AppDbContext(builder.Options);
     }

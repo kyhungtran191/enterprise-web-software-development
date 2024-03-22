@@ -20,6 +20,7 @@ using Server.Infrastructure.Authentication;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
+using Server.Infrastructure.Services.Email;
 
 namespace Server.Infrastructure;
 
@@ -31,6 +32,9 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
         services.AddRepositories();
+        // email settings
+        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+        services.AddTransient<IEmailService, EmailService>();
 
         services
             .AddDatabase(configuration)
