@@ -1,20 +1,14 @@
-using System.Linq.Expressions;
-
 namespace Server.Application.Common.Interfaces.Persistence;
 
- public interface IRepository<T, Key> where T : class
- {
-     Task<T> GetByIdAsync(Key id);
+public interface IRepository<T, Key> where T : class
+{
+    Task<T> GetByIdAsync(Key id);
 
-     Task<IEnumerable<T>> GetAllAsync();
+    Task<IEnumerable<T>> GetAllAsync();
+    void Add(T entity);
+    void AddRange(IEnumerable<T> entities);
 
-     IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
+    void Remove(T entity);
 
-     void Add(T entity);
-
-     void AddRange(IEnumerable<T> entities);
-
-     void Remove(T entity);
-
-     void RemoveRange(IEnumerable<T> entities);
- }
+    void RemoveRange(IEnumerable<T> entities);
+}

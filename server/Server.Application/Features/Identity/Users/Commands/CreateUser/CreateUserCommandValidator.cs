@@ -21,9 +21,6 @@ public class CreateUserCommandValidator : UserCommandValidator<CreateUserCommand
 
         RuleFor(x => x.Password)            
            .MaximumLength(255)
-           .NotEmpty();
-
-        RuleFor(x => x.Faculty)
-            .NotEmpty();
+           .NotEmpty();        
     }
 }
