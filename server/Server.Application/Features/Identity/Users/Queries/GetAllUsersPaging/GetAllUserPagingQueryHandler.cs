@@ -33,15 +33,14 @@ public class GetAllUserPagingQueryHandler
         {
             query = query.Where(
                 user => user.UserName!.Contains(request.Keyword)
-                        || user.Email!.Contains(request.Keyword)
-                        || user.Faculty!.Contains(request.Keyword)
+                        || user.Email!.Contains(request.Keyword)                        
                         || user.FirstName.Contains(request.Keyword)
                         || user.LastName.Contains(request.Keyword)
                         || user.PhoneNumber!.Contains(request.Keyword)
             );
         }
 
-        var count = await query.CountAsync();
+        var count = await query.CountAsync(cancellationToken);
 
         var skipPage = (request.PageIndex - 1) * request.PageSize;
 
@@ -58,7 +57,7 @@ public class GetAllUserPagingQueryHandler
             {
                 CurrentPage = request.PageIndex,                
                 PageSize = request.PageSize,
-                Results = await _mapper.ProjectTo<UserDto>(query).ToListAsync(),
+                Results = await _mapper.ProjectTo<UserDto>(query).ToListAsync(cancellationToken),
                 RowCount = count,
             }
         };

@@ -8,8 +8,8 @@ namespace Server.Domain.Entity.Identity;
 
 [Table("AppUsers")]
 public class AppUser : IdentityUser<Guid>
-{    
-    public string? Faculty { get; set; }
+{        
+    public Guid? FacultyId { get; set; }
 
     [Required]
     [MaxLength(100)]

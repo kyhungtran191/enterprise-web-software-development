@@ -39,7 +39,7 @@ public static class DataSeeder
             {
                 Id = userId,
                 FirstName = "An",
-                LastName = "Minh",                
+                LastName = "Minh",
                 Email = userEmail,
                 NormalizedEmail = userEmail.ToUpperInvariant(),
                 UserName = userName,
@@ -70,26 +70,30 @@ public static class DataSeeder
         }
     }
 
-    public static async Task SeedFaculty(AppDbContext context, IFacultyRepository facultyRepository)
+    public static async Task SeedFaculty(AppDbContext context, 
+                                         IFacultyRepository facultyRepository)
     {
-        var facultyName = "Marketing";
-        
-        var facultyFromDb = facultyRepository.Find(x => x.Name == facultyName);
-
-        if (!facultyFromDb.Any())
+        var allFaculties = new List<string>
         {
-            facultyRepository.Add(new Faculty
+            Faculties.Bussiness,
+            Faculties.IT,
+            Faculties.Design,
+            Faculties.Marketing,
+        };
+
+        foreach (var facultyName in allFaculties)
+        {
+            if (await facultyRepository.GetFacultyByName(facultyName) is null)
             {
-                Name = facultyName,
-                Icon = "Icon",
-            });
-            await context.SaveChangesAsync();
-        } else {
-            // facultyRepository.Remove(facultyFromDb.SingleOrDefault()!);
-            // await context.SaveChangesAsync();
+                facultyRepository.Add(new Faculty
+                {
+                    Name = facultyName,
+                    Icon = "DefaultIcon",
+                });
+            }
         }
 
-        await Task.CompletedTask;
+        await context.SaveChangesAsync();        
     }
 
 }
