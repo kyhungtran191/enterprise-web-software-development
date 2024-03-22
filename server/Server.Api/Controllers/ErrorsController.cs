@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Api.Controllers;
 
-[ApiController]
+// [ApiController]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class ErrorsController : ControllerBase
 {
-    [NonAction]
+    // [NonAction]    
     [Route("/error")]
     public ActionResult Error()
     {
