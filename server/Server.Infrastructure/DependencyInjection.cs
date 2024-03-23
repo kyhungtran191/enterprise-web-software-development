@@ -158,7 +158,7 @@ public static class DependencyInjection
     public static IServiceCollection AddDatabase(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(configuration.GetConnectionString("VuDevConnection")));
 
         return services;
     }
