@@ -23,6 +23,11 @@ public class RepositoryBase<T, Key> : IRepository<T, Key> where T : class
         _dbSet.AddRange(entities);
     }
 
+    // public async Task<int> CountAsync(ISpecification<T> specification)
+    // {
+    //      return await _dbSet.Where(specification.ToExpression()).CountAsync();
+    // }
+
     public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
     {
         return _dbSet.Where(predicate).AsEnumerable();
@@ -37,6 +42,11 @@ public class RepositoryBase<T, Key> : IRepository<T, Key> where T : class
     {
         return await _dbSet.FindAsync(id);
     }
+
+    // public async Task<List<T>> GetBySpecificationAsync(ISpecification<T> specification)
+    // {
+    //     return await _dbSet.Where(specification.ToExpression()).ToListAsync();
+    // }
 
     public void Remove(T entity)
     {

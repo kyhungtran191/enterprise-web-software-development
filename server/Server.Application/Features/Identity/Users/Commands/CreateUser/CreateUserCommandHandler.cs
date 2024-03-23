@@ -14,16 +14,16 @@ public class CreateUserCommandHandler
     : IRequestHandler<CreateUserCommand, ErrorOr<IResponseWrapper>>
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IFacultyRepository _facultyRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
     public CreateUserCommandHandler(UserManager<AppUser> userManager,
                                     IMapper mapper,
-                                    IFacultyRepository facultyRepository)
+                                    IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _mapper = mapper;
-        _facultyRepository = facultyRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ErrorOr<IResponseWrapper>> Handle(CreateUserCommand request,
@@ -34,10 +34,12 @@ public class CreateUserCommandHandler
             return Errors.User.DuplicateEmail;
         }
 
-        var facultyFromDb = _facultyRepository.Find(x => x.Name == request.Faculty);
-        var hasFacultyFromDb = facultyFromDb.Any();
+        var facultyFromDb =
+            await _unitOfWork
+            .FacultyRepository
+            .GetByIdAsync(request.FacultyId);
 
-        if (!hasFacultyFromDb)
+        if (facultyFromDb is null)
         {
             return Errors.Faculty.CannotFound;
         }
@@ -46,7 +48,7 @@ public class CreateUserCommandHandler
 
         _mapper.Map(request, newUser);
 
-        newUser.Faculty = facultyFromDb.SingleOrDefault()?.Name;
+        newUser.FacultyId = facultyFromDb.Id;
         newUser.PasswordHash = new PasswordHasher<AppUser>().HashPassword(newUser, request.Password);
 
         var result = await _userManager.CreateAsync(newUser);
@@ -65,6 +67,4 @@ public class CreateUserCommandHandler
                 }
         };
     }
-
-
 }

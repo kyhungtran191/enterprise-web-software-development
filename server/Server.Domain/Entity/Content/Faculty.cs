@@ -1,13 +1,10 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace Server.Domain.Entity.Content
 {
-    [Table("Faculties")]
-    [PrimaryKey(nameof(Name))]
-    public class Faculty
+    [Table("Faculties")]    
+    public class Faculty : BaseEntity
     {
         [Required]
         [MaxLength(256)]
@@ -15,9 +12,5 @@ namespace Server.Domain.Entity.Content
 
         [MaxLength(2048)]
         public string Icon { get; set; } = default!;
-
-        public DateTime DateCreated { get; set; }
-        public DateTime? DateEdited { get; set; }
-        public DateTime? DateDeleted { get; set; }
     }
 }
