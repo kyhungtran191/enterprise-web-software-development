@@ -57,20 +57,20 @@ namespace Server.Domain.Common.Constants
 
 
 
-        // public static class PostCategories
-        // {
-        //     [Description("Xem danh mục bài viết")]
-        //     public const string View = "Permissions.PostCategories.View";
+        public static class Tags
+        {
+            [Description("View Tags")]
+            public const string View = "Permissions.Tags.View";
 
-        //     [Description("Tạo danh mục bài viết")]
-        //     public const string Create = "Permissions.PostCategories.Create";
+            [Description("Create Tags")]
+            public const string Create = "Permissions.Tags.Create";
 
-        //     [Description("Sửa danh mục bài viết")]
-        //     public const string Edit = "Permissions.PostCategories.Edit";
+            [Description("Edit Tags")]
+            public const string Edit = "Permissions.Tags.Edit";
 
-        //     [Description("Xóa danh mục bài viết")]
-        //     public const string Delete = "Permissions.PostCategories.Delete";
-        // }
+            [Description("Delete Tags")]
+            public const string Delete = "Permissions.Tags.Delete";
+        }
 
         // public static class Posts
         // {
