@@ -1,8 +1,10 @@
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Server.Api.Authorization;
 using Server.Api.Common.Errors;
 using Server.Api.Common.Filters;
 using Server.Application.Common.Interfaces.Persistence;
@@ -63,8 +65,12 @@ public static class DependencyInjection
 
             c.ParameterFilter<SwaggerNullableParameterFilter>();
         });
+        
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        
         services.AddSingleton<ProblemDetailsFactory, ServerProblemDetailsFactory>();
+
+        services.AddAuthorization();
 
         return services;
     }
@@ -83,6 +89,15 @@ public static class DependencyInjection
             .AllowAnyHeader()
             .AllowCredentials();
         }));
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuthorization(this IServiceCollection services)
+    {
+
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+        services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
         return services;
     }

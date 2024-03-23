@@ -40,6 +40,23 @@ namespace Server.Domain.Common.Constants
             public const string Delete = "Permissions.Users.Delete";
         }
 
+          public static class Faculties
+        {
+            [Description("View Faculties")]
+            public const string View = "Permissions.Faculties.View";
+
+            [Description("Create New Faculty")]
+            public const string Create = "Permissions.Faculties.Create";
+
+            [Description("Edit Faculty")]
+            public const string Edit = "Permissions.Faculties.Edit";
+
+            [Description("Delete Faculty")]
+            public const string Delete = "Permissions.Faculties.Delete";
+        }
+
+
+
         // public static class PostCategories
         // {
         //     [Description("Xem danh mục bài viết")]

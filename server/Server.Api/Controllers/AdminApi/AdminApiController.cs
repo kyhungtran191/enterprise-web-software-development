@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Api.Controllers.AdminApi;
 
-[Route("api/admin/[controller]")]
+[Route("api/admin/[controller]")] 
 [Authorize]
 public class AdminApiController : ApiController
 {

@@ -1,4 +1,8 @@
+using System.Reflection;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Server.Application.Common.Dtos;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
@@ -16,13 +20,13 @@ public static class DataSeeder
 
         var rootAdminRoleId = Guid.NewGuid();
 
-        var role = new AppRole
+        AppRole? role = new AppRole
         {
             Id = rootAdminRoleId,
             Name = Roles.Admin,
             NormalizedName = Roles.Admin.ToUpperInvariant(),
             DisplayName = "Admisnistrator",
-        };
+        }; ;
 
         if (!context.Roles.Any())
         {
@@ -63,14 +67,32 @@ public static class DataSeeder
             await context.SaveChangesAsync();
         }
 
-        // seed permissions
-        var permissions = await roleManager.GetClaimsAsync(role);
-        if (permissions.Any() == false)
+        // seed permissions        
+        if (context.RoleClaims.Any() == false)
         {
+            var permissions = await roleManager.GetClaimsAsync(role);
+
+            if (permissions.Any() == false)
+            {
+                var allPermisisons = new List<RoleClaimsDto>();
+
+                var types =
+                    typeof(Permissions)
+                    .GetTypeInfo()
+                    .DeclaredNestedTypes
+                    .ToList();
+
+                types.ForEach(allPermisisons.GetPermissionsByType);
+
+                foreach (var permission in allPermisisons)
+                {
+                    await roleManager.AddClaimAsync(role, new Claim("permissions", permission.Value!));
+                }
+            }
         }
     }
 
-    public static async Task SeedFaculty(AppDbContext context, 
+    public static async Task SeedFaculty(AppDbContext context,
                                          IFacultyRepository facultyRepository)
     {
         var allFaculties = new List<string>
@@ -93,7 +115,7 @@ public static class DataSeeder
             }
         }
 
-        await context.SaveChangesAsync();        
+        await context.SaveChangesAsync();
     }
 
 }

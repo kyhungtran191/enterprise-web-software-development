@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -49,7 +50,7 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
             new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id.ToString()),
             new Claim(UserClaims.Id, applicationUser.Id.ToString()),
             new Claim(ClaimTypes.NameIdentifier, applicationUser.UserName ?? string.Empty),
-              new Claim(JwtRegisteredClaimNames.Email, applicationUser.Email ?? string.Empty),
+            new Claim(JwtRegisteredClaimNames.Email, applicationUser.Email ?? string.Empty),
             new Claim(ClaimTypes.Name, applicationUser.UserName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.GivenName, applicationUser.FirstName),
             new Claim(JwtRegisteredClaimNames.FamilyName, applicationUser.LastName),
@@ -68,7 +69,11 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
         {
             var allPermisisons = new List<RoleClaimsDto>();
 
-            var types = typeof(Permissions).GetType().GetNestedTypes().ToList();
+            var types = 
+                typeof(Permissions)
+                .GetTypeInfo()
+                .DeclaredNestedTypes
+                .ToList();
 
             types.ForEach(allPermisisons.GetPermissionsByType);
 
