@@ -36,11 +36,11 @@ public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionReq
 
         var roleNames = await _userManager.GetRolesAsync(userInDb);
 
-        // if (roleNames.Contains(Roles.Admin))
-        // {
-        //     context.Succeed(requirement);
-        //     return;
-        // }
+        //if (roleNames.Contains(Roles.Admin))
+        //{
+        //    context.Succeed(requirement);
+        //    return;
+        //}
 
         var permissions = new List<Claim>();
 

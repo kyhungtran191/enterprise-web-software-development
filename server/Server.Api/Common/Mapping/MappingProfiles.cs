@@ -1,6 +1,7 @@
 using AutoMapper;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Faculties;
+using Server.Application.Common.Dtos.Tags;
 using Server.Application.Common.Dtos.Users;
 using Server.Application.Features.Authentication;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
@@ -14,11 +15,17 @@ using Server.Application.Features.Identity.Users.Commands.DeleteUserById;
 using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
+using Server.Application.Features.TagApp.Commands.CreateTag;
+using Server.Application.Features.TagApp.Commands.DeleteTag;
+using Server.Application.Features.TagApp.Commands.UpdateTag;
+using Server.Application.Features.TagApp.Queries.GetAllTagsPaging;
+using Server.Application.Features.TagApp.Queries.GetTagById;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Requests;
 using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
 using Server.Contracts.Identity.Users;
+using Server.Contracts.Tags;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 
@@ -66,5 +73,14 @@ public class MappingProfiles : Profile
 
         // Roles
         CreateMap<AppRole, RoleDto>();
+        // Tags
+        CreateMap<Tag, TagDto>();
+        CreateMap<GetAllTagsPagingRequest, GetAllTagsPagingQuery>();
+        CreateMap<GetTagByIdRequest, GetTagByIdQuery>();
+        CreateMap<CreateTagRequest, CreateTagCommand>();
+        CreateMap<UpdateTagRequest, UpdateTagCommand>();
+        CreateMap<DeleteTagRequest, DeleteTagCommand>();
+        
+
     }    
 }
