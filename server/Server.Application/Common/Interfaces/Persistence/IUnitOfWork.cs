@@ -6,5 +6,6 @@ public interface IUnitOfWork : IDisposable
     // IRepository<T, TKey> GetRepository<T, TKey>() where T : class;
     IFacultyRepository FacultyRepository { get; }
     ITagRepository TagRepository { get; }
+    IAcademicYearRepository AcademicYearRepository { get; }
 }
 

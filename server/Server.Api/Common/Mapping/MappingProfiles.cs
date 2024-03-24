@@ -1,8 +1,14 @@
 using AutoMapper;
 using Server.Application.Common.Dtos;
+using Server.Application.Common.Dtos.AcademicYears;
 using Server.Application.Common.Dtos.Faculties;
 using Server.Application.Common.Dtos.Tags;
 using Server.Application.Common.Dtos.Users;
+using Server.Application.Features.AcademicYearApp.Commands.CreateAcademicYear;
+using Server.Application.Features.AcademicYearApp.Commands.DeleteAcademicYear;
+using Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYear;
+using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
+using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
 using Server.Application.Features.Authentication;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
@@ -20,6 +26,7 @@ using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
 using Server.Application.Features.TagApp.Queries.GetAllTagsPaging;
 using Server.Application.Features.TagApp.Queries.GetTagById;
+using Server.Contracts.AcademicYears;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Requests;
 using Server.Contracts.Faculties;
@@ -80,7 +87,16 @@ public class MappingProfiles : Profile
         CreateMap<CreateTagRequest, CreateTagCommand>();
         CreateMap<UpdateTagRequest, UpdateTagCommand>();
         CreateMap<DeleteTagRequest, DeleteTagCommand>();
-        
+        // academic year
+        CreateMap<AcademicYear, AcademicYearDto>();
+        CreateMap<CreateAcademicYearCommand, AcademicYear>();
+
+        CreateMap<CreateAcademicYearRequest, CreateAcademicYearCommand>();
+        CreateMap<GetAllYearsPagingRequest, GetAllAcademicYearsPagingQuery>();
+        CreateMap<GetYearByIdRequest, GetAcademicYearByIdQuery>();
+        CreateMap<DeleteAcademicYearRequest, DeleteAcademicYearCommand>();
+        CreateMap<UpdateAcademicYearRequest, UpdateAcademicYearCommand>();
+
 
     }    
 }
