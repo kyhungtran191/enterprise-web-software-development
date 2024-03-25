@@ -86,23 +86,23 @@ namespace Server.Domain.Common.Constants
             public const string Delete = "Permissions.AcademicYears.Delete";
         }
 
-        // public static class Posts
-        // {
-        //     [Description("Xem bài viết")]
-        //     public const string View = "Permissions.Posts.View";
+        public static class Contributions
+        {
+            [Description("View Contributions")]
+            public const string View = "Permissions.Contributions.View";
 
-        //     [Description("Tạo bài viết")]
-        //     public const string Create = "Permissions.Posts.Create";
+            [Description("Create Contributions")]
+            public const string Create = "Permissions.Contributions.Create";
 
-        //     [Description("Sửa bài viết")]
-        //     public const string Edit = "Permissions.Posts.Edit";
+            [Description("Edit Contributions")]
+            public const string Edit = "Permissions.Contributions.Edit";
 
-        //     [Description("Xóa bài viết")]
-        //     public const string Delete = "Permissions.Posts.Delete";
+            [Description("Delete Contributions")]
+            public const string Delete = "Permissions.Contributions.Delete";
 
-        //     [Description("Duyệt bài viết")]
-        //     public const string Approve = "Permissions.Posts.Approve";
-        // }
+            [Description("Approve Contributions")]
+            public const string Approve = "Permissions.Contributions.Approve";
+        }
 
 
 

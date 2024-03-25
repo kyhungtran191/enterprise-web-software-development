@@ -189,6 +189,9 @@ namespace Server.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsCoordinatorComment")
                         .HasColumnType("bit");
 

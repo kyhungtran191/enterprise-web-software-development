@@ -1,6 +1,7 @@
 using AutoMapper;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.AcademicYears;
+using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Common.Dtos.Faculties;
 using Server.Application.Common.Dtos.Tags;
 using Server.Application.Common.Dtos.Users;
@@ -10,6 +11,11 @@ using Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
 using Server.Application.Features.Authentication;
+using Server.Application.Features.ContributionApp.Commands.CreateContribution;
+using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
+using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
+using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
+using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
@@ -29,6 +35,7 @@ using Server.Application.Features.TagApp.Queries.GetTagById;
 using Server.Contracts.AcademicYears;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Requests;
+using Server.Contracts.Contributions;
 using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
 using Server.Contracts.Identity.Users;
@@ -97,6 +104,14 @@ public class MappingProfiles : Profile
         CreateMap<DeleteAcademicYearRequest, DeleteAcademicYearCommand>();
         CreateMap<UpdateAcademicYearRequest, UpdateAcademicYearCommand>();
 
-
+        // contributions
+        CreateMap<Contribution, ContributionDto>();
+        CreateMap<Contribution, ContributionInListDto>();
+        CreateMap<Contribution, UpdateContributionCommand>().ReverseMap();
+        CreateMap<GetContributionByTitleRequest, GetContributionByTitleQuery>();
+        CreateMap<CreateContributionRequest, CreateContributionCommand>();
+        CreateMap<GetAllContributionPagingRequest, GetAllContributionsPagingQuery>();
+        CreateMap<UpdateContributionRequest, UpdateContributionCommand>();
+        CreateMap<DeleteContributionRequest, DeleteContributionCommand>();
     }    
 }

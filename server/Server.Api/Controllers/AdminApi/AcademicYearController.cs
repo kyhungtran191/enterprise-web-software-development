@@ -19,7 +19,7 @@ namespace Server.Api.Controllers.AdminApi
     {
         private readonly IMapper _mapper;
 
-        public AcademicYearController(IMapper mapper, IMediator sender) : base(sender)
+        public AcademicYearController(IMapper mapper, ISender sender) : base(sender)
         {
             _mapper = mapper;
         }

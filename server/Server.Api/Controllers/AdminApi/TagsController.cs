@@ -17,7 +17,7 @@ namespace Server.Api.Controllers.AdminApi
     {
         private readonly IMapper _mapper;
 
-        public TagsController(IMapper mapper, IMediator sender) : base(sender)
+        public TagsController(IMapper mapper, ISender sender) : base(sender)
         {
             _mapper = mapper;
         }
