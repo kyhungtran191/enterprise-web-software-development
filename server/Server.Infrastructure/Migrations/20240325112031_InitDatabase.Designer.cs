@@ -12,8 +12,8 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240322090810_InitMigrations")]
-    partial class InitMigrations
+    [Migration("20240325112031_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,6 +147,10 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime>("FinalClosureDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("StartClosureDate")
                         .HasColumnType("datetime2");
 
@@ -156,6 +160,9 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("AcademicYears");
                 });
@@ -184,6 +191,9 @@ namespace Server.Infrastructure.Migrations
                     b.Property<string>("FilePath")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsCoordinatorComment")
                         .HasColumnType("bit");
@@ -434,6 +444,9 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });

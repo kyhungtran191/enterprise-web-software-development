@@ -6,8 +6,7 @@ using Server.Application.Wrappers;
 using Server.Domain.Common.Errors;
 
 namespace Server.Application.Features.AcademicYearApp.Commands.DeleteAcademicYear
-{
-    internal class DeleteAcademicYearCommandHandler : IRequestHandler<DeleteAcademicYearCommand,ErrorOr<IResponseWrapper>>
+{  public class DeleteAcademicYearCommandHandler : IRequestHandler<DeleteAcademicYearCommand,ErrorOr<IResponseWrapper>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IDateTimeProvider _dateTimeProvider;
