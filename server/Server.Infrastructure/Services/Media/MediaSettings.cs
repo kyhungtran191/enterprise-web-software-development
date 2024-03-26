@@ -2,8 +2,8 @@
 {
     public class MediaSettings
     {
-        public string? AllowImageFileTypes { get; set; }
-        public string? ImageFolder { get; set; }
+        public string? AllowFileTypes { get; set; }
+        public string? MediaFolder { get; set; }
         public string? NoImage { get; set; }
     }
 }

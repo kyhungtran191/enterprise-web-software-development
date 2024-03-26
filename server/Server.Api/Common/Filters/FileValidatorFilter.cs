@@ -20,9 +20,9 @@ namespace Server.Api.Common.Filters
         {
             var services = context.HttpContext.RequestServices;
             var mediaSettings = services.GetService<IOptions<MediaSettings>>()?.Value;
-            if (mediaSettings != null && !string.IsNullOrEmpty(mediaSettings.AllowImageFileTypes))
+            if (mediaSettings != null && !string.IsNullOrEmpty(mediaSettings.AllowFileTypes))
             {
-                _allowedExtensions = mediaSettings.AllowImageFileTypes.Split(",");
+                _allowedExtensions = mediaSettings.AllowFileTypes.Split(",");
             }
 
             var filesParam = context.ActionArguments.SingleOrDefault(p => p.Value is List<IFormFile>);
