@@ -39,6 +39,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/error");
 
+    app.UseStaticFiles();
+
     app.UseCors(serverCorsPolicy);
 
     app.UseAuthentication();
