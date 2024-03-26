@@ -16,6 +16,7 @@ namespace Server.Domain.Common.Errors
 
             public static Error Deleted =>
                 Error.Conflict(code: "Contribution.Deleted", description: "Contribution has been deleted");
+          
         }
     }
 }

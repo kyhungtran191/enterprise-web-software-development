@@ -21,14 +21,8 @@ public class Contribution : BaseEntity
     [Required]
     [MaxLength(256)] 
     public required string Title { get; set; }
-
-    [MaxLength(500)]
-    public string? Thumbnail { get; set; }
     [Required]
     public required bool IsConfirmed { get; set; }
-
-    [MaxLength(500)]
-    public string? FilePath { get; set; }
     public DateTime? SubmissionDate { get; set; }
     public DateTime? PublicDate { get; set; }
     public bool IsCoordinatorComment { get; set; } = false;

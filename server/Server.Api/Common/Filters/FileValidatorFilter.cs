@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;
 using Server.Api.Common.Helper;
 using Server.Infrastructure.Services.Media;
+using System.Diagnostics;
 
 namespace Server.Api.Common.Filters
 {
@@ -25,38 +26,74 @@ namespace Server.Api.Common.Filters
                 _allowedExtensions = mediaSettings.AllowFileTypes.Split(",");
             }
 
-            var filesParam = context.ActionArguments.SingleOrDefault(p => p.Value is List<IFormFile>);
-            var files = filesParam.Value as List<IFormFile>;
+            bool anyFileAttempted = false;
 
-            if (files == null || !files.Any())
+            foreach (var arg in context.ActionArguments.Values)
             {
-                context.Result = new BadRequestObjectResult("File list is null or empty.");
-                return;
+                var fileProperties = arg?.GetType().GetProperties().Where(prop => prop.PropertyType == typeof(IFormFile) || prop.PropertyType == typeof(List<IFormFile>));
+                foreach (var prop in fileProperties)
+                {
+                    if (prop.PropertyType == typeof(IFormFile))
+                    {
+                        var file = prop.GetValue(arg) as IFormFile;
+                        if (file != null)
+                        {
+                            anyFileAttempted = true;
+                            if (!ValidateFile(context, file))
+                            {
+                                return; 
+                            }
+                        }
+                    }
+                    else if (prop.PropertyType == typeof(List<IFormFile>))
+                    {
+                        var files = prop.GetValue(arg) as List<IFormFile>;
+                        if (files != null && files.Any())
+                        {
+                            anyFileAttempted = true;
+                            foreach (var file in files)
+                            {
+                                if (!ValidateFile(context, file))
+                                {
+                                    return; 
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            foreach (var file in files)
+            if (!anyFileAttempted)
             {
-                if (file.Length == 0)
-                {
-                    context.Result = new BadRequestObjectResult("One or more files are empty.");
-                    return;
-                }
-
-                if (!FileValidator.IsFileExtensionAllowed(file, _allowedExtensions))
-                {
-                    var allowedExtensionsMessage = String.Join(", ", _allowedExtensions).Replace(".", "").ToUpper();
-                    context.Result = new BadRequestObjectResult($"Invalid file type. Please upload {allowedExtensionsMessage} files.");
-                    return;
-                }
-
-                if (!FileValidator.IsFileSizeWithinLimit(file, _maxSize))
-                {
-                    var mbSize = (double)_maxSize / 1024 / 1024;
-                    context.Result = new BadRequestObjectResult($"File size exceeds the maximum allowed size ({mbSize} MB).");
-                    return;
-                }
+                context.Result = new BadRequestObjectResult("No files submitted.");
             }
         }
+
+        private bool ValidateFile(ActionExecutingContext context, IFormFile file)
+        {
+            if (file.Length == 0)
+            {
+                context.Result = new BadRequestObjectResult("One or more files are empty.");
+                return false;
+            }
+
+            if (!_allowedExtensions.Any(ext => file.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
+            {
+                var allowedExtensionsMessage = String.Join(", ", _allowedExtensions).Replace(".", "").ToUpper();
+                context.Result = new BadRequestObjectResult($"Invalid file type. Allowed extensions: {allowedExtensionsMessage}.");
+                return false;
+            }
+
+            if (!FileValidator.IsFileSizeWithinLimit(file, _maxSize))
+            {
+                var mbSize = (double)_maxSize / 1024 / 1024;
+                context.Result = new BadRequestObjectResult($"File size exceeds the maximum allowed size ({mbSize} MB).");
+                return false;
+            }
+            return true;
+        }
+
+
 
     }
 }
