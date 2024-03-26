@@ -19,7 +19,7 @@ namespace Server.Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [FileValidationFilter(1024*1024)]
+        [FileValidationFilter(5*1024*1024)]
         public async Task<IActionResult> UploadImages(string type,List<IFormFile> files)
         {
             var path = await _mediaService.UploadFiles(files, type);

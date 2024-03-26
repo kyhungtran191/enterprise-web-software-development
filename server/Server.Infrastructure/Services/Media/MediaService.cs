@@ -1,9 +1,9 @@
-﻿using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
+using Server.Application.Common.Dtos;
 using Server.Application.Common.Interfaces.Services;
+using System.Net.Http.Headers;
 
 namespace Server.Infrastructure.Services.Media
 {
@@ -20,15 +20,16 @@ namespace Server.Infrastructure.Services.Media
             _dateTimeProvider = dateTimeProvider;
         }
 
-        public async Task<List<string>> UploadFiles( List<IFormFile> files,string type)
+        public async Task<List<FileDto>> UploadFiles( List<IFormFile> files,string type)
         {
          
             var now = _dateTimeProvider.UtcNow;
-            var paths = new List<string>();
+            var fileInfos = new List<FileDto>();
+
             foreach (var file in files)
             {
                 var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition)?.FileName?.Trim('"');
-                var imageFolder = $@"\{_settings.ImageFolder}\images\{type}\{now:MMyyyy}";
+                var imageFolder = $@"\{_settings.MediaFolder}\{type}\{now:MMyyyy}";
                 var folder = _hostingEnv.WebRootPath + imageFolder;
                 if (!Directory.Exists(folder))
                 {
@@ -39,10 +40,16 @@ namespace Server.Infrastructure.Services.Media
                 file.CopyTo(fs);
                 fs.Flush();
                 var path = Path.Combine(imageFolder, filename ?? string.Empty).Replace("\\", "/");
-                paths.Add(path);
+                var fileInfo = new FileDto
+                {
+                    Path = path,
+                    Type = type 
+                };
+                fileInfos.Add(fileInfo);
             }
+            return fileInfos;
 
-            return paths;
+           
         }
 
      
