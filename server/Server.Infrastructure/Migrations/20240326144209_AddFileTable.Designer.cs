@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Infrastructure;
 
@@ -11,9 +12,11 @@ using Server.Infrastructure;
 namespace Server.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240326144209_AddFileTable")]
+    partial class AddFileTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,6 +188,10 @@ namespace Server.Infrastructure.Migrations
                     b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("FilePath")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
 
@@ -194,15 +201,15 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("PublicDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("varchar(250)");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("SubmissionDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Thumbnail")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -213,9 +220,6 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Slug")
-                        .IsUnique();
 
                     b.ToTable("Contributions");
 

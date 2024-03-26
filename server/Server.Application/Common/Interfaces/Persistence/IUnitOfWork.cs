@@ -8,5 +8,6 @@ public interface IUnitOfWork : IDisposable
     ITagRepository TagRepository { get; }
     IAcademicYearRepository AcademicYearRepository { get; }
     IContributionRepository ContributionRepository { get; }
+    IFileRepository FileRepository { get; }
 }
 

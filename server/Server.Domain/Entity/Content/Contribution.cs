@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Server.Domain.Entity.Content;
 
 [Table("Contributions")]
-//[Index(nameof(Slug),IsUnique = true)]
+[Index(nameof(Slug), IsUnique = true)]
 public class Contribution : BaseEntity
 {
     [Required]
@@ -14,21 +14,15 @@ public class Contribution : BaseEntity
     public Guid FacultyId { get; set; }
     [Required]
     public Guid AcademicYearId { get; set; }
-    //[Required]
-    //[Column(TypeName = "varchar(250)")]
-    //public required string Slug { get; set; }
+    [Required]
+    [Column(TypeName = "varchar(250)")]
+    public required string Slug { get; set; }
 
     [Required]
     [MaxLength(256)] 
     public required string Title { get; set; }
-
-    [MaxLength(500)]
-    public string? Thumbnail { get; set; }
     [Required]
     public required bool IsConfirmed { get; set; }
-
-    [MaxLength(500)]
-    public string? FilePath { get; set; }
     public DateTime? SubmissionDate { get; set; }
     public DateTime? PublicDate { get; set; }
     public bool IsCoordinatorComment { get; set; } = false;

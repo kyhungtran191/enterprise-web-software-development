@@ -41,25 +41,7 @@ namespace Server.Api.Controllers.AdminApi
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateContribution([FromForm] CreateContributionRequest createContributionRequest)
-        {
-            var command = _mapper.Map<CreateContributionCommand>(createContributionRequest);
-            command.UserId = User.GetUserId();
-            
-            var result = await _mediatorSender.Send(command);
-            return result.Match(result => Ok(result), errors => Problem(errors));
-
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateContribution(UpdateContributionRequest updateContributionRequest)
-        {
-            var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
-            var result = await _mediatorSender.Send(command);
-            return result.Match(result => Ok(result), errors => Problem(errors));
-        }
-
+      
         [HttpDelete]
         public async Task<IActionResult> DeleteContribution(DeleteContributionRequest deleteContributionRequest)
         {
