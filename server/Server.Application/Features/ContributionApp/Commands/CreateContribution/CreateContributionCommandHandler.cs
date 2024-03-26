@@ -46,6 +46,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             {
                 AcademicYearId = request.AcademicYearId,
                 Title = request.Title,
+                Slug = request.Slug,
                 FacultyId = request.FacultyId,
                 UserId = request.UserId,
                 IsConfirmed = true,

@@ -12,8 +12,6 @@ namespace Server.Contracts.Contributions
         // will remove late - just for test
         public Guid FacultyId { get; set; }
         
-        // tags
-        public List<Guid>? TagId { get; set; }
 
     }
 }
