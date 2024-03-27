@@ -16,7 +16,11 @@ namespace Server.Domain.Common.Errors
 
             public static Error Deleted =>
                 Error.Conflict(code: "Contribution.Deleted", description: "Contribution has been deleted");
-          
+
+            public static Error NotConfirmed =>
+                Error.Validation("Contribution.NotConfirmed", "Please accept term and condition before submitting");
+
+            public static Error SlugExist => Error.Validation(code: "Contribution.SlugExist",description:"Please enter another title");
         }
     }
 }

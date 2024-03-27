@@ -108,7 +108,7 @@ public class MappingProfiles : Profile
         CreateMap<Contribution, ContributionDto>();
         CreateMap<Contribution, ContributionInListDto>();
         CreateMap<Contribution, UpdateContributionCommand>().ReverseMap();
-        CreateMap<GetContributionByTitleRequest, GetContributionByTitleQuery>();
+        CreateMap<GetContributionBySlugRequest, GetContributionBySlugQuery>();
         CreateMap<CreateContributionRequest, CreateContributionCommand>();
         CreateMap<GetAllContributionPagingRequest, GetAllContributionsPagingQuery>();
         CreateMap<UpdateContributionRequest, UpdateContributionCommand>();

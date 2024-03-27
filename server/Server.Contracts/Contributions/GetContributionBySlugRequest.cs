@@ -2,9 +2,9 @@
 
 namespace Server.Contracts.Contributions
 {
-    public class GetContributionByTitleRequest
+    public class GetContributionBySlugRequest
     {
         [FromRoute]
-        public string Title { get; set; }
+        public string Slug { get; set; }
     }
 }

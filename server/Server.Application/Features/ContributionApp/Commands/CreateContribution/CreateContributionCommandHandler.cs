@@ -32,7 +32,15 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
         public async Task<ErrorOr<IResponseWrapper>> Handle(CreateContributionCommand request,
             CancellationToken cancellationToken)
         {
-            if (await _unitOfWork.ContributionRepository.GetContributionByTitle(request.Title) is not null)
+            if (await _unitOfWork.ContributionRepository.IsSlugAlreadyExisted(request.Slug))
+            {
+                return Errors.Contribution.SlugExist;
+            }
+            if (!request.IsConfirmed)
+            {
+                return Errors.Contribution.NotConfirmed;
+            }
+            if (await _unitOfWork.ContributionRepository.GetContributionBySlug(request.Slug) is not null)
             {
                 return Errors.Contribution.AlreadyExist;
             }
@@ -54,6 +62,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
             };
             _unitOfWork.ContributionRepository.Add(contributon);
+
             await _unitOfWork.CompleteAsync();
             foreach (var info in request.FileInfo)
             {
@@ -83,7 +92,6 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             {
                 return Errors.User.CannotFound;
             }
-
 
              _emailService.SendEmail(new MailRequest
             {

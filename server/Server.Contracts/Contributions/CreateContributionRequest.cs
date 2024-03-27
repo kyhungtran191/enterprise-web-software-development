@@ -11,7 +11,7 @@ namespace Server.Contracts.Contributions
 
         // will remove late - just for test
         public Guid FacultyId { get; set; }
-        
+        public bool IsConfirmed { get; set; }
 
     }
 }

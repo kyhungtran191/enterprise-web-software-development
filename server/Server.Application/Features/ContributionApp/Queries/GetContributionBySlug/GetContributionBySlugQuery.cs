@@ -5,8 +5,8 @@ using Server.Application.Wrappers;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetContributionByTitle
 {
-    public class GetContributionByTitleQuery : IRequest<ErrorOr<IResponseWrapper<ContributionDto>>>
+    public class GetContributionBySlugQuery : IRequest<ErrorOr<IResponseWrapper<ContributionDto>>>
     {
-        public string Title { get; set; }
+        public string Slug { get; set; }
     }
 }

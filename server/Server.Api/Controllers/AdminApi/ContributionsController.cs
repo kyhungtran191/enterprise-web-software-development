@@ -1,15 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.Features.ContributionApp.Commands.CreateContribution;
+using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
+using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
 using Server.Contracts.Contributions;
-using System.Security.Claims;
-using Server.Application.Common.Extensions;
-using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
-using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
-using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
-using ErrorOr;
 
 namespace Server.Api.Controllers.AdminApi
 {
@@ -23,10 +19,11 @@ namespace Server.Api.Controllers.AdminApi
         }
 
         [HttpGet]
-        [Route("{Title}")]
-        public async Task<IActionResult> GetContributionByName([FromRoute] GetContributionByTitleRequest getContributionByTitleRequest)
+        [Route("{Slug}")]
+        public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
         {
-            var query = _mapper.Map<GetContributionByTitleQuery>(getContributionByTitleRequest);
+            var query = _mapper.Map<GetContributionBySlugQuery>(getContributionBySlugRequest);
+            Debug.WriteLine(query.Slug);
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
 
