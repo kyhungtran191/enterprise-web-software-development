@@ -218,14 +218,15 @@ namespace Server.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Contributions");
-
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionActivityLog", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContributionId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateCreated")
@@ -289,6 +290,79 @@ namespace Server.Infrastructure.Migrations
                     b.HasKey("ContributionId", "UserId");
 
                     b.ToTable("ContributionComments");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AcademicYearId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateEdited")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FacultyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FacultyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCoordinatorComment")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LikeQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PublicDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SubmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContributionPublics");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublicComment", b =>
@@ -410,6 +484,11 @@ namespace Server.Infrastructure.Migrations
 
                     b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Path")
                         .IsRequired()
@@ -652,42 +731,6 @@ namespace Server.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Settings");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
-                {
-                    b.HasBaseType("Server.Domain.Entity.Content.Contribution");
-
-                    b.Property<string>("Avatar")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("FacultyName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LikeQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("Views")
-                        .HasColumnType("int");
-
-                    b.ToTable("ContributionPublics");
-                });
-
-            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublic", b =>
-                {
-                    b.HasOne("Server.Domain.Entity.Content.Contribution", null)
-                        .WithOne()
-                        .HasForeignKey("Server.Domain.Entity.Content.ContributionPublic", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -12,11 +12,13 @@ namespace Server.Application.Features.ContributionApp.Commands.DeleteContributio
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IMediaService _mediaService;
 
-        public DeleteContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider)
+        public DeleteContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider,IMediaService mediaService)
         {
             _dateTimeProvider = dateTimeProvider;
             _unitOfWork = unitOfWork;
+            _mediaService = mediaService;
         }
 
         public async  Task<ErrorOr<IResponseWrapper>> Handle(DeleteContributionCommand request, CancellationToken cancellationToken)
@@ -31,6 +33,20 @@ namespace Server.Application.Features.ContributionApp.Commands.DeleteContributio
                     return Errors.Contribution.NotFound;
                 }
 
+                var existingFiles = await _unitOfWork.FileRepository.GetByContribution(item);
+                if (existingFiles.Count == 0)
+                {
+                    return Errors.Contribution.NoFilesFound;
+                }
+                var removeFilePaths = new List<string>();
+                foreach (var existingFile in existingFiles)
+                {
+                    _unitOfWork.FileRepository.Remove(existingFile);
+                    removeFilePaths.Add(existingFile.Path);
+
+                }
+
+                await _mediaService.RemoveFile(removeFilePaths);
                 item.DateDeleted = _dateTimeProvider.UtcNow;
                 successfullyDeletedItems.Add(id);
             }

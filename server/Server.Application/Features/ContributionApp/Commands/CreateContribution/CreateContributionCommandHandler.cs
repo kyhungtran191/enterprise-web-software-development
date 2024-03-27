@@ -32,7 +32,15 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
         public async Task<ErrorOr<IResponseWrapper>> Handle(CreateContributionCommand request,
             CancellationToken cancellationToken)
         {
-            if (await _unitOfWork.ContributionRepository.GetContributionByTitle(request.Title) is not null)
+            if (await _unitOfWork.ContributionRepository.IsSlugAlreadyExisted(request.Slug))
+            {
+                return Errors.Contribution.SlugExist;
+            }
+            if (!request.IsConfirmed)
+            {
+                return Errors.Contribution.NotConfirmed;
+            }
+            if (await _unitOfWork.ContributionRepository.GetContributionBySlug(request.Slug) is not null)
             {
                 return Errors.Contribution.AlreadyExist;
             }
@@ -54,36 +62,24 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
             };
             _unitOfWork.ContributionRepository.Add(contributon);
+
             await _unitOfWork.CompleteAsync();
-            foreach (var info in request.FileInfo)
+            foreach (var info in request.FileInfo.Concat(request.ThumbnailInfo))
             {
                 _unitOfWork.FileRepository.Add(new File
                 {
                     ContributionId = contributon.Id,
                     Path = info.Path,
-                    Type = info.Type
+                    Type = info.Type,
+                    Name = info.Name,
                 });
             }
-
-
-            foreach (var info in request.ThumbnailInfo)
-            {
-                _unitOfWork.FileRepository.Add(new File
-                {
-                    ContributionId = contributon.Id,
-                    Path = info.Path,
-                    Type = info.Type
-                });
-            }
-
-            await _unitOfWork.CompleteAsync();
-
+           
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user == null)
             {
                 return Errors.User.CannotFound;
             }
-
 
              _emailService.SendEmail(new MailRequest
             {
@@ -91,7 +87,9 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 Body = $"User with Id {user.Id} submit new contribution",
                 Subject = "NEW CONTRIBUTION"
             });
-
+            // send to approve 
+            await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
+            await _unitOfWork.CompleteAsync();
             return new ResponseWrapper
             {
                 IsSuccessfull = true,

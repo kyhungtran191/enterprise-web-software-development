@@ -7,6 +7,7 @@ namespace Server.Domain.Entity.Content
     public class ContributionActivityLog : BaseEntity
     {
         public Guid UserId { get; set; }
+        public Guid ContributionId { get; set; }
         
         [MaxLength(255)]
         public string Title { get; set; } = default!;

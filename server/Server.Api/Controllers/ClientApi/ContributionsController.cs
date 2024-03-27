@@ -30,8 +30,12 @@ namespace Server.Api.Controllers.ClientApi
             var command = _mapper.Map<CreateContributionCommand>(createContributionRequest);
             command.UserId = User.GetUserId();
             command.Slug = createContributionRequest.Title.Slugify();
+            var thumbnailList = new List<IFormFile>
+            {
+                createContributionRequest.Thumbnail
+            };
 
-           var thumbnailFileInfo = await _mediaService.UploadFiles(createContributionRequest.Thumbnail, FileType.Thumbnail);
+            var thumbnailFileInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
             var fileInfo = await _mediaService.UploadFiles(createContributionRequest.File, FileType.File);
             command.ThumbnailInfo = thumbnailFileInfo;
             command.FileInfo = fileInfo;
@@ -42,9 +46,11 @@ namespace Server.Api.Controllers.ClientApi
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateContribution(UpdateContributionRequest updateContributionRequest)
+        public async Task<IActionResult> UpdateContribution([FromForm] UpdateContributionRequest updateContributionRequest)
         {
             var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
+            command.UserId = User.GetUserId();
+            command.Slug = updateContributionRequest.Title.Slugify();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
