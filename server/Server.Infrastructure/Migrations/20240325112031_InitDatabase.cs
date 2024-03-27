@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Server.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigrations : Migration
+    public partial class InitDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,6 +16,7 @@ namespace Server.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StartClosureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndClosureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinalClosureDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -230,6 +231,7 @@ namespace Server.Infrastructure.Migrations
                     AcademicYearId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Thumbnail = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     SubmissionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PublicDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -357,6 +359,18 @@ namespace Server.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AcademicYears_Name",
+                table: "AcademicYears",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_Name",
+                table: "Tags",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />

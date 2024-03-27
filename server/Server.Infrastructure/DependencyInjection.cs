@@ -21,6 +21,7 @@ using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
 using Server.Infrastructure.Services.Email;
+using Server.Infrastructure.Services.Media;
 
 namespace Server.Infrastructure;
 
@@ -35,7 +36,9 @@ public static class DependencyInjection
         // email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
         services.AddTransient<IEmailService, EmailService>();
-
+        // upload file
+        services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
+        services.AddTransient<IMediaService, MediaService>();
         services
             .AddDatabase(configuration)
             .AddDbIdentity()

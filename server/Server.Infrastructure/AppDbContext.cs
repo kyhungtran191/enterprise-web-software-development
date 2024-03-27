@@ -5,6 +5,7 @@ using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 using Server.Domain.Entity.System;
 using Server.Infrastructure.Common.Constants;
+using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Infrastructure;
 
@@ -27,7 +28,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Like> Likes { get; set; }
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Setting> Settings { get; set; }
-
+    public DbSet<File> Files { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         #region Identity Configuration

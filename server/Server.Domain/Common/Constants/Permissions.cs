@@ -57,53 +57,54 @@ namespace Server.Domain.Common.Constants
 
 
 
-        // public static class PostCategories
-        // {
-        //     [Description("Xem danh mục bài viết")]
-        //     public const string View = "Permissions.PostCategories.View";
+        public static class Tags
+        {
+            [Description("View Tags")]
+            public const string View = "Permissions.Tags.View";
 
-        //     [Description("Tạo danh mục bài viết")]
-        //     public const string Create = "Permissions.PostCategories.Create";
+            [Description("Create Tags")]
+            public const string Create = "Permissions.Tags.Create";
 
-        //     [Description("Sửa danh mục bài viết")]
-        //     public const string Edit = "Permissions.PostCategories.Edit";
+            [Description("Edit Tags")]
+            public const string Edit = "Permissions.Tags.Edit";
 
-        //     [Description("Xóa danh mục bài viết")]
-        //     public const string Delete = "Permissions.PostCategories.Delete";
-        // }
+            [Description("Delete Tags")]
+            public const string Delete = "Permissions.Tags.Delete";
+        }
+        public static class AcademicYears
+        {
+            [Description("View AcademicYears")]
+            public const string View = "Permissions.AcademicYears.View";
 
-        // public static class Posts
-        // {
-        //     [Description("Xem bài viết")]
-        //     public const string View = "Permissions.Posts.View";
+            [Description("Create AcademicYears")]
+            public const string Create = "Permissions.AcademicYears.Create";
 
-        //     [Description("Tạo bài viết")]
-        //     public const string Create = "Permissions.Posts.Create";
+            [Description("Edit AcademicYears")]
+            public const string Edit = "Permissions.AcademicYears.Edit";
 
-        //     [Description("Sửa bài viết")]
-        //     public const string Edit = "Permissions.Posts.Edit";
+            [Description("Delete AcademicYears")]
+            public const string Delete = "Permissions.AcademicYears.Delete";
+        }
 
-        //     [Description("Xóa bài viết")]
-        //     public const string Delete = "Permissions.Posts.Delete";
+        public static class Contributions
+        {
+            [Description("View Contributions")]
+            public const string View = "Permissions.Contributions.View";
 
-        //     [Description("Duyệt bài viết")]
-        //     public const string Approve = "Permissions.Posts.Approve";
-        // }
+            [Description("Create Contributions")]
+            public const string Create = "Permissions.Contributions.Create";
 
-        // public static class Series
-        // {
-        //     [Description("Xem loạt bài")]
-        //     public const string View = "Permissions.Series.View";
+            [Description("Edit Contributions")]
+            public const string Edit = "Permissions.Contributions.Edit";
 
-        //     [Description("Tạo loạt bài")]
-        //     public const string Create = "Permissions.Series.Create";
+            [Description("Delete Contributions")]
+            public const string Delete = "Permissions.Contributions.Delete";
 
-        //     [Description("Sửa loạt bài")]
-        //     public const string Edit = "Permissions.Series.Edit";
+            [Description("Approve Contributions")]
+            public const string Approve = "Permissions.Contributions.Approve";
+        }
 
-        //     [Description("Xóa loạt bài")]
-        //     public const string Delete = "Permissions.Series.Delete";
-        // }
+
 
         // public static class Royalty
         // {

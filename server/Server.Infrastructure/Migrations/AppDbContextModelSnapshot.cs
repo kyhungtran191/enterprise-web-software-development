@@ -144,6 +144,10 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime>("FinalClosureDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("StartClosureDate")
                         .HasColumnType("datetime2");
 
@@ -153,6 +157,9 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("AcademicYears");
                 });
@@ -178,9 +185,8 @@ namespace Server.Infrastructure.Migrations
                     b.Property<Guid>("FacultyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FilePath")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsCoordinatorComment")
                         .HasColumnType("bit");
@@ -188,15 +194,15 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("PublicDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("SubmissionDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Thumbnail")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -207,6 +213,9 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Contributions");
 
@@ -384,6 +393,39 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("Faculties");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entity.Content.File", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContributionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateEdited")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
+                });
+
             modelBuilder.Entity("Server.Domain.Entity.Content.Like", b =>
                 {
                     b.Property<Guid>("Id")
@@ -431,6 +473,9 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Tags");
                 });
