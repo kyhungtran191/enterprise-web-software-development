@@ -14,6 +14,9 @@ namespace Server.Domain.Common.Errors
 
             public static Error Deleted => Error.Validation(code: "AcademicYear.Deleted",
                 description: "Academic Year has been deleted");
+
+            public static Error ContributionExist => Error.Conflict(code: "AcademicYear.ContributionExist",
+                description: "Can not delete. Still have contributions in this academic year ");
         }
         
     }

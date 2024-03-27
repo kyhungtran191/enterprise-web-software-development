@@ -51,5 +51,8 @@ public class AcademicYearRepository : RepositoryBase<AcademicYear, Guid>, IAcade
         };
     }
 
-  
+    public async Task<bool> HasContributionsAsync(Guid academicYearId)
+    {
+        return await _dbContext.Contributions.AnyAsync(c => c.AcademicYearId == academicYearId);
+    }
 }

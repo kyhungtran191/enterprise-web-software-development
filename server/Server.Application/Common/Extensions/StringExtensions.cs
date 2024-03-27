@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Server.Domain.Entity.Content;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -27,6 +28,20 @@ namespace Server.Application.Common.Extensions
             output = Regex.Replace(output, @"\s+", " ").Trim();
             output = Regex.Replace(output, @"\s", "-");
             return output;
+        }
+        public static string ToStringValue(this ContributionStatus status)
+        {
+            switch (status)
+            {
+                case ContributionStatus.Pending:
+                    return "PENDING";
+                case ContributionStatus.Approve:
+                    return "APPROVED";
+                case ContributionStatus.Reject:
+                    return "REJECTED";
+                default:
+                    return null;
+            }
         }
     }
 }

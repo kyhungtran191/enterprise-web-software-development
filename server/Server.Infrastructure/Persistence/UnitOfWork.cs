@@ -21,7 +21,7 @@ public class UnitOfWork : IUnitOfWork
   public ITagRepository TagRepository => new TagRepository(_context, _mapper);
   public IAcademicYearRepository AcademicYearRepository => new AcademicYearRepository(_context, _mapper);
   public IContributionRepository ContributionRepository => new ContributionRepository(_context, _mapper);
-  public IFileRepository FileRepository => new FilesRepository(_context);
+  public IFileRepository FileRepository => new FilesRepository(_context,_mapper);
   public async Task<int> CompleteAsync()
   => await _context.SaveChangesAsync();
 

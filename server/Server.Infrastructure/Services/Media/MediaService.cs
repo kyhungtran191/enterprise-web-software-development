@@ -29,7 +29,7 @@ namespace Server.Infrastructure.Services.Media
             foreach (var file in files)
             {
                 var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition)?.FileName?.Trim('"');
-                var imageFolder = $@"\{_settings.MediaFolder}\{type}\{now:MMyyyy}";
+                var imageFolder = $@"\{_settings.MediaFolder}\{type}\{now:MMyyyy}\{now:D}";
                 var folder = _hostingEnv.WebRootPath + imageFolder;
                 if (!Directory.Exists(folder))
                 {
@@ -43,7 +43,8 @@ namespace Server.Infrastructure.Services.Media
                 var fileInfo = new FileDto
                 {
                     Path = path,
-                    Type = type 
+                    Type = type,
+                    Name = filename
                 };
                 fileInfos.Add(fileInfo);
             }
@@ -51,7 +52,28 @@ namespace Server.Infrastructure.Services.Media
 
            
         }
+        public Task RemoveFile(List<string> filePaths)
+        {
+            foreach (var filePath in filePaths)
+            {
+                var absolutePath = Path.Combine(_hostingEnv.WebRootPath, filePath.TrimStart('\\', '/'));
 
-     
+                if (File.Exists(absolutePath))
+                {
+                    try
+                    {
+                        File.Delete(absolutePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException($"Error deleting file at {absolutePath}", ex);
+                    }
+                }
+            }
+          
+
+            return Task.CompletedTask;
+        }
+
     }
 }

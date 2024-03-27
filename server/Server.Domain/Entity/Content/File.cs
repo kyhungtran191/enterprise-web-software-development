@@ -13,6 +13,9 @@ namespace Server.Domain.Entity.Content
         [MaxLength(100)]
         public string Type { get; set; }
         [Required]
+        [MaxLength(100)]
+        public string Name { get; set; }
+        [Required]
         [MaxLength(500)]
         public string Path { get; set; }
     }

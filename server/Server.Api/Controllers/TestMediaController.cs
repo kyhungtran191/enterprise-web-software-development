@@ -26,6 +26,12 @@ namespace Server.Api.Controllers
             return Ok(new {path });
 
         }
+        [HttpPost("/delete-file")]
+        public async Task<IActionResult> DeleteFile(List<string>filePaths)
+        {
+            await _mediaService.RemoveFile(filePaths);
+            return Ok();
+        }
     }
 }
 

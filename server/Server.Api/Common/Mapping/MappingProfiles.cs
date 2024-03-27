@@ -11,11 +11,15 @@ using Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
 using Server.Application.Features.Authentication;
+using Server.Application.Features.ContributionApp.Commands.ApproveContributions;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
+using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
+using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
+using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
@@ -42,6 +46,7 @@ using Server.Contracts.Identity.Users;
 using Server.Contracts.Tags;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Api.Common.Mapping;
 
@@ -113,5 +118,15 @@ public class MappingProfiles : Profile
         CreateMap<GetAllContributionPagingRequest, GetAllContributionsPagingQuery>();
         CreateMap<UpdateContributionRequest, UpdateContributionCommand>();
         CreateMap<DeleteContributionRequest, DeleteContributionCommand>();
+        CreateMap<ApproveContributionsRequest, ApproveContributionsCommand>();
+        CreateMap<RejectContributionRequest, RejectContributionCommand>();
+        CreateMap<GetRejectReasonRequest, GetRejectReasonQuery>();
+        // public contribution
+        CreateMap<Contribution, ContributionPublic>();
+        // activity log
+        CreateMap<ContributionActivityLog, ActivityLogDto>();
+        CreateMap<GetActivityLogRequest, GetActivityLogQuery>();
+        // file
+        CreateMap<File,FileDto>();
     }    
 }

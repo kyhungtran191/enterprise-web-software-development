@@ -19,38 +19,35 @@ namespace Server.Application.Features.AcademicYearApp.Commands.DeleteAcademicYea
 
         public async Task<ErrorOr<IResponseWrapper>> Handle(DeleteAcademicYearCommand request, CancellationToken cancellationToken)
         {
-            var errors = new List<Error>();
+          
             var successfullyDeletedItems = new List<Guid>();
             foreach (var id in request.YearIds)
             {
                 var yearFromDb = await _unitOfWork.AcademicYearRepository.GetByIdAsync(id);
                 if (yearFromDb == null)
                 {
-                    errors.Add(Errors.AcademicYear.NotFound);
+                    return Errors.AcademicYear.NotFound;
                 }
                 // check contribution still in this academic year (later)
-                if (errors.Count == 0)
+                if (await _unitOfWork.AcademicYearRepository.HasContributionsAsync(yearFromDb.Id))
                 {
-                    yearFromDb.DateDeleted = _dateTimeProvider.UtcNow;
-                    successfullyDeletedItems.Add(id);
+                    return Errors.AcademicYear.ContributionExist;
                 }
+                yearFromDb.DateDeleted = _dateTimeProvider.UtcNow;
+                successfullyDeletedItems.Add(id);
+              
             }
 
             await _unitOfWork.CompleteAsync();
-            if (successfullyDeletedItems.Count > 0)
+            return new ResponseWrapper
             {
-                return new ResponseWrapper
+                IsSuccessfull = true,
+                Messages = new List<string>
                 {
-                    IsSuccessfull = true,
-                    Messages = new List<string>
-                    {
-                        $"Successfully deleted {successfullyDeletedItems.Count} academic years.",
-                        "Each item is available for recovery."
-                    }
-                };
-            }
-
-            return errors;
+                    $"Successfully deleted {successfullyDeletedItems.Count} academic years.",
+                    "Each item is available for recovery."
+                }
+            };
         }
     }
 }

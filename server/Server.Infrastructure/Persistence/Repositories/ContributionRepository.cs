@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Common.Dtos.Tags;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers.PagedResult;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
+
 
 namespace Server.Infrastructure.Persistence.Repositories
 {
@@ -13,11 +17,13 @@ namespace Server.Infrastructure.Persistence.Repositories
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
+      
 
         public ContributionRepository(AppDbContext context , IMapper mapper) : base(context)
         {
             _dbContext = context;
             _mapper = mapper;
+          
         }
         public async Task<bool> IsSlugAlreadyExisted(string slug, Guid? id = null)
         {
@@ -27,8 +33,12 @@ namespace Server.Infrastructure.Persistence.Repositories
             }
             return await _dbContext.Contributions.AnyAsync(c=>c.Slug == slug);
         }
-
-        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, Guid? yearId, int pageIndex = 1, int pageSize = 10)
+        public  bool IsConfirmed(Guid contributionId)
+        {
+            var contribution =  GetByIdAsync(contributionId).GetAwaiter().GetResult();
+            return contribution.IsConfirmed;
+        }
+        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, Guid? yearId, Guid? facultyId, int pageIndex = 1, int pageSize = 10)
         {
             var query = from c in _dbContext.Contributions
                 join u in _dbContext.Users on c.UserId equals u.Id
@@ -53,6 +63,11 @@ namespace Server.Infrastructure.Persistence.Repositories
             {
                 query = query.Where(x => x.Contribution.AcademicYearId == yearId);
             }
+
+            if (facultyId.HasValue)
+            {
+                query = query.Where(x=>x.Contribution.FacultyId == facultyId);
+            }
             var totalRow = await query.CountAsync();
 
             var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageIndex;
@@ -71,9 +86,15 @@ namespace Server.Infrastructure.Persistence.Repositories
                     AcademicYear = x.AcademicYear.Name, 
                     SubmissionDate = x.Contribution.SubmissionDate,
                     Slug = x.Contribution.Slug,
-                    ThumbnailUrl = x.Files.Where(f => f.Type == FileType.Thumbnail).Select(f => f.Path).ToList(),
-                    FilePath = x.Files.Where(f => f.Type == FileType.File).Select(f => f.Path).ToList(),
-                    Status = x.Contribution.Status,
+                    Thumbnails = x.Files
+                        .Where(f => f.Type == FileType.Thumbnail)
+                        .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
+                        .ToList(),
+                    Files = x.Files
+                        .Where(f => f.Type == FileType.File)
+                        .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
+                        .ToList(),
+                    Status = x.Contribution.Status.ToStringValue(),
                     
                 })
                 .ToListAsync();
@@ -126,15 +147,21 @@ namespace Server.Infrastructure.Persistence.Repositories
             {
                 Title = contributionDetail.Contribution.Title,
                 Slug = contributionDetail.Contribution.Slug,
-                Status = contributionDetail.Contribution.Status,
+                Status = contributionDetail.Contribution.Status.ToStringValue(),
                 UserName = contributionDetail.User.FirstName,
                 FacultyName = contributionDetail.Faculty.Name,
                 AcademicYear = contributionDetail.AcademicYear.Name,
                 SubmissionDate = contributionDetail.Contribution.SubmissionDate,
                 PublicDate = contributionDetail.Contribution.PublicDate,
                 DateEdited = contributionDetail.Contribution.DateEdited,
-                ThumbnailUrl = contributionDetail.Files.Where(f => f.Type == FileType.Thumbnail).Select(f => f.Path).ToList(),
-                FilePath = contributionDetail.Files.Where(f => f.Type == FileType.File).Select(f => f.Path).ToList()
+                Thumbnails = contributionDetail.Files
+                    .Where(f => f.Type == FileType.Thumbnail) 
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
+                    .ToList(),
+                Files = contributionDetail.Files
+                    .Where(f => f.Type == FileType.File) 
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
+                    .ToList()
             };
 
             return result;
@@ -142,30 +169,104 @@ namespace Server.Infrastructure.Persistence.Repositories
 
 
 
+        public async Task SendToApprove(Guid contributionId, Guid userId)
+        {
+            var contribution = await _dbContext.Contributions.FindAsync(contributionId);
+            if (contribution is null)
+            {
+                throw new Exception($"Not found contribution with id {contributionId}");
+            }
+            var user = await _dbContext.Users.FindAsync(userId);
+            await _dbContext.ContributionActivityLogs.AddAsync(new ContributionActivityLog
+            {
+                Id = Guid.NewGuid(),
+                ContributionId = contribution.Id,
+                Title = contribution.Title,
+                UserId = userId,
+                UserName = user?.UserName,
+                FromStatus = contribution.Status,
+                ToStatus = ContributionStatus.Pending,
+                Description = $"{user.UserName} submit new contribution and waiting for approval"
 
-        public Task<List<ContributionDto>> GetPopularContributionAsync(int count)
-        {
-            throw new NotImplementedException();
+            });
+            contribution.Status = ContributionStatus.Pending;
+            _dbContext.Contributions.Update(contribution);
+            
         }
-        public Task SendToApprove(Guid contributionId, Guid userId)
+        public async Task Approve(Contribution contribution, Guid userId)
         {
-            throw new NotImplementedException();
+            var user = await _dbContext.Users.FindAsync(userId);
+            var faculty = await _dbContext.Faculties.FindAsync(contribution.FacultyId);
+            await _dbContext.ContributionActivityLogs.AddAsync(new ContributionActivityLog
+            {
+                Id = Guid.NewGuid(),
+                ContributionId = contribution.Id,
+                Title = contribution.Title,
+                UserId = userId,
+                UserName = user?.UserName,
+                FromStatus = contribution.Status,
+                ToStatus = ContributionStatus.Approve,
+                Description = $"{user?.UserName} approve"
+
+            });
+            contribution.Status = ContributionStatus.Approve;
+            contribution.PublicDate = DateTime.UtcNow;
+            _dbContext.Contributions.Update(contribution);
+            var publicContribution = _mapper.Map<ContributionPublic>(contribution);
+            publicContribution.Id = Guid.NewGuid();
+            publicContribution.Avatar = user.Avatar ?? String.Empty;
+            publicContribution.UserName = user.UserName;
+            publicContribution.FacultyName = faculty.Name;
+            publicContribution.DateCreated = DateTime.UtcNow;
+            
+            await _dbContext.ContributionPublics.AddAsync(publicContribution);
+           
         }
-        public Task Approve(Guid contributionId, Guid userId)
+        public async Task<string> GetRejectReason(Contribution contribution)
         {
-            throw new NotImplementedException();
-        }
-        public Task<string> GetRejectReason(Guid contributionId)
-        {
-            throw new NotImplementedException();
+           
+            var activity = await _dbContext.ContributionActivityLogs
+                .Where(pal => pal.ContributionId == contribution.Id && pal.ToStatus == ContributionStatus.Reject)
+                .OrderByDescending(pal => pal.DateCreated)
+                .FirstOrDefaultAsync();
+            return activity?.Description ?? string.Empty;
         }
 
       
-        public Task Reject(Guid contributionId, Guid userId, string note)
+        public async Task Reject(Contribution contribution, Guid userId, string note)
         {
-            throw new NotImplementedException();
+            var user = await _dbContext.Users.FindAsync(userId);
+            await _dbContext.ContributionActivityLogs.AddAsync(new ContributionActivityLog
+            {
+                Id = Guid.NewGuid(),
+                ContributionId = contribution.Id,
+                Title = contribution.Title,
+                UserId = userId,
+                UserName = user?.UserName,
+                FromStatus = contribution.Status,
+                ToStatus = ContributionStatus.Reject,
+                Description = note
+
+            });
+            contribution.Status = ContributionStatus.Reject;
+            _dbContext.Contributions.Update(contribution);
         }
 
+        public async Task<List<ActivityLogDto>> GetActivityLogs(Contribution contribution)
+        {
+            var items = await _dbContext.ContributionActivityLogs.Where(x => x.ContributionId == contribution.Id).OrderByDescending(x=>x.DateCreated).ToListAsync();
+            var results = new List<ActivityLogDto>();
+            foreach (var item in items)
+            {
+                var result = _mapper.Map<ActivityLogDto>(item);
+                result.FromStatus = item.FromStatus.ToStringValue();
+                result.ToStatus = item.ToStatus.ToStringValue();
+                results.Add(result);
+
+            }
+
+            return results;
+        }
       
     }
 }
