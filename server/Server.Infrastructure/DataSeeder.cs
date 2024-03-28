@@ -117,5 +117,25 @@ public static class DataSeeder
 
         await context.SaveChangesAsync();
     }
+    public static async Task SeedAcademicYear(AppDbContext context,
+        IAcademicYearRepository academicYearRepository)
+    {
+        var academicYears = new List<AcademicYear>
+        {
+            new AcademicYear { Name = "2021-2022", StartClosureDate = new DateTime(2022, 5, 1), EndClosureDate = new DateTime(2022, 7, 1), FinalClosureDate = new DateTime(2022, 9, 1), UserNameCreated = "Seeder" },
+            new AcademicYear { Name = "2022-2023", StartClosureDate = new DateTime(2023, 5, 1), EndClosureDate = new DateTime(2023, 7, 1), FinalClosureDate = new DateTime(2023, 9, 1), UserNameCreated = "Seeder" },
+
+        };
+
+        foreach (var academicYear in academicYears)
+        {
+            if (await academicYearRepository.GetAcademicYearByName(academicYear.Name) is null)
+            {
+                academicYearRepository.Add(academicYear);
+            }
+        }
+
+        await context.SaveChangesAsync();
+    }
 
 }
