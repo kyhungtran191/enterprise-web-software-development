@@ -47,44 +47,46 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
             _mapper.Map(request,itemFromDb);
             itemFromDb.DateEdited = _dateTimeProvider.UtcNow;
             await _unitOfWork.CompleteAsync();
-
-            // remove old files
-            var existingFiles = await _unitOfWork.FileRepository.GetByContribution(itemFromDb);
-            if (existingFiles.Count == 0)
+            if (request.Thumbnail is not null || request.Files.Count > 0)
             {
-                return Errors.Contribution.NoFilesFound;
-            }
-            var removeFilePaths = new List<string>();
-            foreach (var existingFile in existingFiles)
-            {
-                _unitOfWork.FileRepository.Remove(existingFile);
-                removeFilePaths.Add(existingFile.Path);
-               
-            }
-
-            await _mediaService.RemoveFile(removeFilePaths);
-
-            // create new files
-            var thumbnailList = new List<IFormFile>
-            {
-                request.Thumbnail
-            };
-
-            var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
-            var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
-
-            foreach (var info in fileInfo.Concat(thumbnailInfo))
-            {
-                _unitOfWork.FileRepository.Add(new File
+                // remove old files
+                var existingFiles = await _unitOfWork.FileRepository.GetByContribution(itemFromDb);
+                if (existingFiles.Count == 0)
                 {
-                    ContributionId = itemFromDb.Id,
-                    Path = info.Path,
-                    Type = info.Type,
-                    Name = info.Name,
-                    DateEdited = _dateTimeProvider.UtcNow
-                });
+                    return Errors.Contribution.NoFilesFound;
+                }
+                var removeFilePaths = new List<string>();
+                foreach (var existingFile in existingFiles)
+                {
+                    _unitOfWork.FileRepository.Remove(existingFile);
+                    removeFilePaths.Add(existingFile.Path);
+
+                }
+
+                await _mediaService.RemoveFile(removeFilePaths);
+
+                // create new files
+                var thumbnailList = new List<IFormFile>
+                {
+                    request.Thumbnail
+                };
+
+                var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
+                var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
+
+                foreach (var info in fileInfo.Concat(thumbnailInfo))
+                {
+                    _unitOfWork.FileRepository.Add(new File
+                    {
+                        ContributionId = itemFromDb.Id,
+                        Path = info.Path,
+                        Type = info.Type,
+                        Name = info.Name,
+                        DateEdited = _dateTimeProvider.UtcNow
+                    });
+                }
+                await _unitOfWork.CompleteAsync();
             }
-            await _unitOfWork.CompleteAsync();
             // add email service later
 
 

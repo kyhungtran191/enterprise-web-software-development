@@ -114,9 +114,10 @@ public static class MigrationManager
         var academicYearRepository = scope.ServiceProvider.GetService<IAcademicYearRepository>();
         // applying update-database command
         appDbContext.Database.Migrate();
-        DataSeeder.SeedAsync(appDbContext, roleManager).GetAwaiter().GetResult();
-        DataSeeder.SeedFaculty(appDbContext, facultyRepository).GetAwaiter().GetResult();
-        DataSeeder.SeedAcademicYear(appDbContext, academicYearRepository).GetAwaiter().GetResult();
+        // DataSeeder.SeedAsync(appDbContext, roleManager).GetAwaiter().GetResult();
+        DataSeeder.SeedContribution(appDbContext,roleManager).GetAwaiter().GetResult();
+        //DataSeeder.SeedFaculty(appDbContext, facultyRepository).GetAwaiter().GetResult();
+        //DataSeeder.SeedAcademicYear(appDbContext, academicYearRepository).GetAwaiter().GetResult();
         return app;
     }
 }

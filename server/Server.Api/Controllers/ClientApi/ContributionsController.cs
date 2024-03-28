@@ -30,16 +30,6 @@ namespace Server.Api.Controllers.ClientApi
             var command = _mapper.Map<CreateContributionCommand>(createContributionRequest);
             command.UserId = User.GetUserId();
             command.Slug = createContributionRequest.Title.Slugify();
-            var thumbnailList = new List<IFormFile>
-            {
-                createContributionRequest.Thumbnail
-            };
-
-            var thumbnailFileInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
-            var fileInfo = await _mediaService.UploadFiles(createContributionRequest.File, FileType.File);
-            command.ThumbnailInfo = thumbnailFileInfo;
-            command.FileInfo = fileInfo;
-           
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
 

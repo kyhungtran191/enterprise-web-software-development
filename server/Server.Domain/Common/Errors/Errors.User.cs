@@ -26,5 +26,8 @@ public static partial class Errors
             code: "User.InactiveOrEnableLocked",
             description: "User is inactive or locked, please contact with Admin."
         );
+
+        public static Error FailResetPassword => Error.Unexpected(code: "User.FailResetPassword",
+            description: "Error occurs while reset password");
     }
 }

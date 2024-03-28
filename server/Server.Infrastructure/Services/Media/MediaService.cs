@@ -22,10 +22,14 @@ namespace Server.Infrastructure.Services.Media
 
         public async Task<List<FileDto>> UploadFiles( List<IFormFile> files,string type)
         {
+            
          
             var now = _dateTimeProvider.UtcNow;
             var fileInfos = new List<FileDto>();
-
+            if (files is null || files.Contains(null))
+            {
+                return new List<FileDto>{};
+            }
             foreach (var file in files)
             {
                 var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition)?.FileName?.Trim('"');

@@ -21,7 +21,14 @@ namespace Server.Application.Features.ContributionApp.Commands.RejectContributio
             {
                 return Errors.Contribution.NotFound;
             }
-
+            if (contribution.DateDeleted.HasValue)
+            {
+                return Errors.Contribution.Deleted;
+            }
+            if (!contribution.IsConfirmed)
+            {
+                return Errors.Contribution.NotConfirmed;
+            }
             if (contribution.Status == ContributionStatus.Reject)
             {
                 return Errors.Contribution.AlreadyRejected;
