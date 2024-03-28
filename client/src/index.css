@@ -70,6 +70,8 @@
 @layer base {
   * {
     @apply border-border;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary) var(--primary);
   }
   body {
     @apply bg-background text-foreground font-body;
