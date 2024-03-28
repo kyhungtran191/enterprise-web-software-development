@@ -25,7 +25,8 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             RuleFor(x => x.UserId)
                 .NotEmpty()
                 .WithMessage("User ID must not be empty.");
-
+            RuleFor(x => x.IsConfirmed).NotNull().NotEmpty()
+                .WithMessage("Please accept term and condition before submitting");
 
         }
     }

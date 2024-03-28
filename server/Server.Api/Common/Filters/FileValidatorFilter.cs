@@ -51,6 +51,12 @@ namespace Server.Api.Common.Filters
                         if (files != null && files.Any())
                         {
                             anyFileAttempted = true;
+                            if (files.Count > 5)
+                            {
+                                context.Result = new BadRequestObjectResult("Maximum of 5 files can be submitted.");
+                                return;
+                            }
+
                             foreach (var file in files)
                             {
                                 if (!ValidateFile(context, file))

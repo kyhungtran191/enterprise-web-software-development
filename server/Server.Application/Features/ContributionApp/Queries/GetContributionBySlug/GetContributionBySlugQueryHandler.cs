@@ -8,18 +8,18 @@ using Server.Domain.Common.Errors;
 
 namespace Server.Application.Features.ContributionApp.Queries.GetContributionByTitle
 {
-    public class GetContributionByTitleQueryHandler : IRequestHandler<GetContributionByTitleQuery, ErrorOr<IResponseWrapper<ContributionDto>>>
+    public class GetContributionBySlugQueryHandler : IRequestHandler<GetContributionBySlugQuery, ErrorOr<IResponseWrapper<ContributionDto>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public GetContributionByTitleQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetContributionBySlugQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<ErrorOr<IResponseWrapper<ContributionDto>>> Handle(GetContributionByTitleQuery request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<IResponseWrapper<ContributionDto>>> Handle(GetContributionBySlugQuery request, CancellationToken cancellationToken)
         {
-            var contributionFromDb = await _unitOfWork.ContributionRepository.GetContributionByTitle(request.Title);
+            var contributionFromDb = await _unitOfWork.ContributionRepository.GetContributionBySlug(request.Slug);
             if (contributionFromDb == null)
             {
                 return Errors.Contribution.NotFound;

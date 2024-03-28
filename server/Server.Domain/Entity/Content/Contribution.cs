@@ -27,12 +27,14 @@ public class Contribution : BaseEntity
     public DateTime? PublicDate { get; set; }
     public bool IsCoordinatorComment { get; set; } = false;
    
-    public ContributionStatus Status { get; set; } = ContributionStatus.Draft;
+    public ContributionStatus Status { get; set; }
 
 }
 public enum ContributionStatus
 {
-    Draft,
-    Edit,
+    Pending,
+    Approve,
+    Reject
+
 }
 

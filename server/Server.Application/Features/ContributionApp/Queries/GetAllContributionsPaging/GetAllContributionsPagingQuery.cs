@@ -10,5 +10,6 @@ namespace Server.Application.Features.ContributionApp.Queries.GetAllContribution
     public class GetAllContributionsPagingQuery : PagingDto, IRequest<ErrorOr<IResponseWrapper<PagedResult<ContributionInListDto>>>>
     {
         public Guid? AcademicYearId  {get; set; }
+        public Guid? FacultyId { get; set; }
     }
 }

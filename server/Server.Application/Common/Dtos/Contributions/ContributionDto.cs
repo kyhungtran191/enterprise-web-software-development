@@ -2,7 +2,6 @@
 {
     public class ContributionDto : ContributionInListDto
     {
-        public string Thumbnail { get; set; } = default!;
-        public DateTime? DateEditted { get; set; }
+        public DateTime? DateEdited { get; set; }
     }
 }
