@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import * as yup from 'yup'
 export default function Login() {
   const [isOpen, setIsOpen] = useState(false)
-  const isLoading = true
+  const isLoading = false
 
   const {
     register,
@@ -77,7 +77,7 @@ export default function Login() {
             type='submit'
             className={`w-full py-6 mt-8 text-lg transition-all duration-300 ease-in-out bg-blue-600 hover:bg-blue-700 ${isLoading ? 'pointer-events-none bg-opacity-65' : ''}`}
           >
-            {isLoading ? <Loading></Loading> : 'Sign In'}
+            Sign In
           </Button>
         </form>
       </div>
