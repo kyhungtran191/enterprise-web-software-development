@@ -28,6 +28,8 @@ using Server.Application.Features.FacultyApp.Queries.GetFacultyByName;
 using Server.Application.Features.Identity.Tokens.Commands.RefreshToken;
 using Server.Application.Features.Identity.Users.Commands.CreateUser;
 using Server.Application.Features.Identity.Users.Commands.DeleteUserById;
+using Server.Application.Features.Identity.Users.Commands.ForgotPassword;
+using Server.Application.Features.Identity.Users.Commands.ResetPassword;
 using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
@@ -128,5 +130,8 @@ public class MappingProfiles : Profile
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();
         // file
         CreateMap<File,FileDto>();
+        // for-got password
+        CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
+        CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
     }    
 }

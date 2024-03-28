@@ -41,63 +41,56 @@ namespace Server.Infrastructure.Persistence.Repositories
         public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, Guid? yearId, Guid? facultyId, int pageIndex = 1, int pageSize = 10)
         {
             var query = from c in _dbContext.Contributions
+                where c.DateDeleted == null
                 join u in _dbContext.Users on c.UserId equals u.Id
                 join f in _dbContext.Faculties on c.FacultyId equals f.Id
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
-                where (c.DateDeleted == null)
-                select new
-                {
-                    Contribution = c,
-                    User = u,
-                    Faculty = f,
-                    AcademicYear = a,
-                    Files = _dbContext.Files.Where(file => file.ContributionId == c.Id).ToList()
-                };
+                select new { c, u, f, a };
 
+            // Apply filters
             if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.Contribution.Title.Contains(keyword));
+                query = query.Where(x => x.c.Title.Contains(keyword));
             }
 
             if (yearId.HasValue)
             {
-                query = query.Where(x => x.Contribution.AcademicYearId == yearId);
+                query = query.Where(x => x.c.AcademicYearId == yearId);
             }
 
             if (facultyId.HasValue)
             {
-                query = query.Where(x=>x.Contribution.FacultyId == facultyId);
+                query = query.Where(x => x.c.FacultyId == facultyId);
             }
+
             var totalRow = await query.CountAsync();
 
             var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageIndex;
-
             var contributions = await query
-                .OrderByDescending(x => x.Contribution.DateCreated)
+                .OrderByDescending(x => x.c.DateCreated)
                 .Skip(skipRow)
                 .Take(pageSize)
-                .Select(x => new ContributionInListDto
-                {
-                    
-                   
-                    Title = x.Contribution.Title,
-                    UserName = x.User.FirstName, 
-                    FacultyName = x.Faculty.Name, 
-                    AcademicYear = x.AcademicYear.Name, 
-                    SubmissionDate = x.Contribution.SubmissionDate,
-                    Slug = x.Contribution.Slug,
-                    Thumbnails = x.Files
-                        .Where(f => f.Type == FileType.Thumbnail)
-                        .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
-                        .ToList(),
-                    Files = x.Files
-                        .Where(f => f.Type == FileType.File)
-                        .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
-                        .ToList(),
-                    Status = x.Contribution.Status.ToStringValue(),
-                    
-                })
                 .ToListAsync();
+
+            var contributionIds = contributions.Select(x => x.c.Id).ToList();
+            var files = await _dbContext.Files
+                .Where(f => contributionIds.Contains(f.ContributionId))
+                .ToListAsync();
+
+            var contributionsDto = contributions.Select(x => new ContributionInListDto
+            {
+                Title = x.c.Title,
+                UserName = x.u.FirstName,
+                FacultyName = x.f.Name,
+                AcademicYear = x.a.Name,
+                SubmissionDate = x.c.SubmissionDate,
+                Slug = x.c.Slug,
+                Status = x.c.Status.ToStringValue(),
+                Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                Files = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.File)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+            }).ToList();
 
 
 
@@ -106,7 +99,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 CurrentPage = pageIndex,
                 RowCount = totalRow,
                 PageSize = pageSize,
-                Results = contributions
+                Results = contributionsDto
             };
 
         }
@@ -130,38 +123,31 @@ namespace Server.Infrastructure.Persistence.Repositories
                                             join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
                                             select new
                                             {
-                                                Contribution = c,
-                                                User = u,
-                                                Faculty = f,
-                                                AcademicYear = a,
-                                                Files = _dbContext.Files.Where(file => file.ContributionId == c.Id).ToList()
+                                               c,u,f,a
                                             }).FirstOrDefaultAsync();
 
             if (contributionDetail == null)
             {
                 return null; 
             }
+            var files = await _dbContext.Files.Where(f=>f.ContributionId==contributionDetail.c.Id).ToListAsync();
 
             
             var result = new ContributionDto
             {
-                Title = contributionDetail.Contribution.Title,
-                Slug = contributionDetail.Contribution.Slug,
-                Status = contributionDetail.Contribution.Status.ToStringValue(),
-                UserName = contributionDetail.User.FirstName,
-                FacultyName = contributionDetail.Faculty.Name,
-                AcademicYear = contributionDetail.AcademicYear.Name,
-                SubmissionDate = contributionDetail.Contribution.SubmissionDate,
-                PublicDate = contributionDetail.Contribution.PublicDate,
-                DateEdited = contributionDetail.Contribution.DateEdited,
-                Thumbnails = contributionDetail.Files
-                    .Where(f => f.Type == FileType.Thumbnail) 
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
-                    .ToList(),
-                Files = contributionDetail.Files
-                    .Where(f => f.Type == FileType.File) 
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name })
-                    .ToList()
+                Title = contributionDetail.c.Title,
+                Slug = contributionDetail.c.Slug,
+                Status = contributionDetail.c.Status.ToStringValue(),
+                UserName = contributionDetail.u.FirstName,
+                FacultyName = contributionDetail.f.Name,
+                AcademicYear = contributionDetail.a.Name,
+                SubmissionDate = contributionDetail.c.SubmissionDate,
+                PublicDate = contributionDetail.c.PublicDate,
+                DateEdited = contributionDetail.c.DateEdited,
+                Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
             };
 
             return result;
@@ -177,6 +163,10 @@ namespace Server.Infrastructure.Persistence.Repositories
                 throw new Exception($"Not found contribution with id {contributionId}");
             }
             var user = await _dbContext.Users.FindAsync(userId);
+            if (user is null)
+            {
+                throw new Exception($"Not found user");
+            }
             await _dbContext.ContributionActivityLogs.AddAsync(new ContributionActivityLog
             {
                 Id = Guid.NewGuid(),
@@ -196,7 +186,15 @@ namespace Server.Infrastructure.Persistence.Repositories
         public async Task Approve(Contribution contribution, Guid userId)
         {
             var user = await _dbContext.Users.FindAsync(userId);
+            if (user is null)
+            {
+                throw new Exception($"Not found user");
+            }
             var faculty = await _dbContext.Faculties.FindAsync(contribution.FacultyId);
+            if (faculty is null)
+            {
+                throw new Exception("This contribution is error");
+            }
             await _dbContext.ContributionActivityLogs.AddAsync(new ContributionActivityLog
             {
                 Id = Guid.NewGuid(),
@@ -236,6 +234,10 @@ namespace Server.Infrastructure.Persistence.Repositories
         public async Task Reject(Contribution contribution, Guid userId, string note)
         {
             var user = await _dbContext.Users.FindAsync(userId);
+            if (user is null)
+            {
+                throw new Exception($"Not found user");
+            }
             await _dbContext.ContributionActivityLogs.AddAsync(new ContributionActivityLog
             {
                 Id = Guid.NewGuid(),

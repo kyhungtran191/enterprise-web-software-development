@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers;
 using Server.Contracts.Common;
+using Server.Contracts.Contributions;
+using Server.Domain.Common.Constants;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
@@ -19,14 +22,16 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IEmailService _emailService;
+        private readonly IMediaService _mediaService;
         private readonly UserManager<AppUser> _userManager;
 
-        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, IEmailService emailService) 
+        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, IEmailService emailService,IMediaService mediaService) 
         {
             _unitOfWork = unitOfWork;
             _dateTimeProvider = dateTimeProvider;
             _emailService = emailService;
             _userManager = userManager;
+            _mediaService = mediaService;
         }
 
         public async Task<ErrorOr<IResponseWrapper>> Handle(CreateContributionCommand request,
@@ -64,15 +69,29 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             _unitOfWork.ContributionRepository.Add(contributon);
 
             await _unitOfWork.CompleteAsync();
-            foreach (var info in request.FileInfo.Concat(request.ThumbnailInfo))
+            if (request.Thumbnail  is not null || request.Files.Count > 0)
             {
-                _unitOfWork.FileRepository.Add(new File
+                var thumbnailList = new List<IFormFile>();
+
+                if (request.Thumbnail != null)
                 {
-                    ContributionId = contributon.Id,
-                    Path = info.Path,
-                    Type = info.Type,
-                    Name = info.Name,
-                });
+                    thumbnailList.Add(request.Thumbnail);
+                }
+
+
+                var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
+                var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
+
+                foreach (var info in fileInfo.Concat(thumbnailInfo))
+                {
+                    _unitOfWork.FileRepository.Add(new File
+                    {
+                        ContributionId = contributon.Id,
+                        Path = info.Path,
+                        Type = info.Type,
+                        Name = info.Name,
+                    });
+                }
             }
            
             var user = await _userManager.FindByIdAsync(request.UserId.ToString());

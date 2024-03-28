@@ -10,8 +10,8 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
     {
         public required string Title { get; set; }
         public required string Slug { get; set; }
-        public List<FileDto> ThumbnailInfo { get; set; }
-        public List<FileDto> FileInfo { get; set; }
+        public IFormFile? Thumbnail { get; set; }
+        public List<IFormFile>? Files { get; set; }
         public Guid AcademicYearId { get; set; }
         public Guid FacultyId { get; set; }
         public Guid UserId { get; set; }

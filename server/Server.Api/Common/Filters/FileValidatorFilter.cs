@@ -53,8 +53,7 @@ namespace Server.Api.Common.Filters
                             anyFileAttempted = true;
                             if (files.Count > 5)
                             {
-                                context.Result = new BadRequestObjectResult("Maximum of 5 files can be submitted.");
-                                return;
+                                throw new Exception("Maximum of 5 files can be submitted.");
                             }
 
                             foreach (var file in files)
@@ -71,30 +70,32 @@ namespace Server.Api.Common.Filters
 
             if (!anyFileAttempted)
             {
-                context.Result = new BadRequestObjectResult("No files submitted.");
+                return;
+                //throw new Exception("No files submitted");
+                //context.Result = new BadRequestObjectResult("No files submitted.");
             }
         }
 
         private bool ValidateFile(ActionExecutingContext context, IFormFile file)
         {
-            if (file.Length == 0)
-            {
-                context.Result = new BadRequestObjectResult("One or more files are empty.");
-                return false;
-            }
+            //if (file.Length == 0)
+            //{
+
+            //    context.Result = new BadRequestObjectResult("One or more files are empty.");
+            //    return false;
+            //}
 
             if (!_allowedExtensions.Any(ext => file.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
             {
                 var allowedExtensionsMessage = String.Join(", ", _allowedExtensions).Replace(".", "").ToUpper();
-                context.Result = new BadRequestObjectResult($"Invalid file type. Allowed extensions: {allowedExtensionsMessage}.");
-                return false;
+                throw new Exception($"Invalid file type. Allowed extensions: {allowedExtensionsMessage}.");
             }
 
             if (!FileValidator.IsFileSizeWithinLimit(file, _maxSize))
             {
                 var mbSize = (double)_maxSize / 1024 / 1024;
-                context.Result = new BadRequestObjectResult($"File size exceeds the maximum allowed size ({mbSize} MB).");
-                return false;
+                throw new Exception($"File size exceeds the maximum allowed size ({mbSize} MB).");
+               
             }
             return true;
         }
