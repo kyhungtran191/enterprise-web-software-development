@@ -151,7 +151,6 @@ public static class DataSeeder
 
         var rootAdminRoleId = Guid.NewGuid();
         var userId = Guid.NewGuid();
-
         AppRole? role = new AppRole
         {
             Id = rootAdminRoleId,
@@ -166,15 +165,15 @@ public static class DataSeeder
             await context.SaveChangesAsync();
         }
 
-        if (context.Users.Count() < 2)
+        if (!context.Users.Any())
         {
-            var userEmail = "nguahoang2003@gmail.com";
-            var userName = "admin2";
+            var userEmail = "admin@gmail.com";
+            var userName = "admin";
             var user = new AppUser
             {
                 Id = userId,
-                FirstName = "Vu",
-                LastName = "Nguyen",
+                FirstName = "An",
+                LastName = "Minh",
                 Email = userEmail,
                 NormalizedEmail = userEmail.ToUpperInvariant(),
                 UserName = userName,
