@@ -1,7 +1,7 @@
 import GeneralLayout from '@/layouts'
 import { Icon } from '@iconify/react'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigation } from 'react-router-dom'
 import Autoplay from "embla-carousel-autoplay"
 import {
   Carousel,
@@ -14,6 +14,8 @@ import Contributor from '@/components/contributor'
 import Article from '@/components/article'
 import Search from '@/components/Search'
 export default function Home() {
+
+  console.log(navigator.state)
   return (<div className="container">
     {/* Search  */}
     <Search></Search>
@@ -52,10 +54,10 @@ export default function Home() {
           <Article></Article>
         </div>
         <div className="col-span-12 row-span-1 medium:col-span-6">
-          <Article isRevert={true}></Article>
+          <Article isRevert={true} classImageCustom={"md:h-[200px] md:w-[56%]"}></Article>
         </div>
-        <div className="col-span-12 row-span-1 medium:col-span-6"> <Article isRevert={true}></Article></div>
-        <div className="col-span-12 row-span-1 medium:col-span-6"> <Article isRevert={true}></Article></div>
+        <div className="col-span-12 row-span-1 medium:col-span-6"> <Article isRevert={true} classImageCustom={"md:h-[200px] md:w-[56%]"}></Article></div>
+        <div className="col-span-12 row-span-1 medium:col-span-6"> <Article isRevert={true} classImageCustom={"md:h-[200px] md:w-[56%]"}></Article></div>
       </div>
     </section>
 

@@ -55,7 +55,7 @@ export function UsersTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Display Name
-            <ArrowUpDown className='ml-2 h-4 w-4' />
+            <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
       }
@@ -69,7 +69,7 @@ export function UsersTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Username
-            <ArrowUpDown className='ml-2 h-4 w-4' />
+            <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
       }
@@ -83,7 +83,7 @@ export function UsersTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Email
-            <ArrowUpDown className='ml-2 h-4 w-4' />
+            <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
       }
@@ -97,7 +97,7 @@ export function UsersTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             User Type
-            <ArrowUpDown className='ml-2 h-4 w-4' />
+            <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
       }
@@ -111,7 +111,7 @@ export function UsersTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Faculty
-            <ArrowUpDown className='ml-2 h-4 w-4' />
+            <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
       }
@@ -125,7 +125,7 @@ export function UsersTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Status
-            <ArrowUpDown className='ml-2 h-4 w-4' />
+            <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
       }
@@ -141,15 +141,15 @@ export function UsersTable() {
             <DropdownMenuContent className='w-56'>
               <DropdownMenuGroup>
                 <DropdownMenuItem onSelect={() => handleViewUser(row.original)}>
-                  <User className='mr-2 h-4 w-4' />
+                  <User className='w-4 h-4 mr-2' />
                   <span>View User</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Pencil className='mr-2 h-4 w-4' />
+                  <Pencil className='w-4 h-4 mr-2' />
                   <span>Edit user</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <UserRoundX className='mr-2 h-4 w-4' />
+                  <UserRoundX className='w-4 h-4 mr-2' />
                   <span>Deactivate user</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
