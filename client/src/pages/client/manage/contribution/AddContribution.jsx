@@ -13,6 +13,7 @@ export default function AddContribution() {
 
   const [currentFileThumbNail, setCurrentFileThumbNail] = useState({})
   const [currentThumbnail, setCurrentThumbnail] = useState()
+  console.log(files)
 
   const handleChangeImage = (e) => {
     const file = e.target.files[0]
@@ -23,7 +24,10 @@ export default function AddContribution() {
     }
   }
   const editorRef = useRef(null);
-  console.log(files)
+
+
+
+
   return (
     <AdminLayout>
       <div>
@@ -40,7 +44,7 @@ export default function AddContribution() {
                 <img src={currentThumbnail ? currentThumbnail : " "} alt="" className='object-cover w-full h-full' />
                 : <div className='flex flex-col items-center justify-center h-full gap-4'>
                   <img src={"../upload-icon.png"} alt="" className='w-20 h-20' />
-                  <p className='text-xl font-semibold text-center  lg:text-3xl'>Add your article Thumbnail here</p>
+                  <p className='text-xl font-semibold text-center lg:text-3xl'>Add your article Thumbnail here</p>
                 </div>}
             </label>
           </div>

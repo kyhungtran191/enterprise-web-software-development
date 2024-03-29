@@ -29,6 +29,43 @@ function Dropzone({ open, className, files, setFiles }) {
     }
   }
 
+  const handleDeleteFile = (e, index) => {
+    e.stopPropagation()
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleFileDelete(index)
+      }
+    });
+  }
+
+  const handleDownloadFile = (e, file) => {
+    e.stopPropagation()
+    const downloadUrl = URL.createObjectURL(file);
+    fetch(downloadUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      })
+      .catch(error => {
+        console.error('Error downloading file:', error);
+      });
+  }
+
   return (
     <div {...getRootProps({ className: `w-full rounded-lg border border-dashed h-[300px] overflow-y-scroll cursor-pointer ${className}` })}>
       <input {...getInputProps()} className="w-full bg-black min-h-[400px]" />
@@ -51,10 +88,10 @@ function Dropzone({ open, className, files, setFiles }) {
             <div className="text-center">{item.name}</div>
             <div className="flex items-center justify-center gap-2">
               <div className="flex items-center justify-center w-10 h-10 text-white bg-blue-500 rounded-lg">
-                <Download></Download>
+                <Download onClick={(e) => handleDownloadFile(e, item)}></Download>
               </div>
               <div
-                onClick={(e) => { e.stopPropagation(); handleFileDelete(index) }}
+                onClick={(e) => handleDeleteFile(e, index)}
                 className="z-50 flex items-center justify-center w-10 h-10 text-lg font-bold text-white bg-red-500 rounded-lg cursor-pointer">
                 X
               </div>
