@@ -40,7 +40,7 @@ export default function AddContribution() {
                 <img src={currentThumbnail ? currentThumbnail : " "} alt="" className='object-cover w-full h-full' />
                 : <div className='flex flex-col items-center justify-center h-full gap-4'>
                   <img src={"../upload-icon.png"} alt="" className='w-20 h-20' />
-                  <p className='text-3xl font-semibold'>Add your article Thumbnail here</p>
+                  <p className='text-xl font-semibold text-center  lg:text-3xl'>Add your article Thumbnail here</p>
                 </div>}
             </label>
           </div>
@@ -72,7 +72,7 @@ export default function AddContribution() {
             <Dropzone files={files} setFiles={setFiles}></Dropzone>
           </div>
         </form>
-        <Button className="w-full text-lg bg-green-600 py-7 hover:bg-green-700">Upload </Button>
+        <Button className="w-full text-lg bg-green-600 py-7 hover:bg-green-700">Upload</Button>
       </div>
     </AdminLayout>
   )

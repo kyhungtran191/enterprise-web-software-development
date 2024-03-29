@@ -3,7 +3,7 @@ import { Badge } from './ui/badge'
 
 export default function Article({ isRevert = false, className, status, classImageCustom }) {
   return (
-    <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className}`}>
+    <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg`}>
       <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : "w-full h-[600px"}  object-cover rounded-md`} />
       <div className="flex-1 p-2">
         <div className="flex flex-wrap items-center justify-between gap-2">
