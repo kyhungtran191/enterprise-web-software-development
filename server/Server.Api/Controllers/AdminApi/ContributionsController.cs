@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
+using Server.Application.Features.ContributionApp.Queries.DownloadFile;
 using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
 using Server.Domain.Common.Constants;
@@ -96,6 +97,26 @@ namespace Server.Api.Controllers.AdminApi
             var query = _mapper.Map<GetActivityLogQuery>(request);
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
+
+        }
+        [HttpGet("download-file/{ContributionId}")]
+        [Authorize(Permissions.Contributions.Approve)]
+        public async Task<IActionResult> DownloadFile([FromRoute] DownloadFileRequest request)
+        {
+            var query = _mapper.Map<DownloadFileQuery>(request);
+            var result = await _mediatorSender.Send(query);
+            if (result.IsError)
+            {
+                return Problem(result.Errors);
+            }
+
+            var (fileStream, contentType, fileName) = result.Value;
+            if (fileStream is MemoryStream memoryStream)
+            {
+                return File(memoryStream.ToArray(), contentType, fileName);
+            }
+            return File(fileStream, contentType, fileName);
+            
 
         }
 

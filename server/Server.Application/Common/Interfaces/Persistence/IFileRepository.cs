@@ -6,5 +6,6 @@ namespace Server.Application.Common.Interfaces.Persistence
     public interface IFileRepository : IRepository<File,Guid>
     {
         Task<List<File>> GetByContribution(Contribution contribution);
+        Task<List<string>> GetPathByContribution(Guid contributionId);
     }
 }

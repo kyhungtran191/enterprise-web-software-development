@@ -4,6 +4,7 @@ namespace Server.Application.Common.Dtos.Contributions
 {
     public class ContributionInListDto
     { 
+        public Guid Id { get; set; }
         public required string Title { get; set; }
         public required string Slug { get; set; }
         public List<FileReturnDto> Thumbnails { get; set; }
