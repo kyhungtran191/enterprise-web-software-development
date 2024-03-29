@@ -146,27 +146,88 @@ public static class DataSeeder
 
             await context.SaveChangesAsync();
         }
+        
         // seed user
         var passwordHasher = new PasswordHasher<AppUser>();
 
         var rootAdminRoleId = Guid.NewGuid();
-        var userId = Guid.NewGuid();
+        var studentRoleId = Guid.NewGuid();
         AppRole? role = new AppRole
         {
             Id = rootAdminRoleId,
             Name = Roles.Admin,
             NormalizedName = Roles.Admin.ToUpperInvariant(),
-            DisplayName = "Admisnistrator",
-        }; ;
+            DisplayName = "Administrator",
+        };
+        AppRole? studentRole = new AppRole
+        {
+            Id = studentRoleId,
+            Name = Roles.Student,
+            NormalizedName = Roles.Student.ToUpperInvariant(),
+            DisplayName = "Student",
+        };
 
         if (!context.Roles.Any())
         {
             await context.Roles.AddAsync(role);
+            await context.Roles.AddAsync(studentRole);
             await context.SaveChangesAsync();
         }
+        var studentList = new List<AppUser>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "An", LastName = "Minh", Email = "student@gmail.com",
+                NormalizedEmail = "student@gmail.com".ToUpperInvariant(), UserName = "student",
+                NormalizedUserName = "student".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[0].Id,
 
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Vu", LastName = "Nguyen", Email = "student1@gmail.com",
+                NormalizedEmail = "student1@gmail.com".ToUpperInvariant(), UserName = "student1",
+                NormalizedUserName = "student1".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[1].Id,
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "student2@gmail.com",
+                NormalizedEmail = "student2@gmail.com".ToUpperInvariant(), UserName = "student2",
+                NormalizedUserName = "student2".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[2].Id,
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Khang", LastName = "Nguyen", Email = "student3@gmail.com",
+                NormalizedEmail = "student3@gmail.com".ToUpperInvariant(), UserName = "student3",
+                NormalizedUserName = "student3".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[3].Id,
+
+            },
+        };
+        foreach (var user in studentList)
+        {
+            user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
+        }
         if (!context.Users.Any())
         {
+            // admin
+            var userId = Guid.NewGuid();
             var userEmail = "admin@gmail.com";
             var userName = "admin";
             var user = new AppUser
@@ -193,15 +254,24 @@ public static class DataSeeder
                 RoleId = rootAdminRoleId,
                 UserId = userId
             });
-
-            await context.SaveChangesAsync();
+            // student
+            foreach (var item in studentList)
+            {
+                await context.Users.AddAsync(item);
+                await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+                {
+                    RoleId = studentRoleId,
+                    UserId = item.Id,
+                });
+            }
+          await context.SaveChangesAsync();
         }
 
         if (context.RoleClaims.Any() == false)
         {
-            var permissions = await roleManager.GetClaimsAsync(role);
-
-            if (permissions.Any() == false)
+            // seed admin permission
+            var adminPermissions = await roleManager.GetClaimsAsync(role);
+            if (adminPermissions.Any() == false)
             {
                 var allPermisisons = new List<RoleClaimsDto>();
 
@@ -218,6 +288,38 @@ public static class DataSeeder
                     await roleManager.AddClaimAsync(role, new Claim("permissions", permission.Value!));
                 }
             }
+            // seed student permission
+            var studentPermissions = await roleManager.GetClaimsAsync(studentRole);
+            if (studentPermissions.Any() == false)
+            {
+                var studentPermissionList = new List<RoleClaimsDto>
+                {
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Dashboard.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Create"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Edit"
+                    }
+                };
+                foreach (var permission in studentPermissionList)
+                {
+                    await roleManager.AddClaimAsync(studentRole, new Claim("permissions", permission.Value!));
+                }
+            }
         }
 
         // seed contribution
@@ -227,7 +329,7 @@ public static class DataSeeder
             {
                 AcademicYearId = yearList[0].Id,
                 FacultyId = facultiesList[0].Id,
-                UserId = userId,
+                UserId = studentList[0].Id,
                 Id = Guid.NewGuid(),
                 IsConfirmed = true,
                 DateCreated = DateTime.Now,
@@ -240,7 +342,7 @@ public static class DataSeeder
             {
                 AcademicYearId = yearList[1].Id,
                 FacultyId = facultiesList[1].Id,
-                UserId = userId,
+                UserId = studentList[1].Id,
                 Id = Guid.NewGuid(),
                 IsConfirmed = true,
                 DateCreated = DateTime.Now,
@@ -253,7 +355,7 @@ public static class DataSeeder
             {
                 AcademicYearId = yearList[0].Id,
                 FacultyId = facultiesList[2].Id,
-                UserId = userId,
+                UserId =studentList[2].Id,
                 Id = Guid.NewGuid(),
                 IsConfirmed = true,
                 DateCreated = DateTime.Now,
@@ -266,7 +368,7 @@ public static class DataSeeder
             {
                 AcademicYearId = yearList[1].Id,
                 FacultyId = facultiesList[3].Id,
-                UserId = userId,
+                UserId = studentList[3].Id,
                 Id = Guid.NewGuid(),
                 IsConfirmed = true,
                 DateCreated = DateTime.Now,

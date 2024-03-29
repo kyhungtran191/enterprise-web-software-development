@@ -25,6 +25,7 @@ namespace Server.Api.Controllers.ClientApi
         }
         [HttpPost]
         [FileValidationFilter(5*1024*1024)]
+        [Authorize(Permissions.Contributions.Create)]
         public async Task<IActionResult> CreateContribution([FromForm] CreateContributionRequest createContributionRequest)
         {
             var command = _mapper.Map<CreateContributionCommand>(createContributionRequest);
@@ -36,6 +37,8 @@ namespace Server.Api.Controllers.ClientApi
         }
 
         [HttpPut]
+        [FileValidationFilter(5 * 1024 * 1024)]
+        [Authorize(Permissions.Contributions.Edit)]
         public async Task<IActionResult> UpdateContribution([FromForm] UpdateContributionRequest updateContributionRequest)
         {
             var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);

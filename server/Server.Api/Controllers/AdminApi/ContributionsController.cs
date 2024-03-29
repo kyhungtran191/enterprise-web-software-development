@@ -8,10 +8,12 @@ using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPag
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
 using Server.Contracts.Contributions;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
+using Server.Domain.Common.Constants;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Server.Api.Controllers.AdminApi
@@ -27,6 +29,7 @@ namespace Server.Api.Controllers.AdminApi
 
         [HttpGet]
         [Route("{Slug}")]
+        [Authorize(Permissions.Contributions.View)]
         public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
         {
             var query = _mapper.Map<GetContributionBySlugQuery>(getContributionBySlugRequest);
@@ -38,6 +41,7 @@ namespace Server.Api.Controllers.AdminApi
 
         [HttpGet]
         [Route("paging")]
+        [Authorize(Permissions.Contributions.View)]
         public async Task<IActionResult> GetAllContributionsPaging([FromQuery] GetAllContributionPagingRequest getAllContributionPagingRequest)
         {
             var query = _mapper.Map<GetAllContributionsPagingQuery>(getAllContributionPagingRequest);
@@ -47,6 +51,7 @@ namespace Server.Api.Controllers.AdminApi
 
       
         [HttpDelete]
+        [Authorize(Permissions.Contributions.Delete)]
         public async Task<IActionResult> DeleteContribution(DeleteContributionRequest deleteContributionRequest)
         {
             var command = _mapper.Map<DeleteContributionCommand>(deleteContributionRequest);
@@ -56,6 +61,7 @@ namespace Server.Api.Controllers.AdminApi
         }
 
         [HttpPost("approve")]
+        [Authorize(Permissions.Contributions.Approve)]
         public async Task<IActionResult> ApproveContribution(ApproveContributionsRequest request)
         {
             var command = _mapper.Map<ApproveContributionsCommand>(request);
@@ -65,6 +71,7 @@ namespace Server.Api.Controllers.AdminApi
         }
 
         [HttpPost("reject")]
+        [Authorize(Permissions.Contributions.Approve)]
         public async Task<IActionResult> RejectContribution( RejectContributionRequest request)
         {
             var command = _mapper.Map<RejectContributionCommand>(request);
@@ -74,6 +81,7 @@ namespace Server.Api.Controllers.AdminApi
         }
 
         [HttpGet("reject-reason/{Id}")]
+        [Authorize(Permissions.Contributions.Approve)]
         public async Task<IActionResult> GetRejectReason([FromRoute] GetRejectReasonRequest request)
         {
             var query = _mapper.Map<GetRejectReasonQuery>(request);
@@ -82,6 +90,7 @@ namespace Server.Api.Controllers.AdminApi
 
         }
         [HttpGet("activity-logs/{ContributionId}")]
+        [Authorize(Permissions.Contributions.Approve)]
         public async Task<IActionResult> GetActivityLogs([FromRoute] GetActivityLogRequest request)
         {
             var query = _mapper.Map<GetActivityLogQuery>(request);
