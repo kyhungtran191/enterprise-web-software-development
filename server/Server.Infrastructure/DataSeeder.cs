@@ -93,7 +93,7 @@ public static class DataSeeder
         }
     }
 
-    public static async Task SeedContribution(AppDbContext context, RoleManager<AppRole> roleManager)
+    public static async Task SeedContribution(AppDbContext context, RoleManager<AppRole> roleManager, IContributionRepository contributionRepository)
     {
         var allFaculties = new List<string>
         {
@@ -151,6 +151,7 @@ public static class DataSeeder
         var passwordHasher = new PasswordHasher<AppUser>();
 
         var rootAdminRoleId = Guid.NewGuid();
+        var adminId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
         AppRole? role = new AppRole
         {
@@ -184,6 +185,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
+                Avatar = "/default.png"
 
             },
             new()
@@ -195,6 +197,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
+                Avatar = "/default.png"
 
             },
             new()
@@ -206,6 +209,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
+                Avatar = "/default.png"
 
             },
             new()
@@ -217,6 +221,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
+                Avatar = "/default.png"
 
             },
         };
@@ -227,12 +232,12 @@ public static class DataSeeder
         if (!context.Users.Any())
         {
             // admin
-            var userId = Guid.NewGuid();
+            
             var userEmail = "admin@gmail.com";
             var userName = "admin";
             var user = new AppUser
             {
-                Id = userId,
+                Id = adminId,
                 FirstName = "An",
                 LastName = "Minh",
                 Email = userEmail,
@@ -244,6 +249,7 @@ public static class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
+                Avatar = "/default.png"
             };
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
 
@@ -252,7 +258,7 @@ public static class DataSeeder
             await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
             {
                 RoleId = rootAdminRoleId,
-                UserId = userId
+                UserId = adminId
             });
             // student
             foreach (var item in studentList)
@@ -313,7 +319,7 @@ public static class DataSeeder
                     {
                         Selected = true,
                         Value = "Permissions.Contributions.Edit"
-                    }
+                    },
                 };
                 foreach (var permission in studentPermissionList)
                 {
@@ -376,6 +382,58 @@ public static class DataSeeder
                 Slug = "test-4",
                 SubmissionDate = DateTime.Now,
                 Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[0].Id,
+                UserId = studentList[0].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 5",
+                Slug = "test-5",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[1].Id,
+                UserId = studentList[1].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 6",
+                Slug = "test-6",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[2].Id,
+                UserId =studentList[2].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 7",
+                Slug = "test-7",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[3].Id,
+                UserId = studentList[3].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 8",
+                Slug = "test-8",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
             }
         };
         if (!context.Contributions.Any())
@@ -386,6 +444,17 @@ public static class DataSeeder
             }
             await context.SaveChangesAsync();
         }
+        // approve
+        if (!context.ContributionPublics.Any())
+        {
+            await contributionRepository.Approve(listContribution[0], adminId);
+            await contributionRepository.Approve(listContribution[1], adminId); 
+            await contributionRepository.Approve(listContribution[2], adminId);
+            await contributionRepository.Approve(listContribution[3], adminId);
+
+            await context.SaveChangesAsync();
+        }
+
     }
     public static async Task SeedFaculty(AppDbContext context,
                                          IFacultyRepository facultyRepository)

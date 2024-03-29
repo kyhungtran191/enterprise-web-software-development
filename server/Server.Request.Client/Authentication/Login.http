@@ -7,6 +7,6 @@ Content-Type: {{contentType}}
 
 {
     "email": "student@gmail.com",
-    "password": "Student@123"
+    "password": "Admin123@"
 }
 

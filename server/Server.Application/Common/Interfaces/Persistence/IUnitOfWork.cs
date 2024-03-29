@@ -9,5 +9,6 @@ public interface IUnitOfWork : IDisposable
     IAcademicYearRepository AcademicYearRepository { get; }
     IContributionRepository ContributionRepository { get; }
     IFileRepository FileRepository { get; }
+    IPublicContributionRepository PublicContributionRepository { get; }
 }
 

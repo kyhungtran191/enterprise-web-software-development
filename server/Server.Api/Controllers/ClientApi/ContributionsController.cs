@@ -8,6 +8,7 @@ using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
+using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
 
@@ -17,12 +18,13 @@ namespace Server.Api.Controllers.ClientApi
    public class ContributionsController : ClientApiController
     {
         private readonly IMapper _mapper;
-        private readonly IMediaService _mediaService;
-        public ContributionsController(ISender mediatorSender,IMapper mapper,IMediaService mediaService) : base(mediatorSender)
+
+        public ContributionsController(ISender mediatorSender, IMapper mapper) : base(
+            mediatorSender)
         {
             _mapper = mapper;
-            _mediaService = mediaService;
         }
+
         [HttpPost]
         [FileValidationFilter(5*1024*1024)]
         [Authorize(Permissions.Contributions.Create)]
@@ -47,6 +49,17 @@ namespace Server.Api.Controllers.ClientApi
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
+
+        [HttpGet]
+        [Authorize(Permissions.Contributions.View)]
+        public async Task<IActionResult> GetContributionOfUser([FromQuery] GetAllContributionPagingRequest request)
+        {
+            var query = _mapper.Map<GetAllContributionsPagingQuery>(request);
+            query.UserId = User.GetUserId();
+            var result = await _mediatorSender.Send(query);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+        }
+
 
     }
 }

@@ -5,13 +5,12 @@ using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Wrappers;
 using Server.Application.Wrappers.PagedResult;
 
-namespace Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging
+namespace Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging
 {
-    public class GetAllContributionsPagingQuery : PagingDto, IRequest<ErrorOr<IResponseWrapper<PagedResult<ContributionInListDto>>>>
+    public class GetAllPublicContributionPagingQuery : PagingDto, IRequest<ErrorOr<IResponseWrapper<PagedResult<PublicContributionInListDto>>>>
     {
-        public string? Year  {get; set; }
+        public string? Year { get; set; }
         public string? FacultyName { get; set; }
-        public Guid? UserId { get; set; }
         public string? Status { get; set; }
     }
 }

@@ -33,6 +33,7 @@ using Server.Application.Features.Identity.Users.Commands.ResetPassword;
 using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
+using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
@@ -45,6 +46,7 @@ using Server.Contracts.Contributions;
 using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
 using Server.Contracts.Identity.Users;
+using Server.Contracts.PublicContributions;
 using Server.Contracts.Tags;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
@@ -125,6 +127,7 @@ public class MappingProfiles : Profile
         CreateMap<GetRejectReasonRequest, GetRejectReasonQuery>();
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
+        CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
         // activity log
         CreateMap<ContributionActivityLog, ActivityLogDto>();
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();

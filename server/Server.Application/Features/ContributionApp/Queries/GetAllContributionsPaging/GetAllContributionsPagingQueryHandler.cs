@@ -18,7 +18,7 @@ namespace Server.Application.Features.ContributionApp.Queries.GetAllContribution
         public async Task<ErrorOr<IResponseWrapper<PagedResult<ContributionInListDto>>>> Handle(GetAllContributionsPagingQuery request, CancellationToken cancellationToken)
         {
             var contributions =
-                await _unitOfWork.ContributionRepository.GetAllPaging(request.Keyword,request.AcademicYearId, request.FacultyId,request.PageIndex,request.PageSize);
+                await _unitOfWork.ContributionRepository.GetAllPaging(request.Keyword,request.Year, request.FacultyName,request.UserId,request.Status, request.PageIndex,request.PageSize);
             return new ResponseWrapper<PagedResult<ContributionInListDto>>
             {
                 IsSuccessfull = true,
