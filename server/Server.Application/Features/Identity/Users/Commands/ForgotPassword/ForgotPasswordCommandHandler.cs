@@ -39,7 +39,7 @@ namespace Server.Application.Features.Identity.Users.Commands.ForgotPassword
            return new ResponseWrapper<string>
            {
                IsSuccessfull = true,
-               Messages = new List<string> { $"Sent email to user ${user.UserName} success. Please check email" },
+               Messages = new List<string> { $"Sent email to user {user.UserName} success. Please check email" },
                ResponseData = token,
            };
 
