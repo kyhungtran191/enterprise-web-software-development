@@ -199,8 +199,8 @@ public static class DataSeeder
             },
             new()
             {
-                Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "student2@gmail.com",
-                NormalizedEmail = "student2@gmail.com".ToUpperInvariant(), UserName = "student2",
+                Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "trankyhung225@gmail.com",
+                NormalizedEmail = "trankyhung225@gmail.com".ToUpperInvariant(), UserName = "student2",
                 NormalizedUserName = "student2".ToUpperInvariant(), IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
