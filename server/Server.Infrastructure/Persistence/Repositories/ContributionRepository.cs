@@ -97,6 +97,7 @@ namespace Server.Infrastructure.Persistence.Repositories
 
             var contributionsDto = contributions.Select(x => new ContributionInListDto
             {
+                Id = x.c.Id,
                 Title = x.c.Title,
                 UserName = x.u.FirstName,
                 FacultyName = x.f.Name,
@@ -153,6 +154,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             
             var result = new ContributionDto
             {
+                Id = contributionDetail.c.Id,
                 Title = contributionDetail.c.Title,
                 Slug = contributionDetail.c.Slug,
                 Status = contributionDetail.c.Status.ToStringValue(),

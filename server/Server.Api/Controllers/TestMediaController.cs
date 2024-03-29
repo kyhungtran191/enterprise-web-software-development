@@ -32,6 +32,31 @@ namespace Server.Api.Controllers
             await _mediaService.RemoveFile(filePaths);
             return Ok();
         }
+        [HttpGet]
+        [Route("download-files")]
+        public async Task<IActionResult> DownloadFilesAction([FromQuery] List<string> filePaths)
+        {
+            try
+            {
+                var (fileStream, contentType, fileName) = await _mediaService.DownloadFiles(filePaths);
+
+                if (fileStream is MemoryStream memoryStream)
+                {
+                    return File(memoryStream.ToArray(), contentType, fileName);
+                }
+                return File(fileStream, contentType, fileName);
+                
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
     }
 }
 

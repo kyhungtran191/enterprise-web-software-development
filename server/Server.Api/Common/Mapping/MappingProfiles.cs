@@ -16,6 +16,7 @@ using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
+using Server.Application.Features.ContributionApp.Queries.DownloadFile;
 using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
@@ -125,6 +126,7 @@ public class MappingProfiles : Profile
         CreateMap<ApproveContributionsRequest, ApproveContributionsCommand>();
         CreateMap<RejectContributionRequest, RejectContributionCommand>();
         CreateMap<GetRejectReasonRequest, GetRejectReasonQuery>();
+        CreateMap<DownloadFileRequest, DownloadFileQuery>();
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
         CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
