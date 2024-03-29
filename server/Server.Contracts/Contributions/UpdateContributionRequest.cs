@@ -10,8 +10,6 @@ namespace Server.Contracts.Contributions
         public Guid? AcademicYearId { get; set; }
         public IFormFile? Thumbnail { get; set; }
         public List<IFormFile>? Files { get; set; }
-        // will remove late - just for test
-        public Guid FacultyId { get; set; }
         public bool IsConfirmed { get; set; }
     }
 }

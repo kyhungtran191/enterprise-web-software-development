@@ -32,6 +32,7 @@ namespace Server.Api.Controllers.ClientApi
         {
             var command = _mapper.Map<CreateContributionCommand>(createContributionRequest);
             command.UserId = User.GetUserId();
+            command.FacultyId = User.GetFacultyId();
             command.Slug = createContributionRequest.Title.Slugify();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
@@ -45,20 +46,13 @@ namespace Server.Api.Controllers.ClientApi
         {
             var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
             command.UserId = User.GetUserId();
+            command.FacultyId = User.GetFacultyId();
             command.Slug = updateContributionRequest.Title.Slugify();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
 
-        [HttpGet]
-        [Authorize(Permissions.Contributions.View)]
-        public async Task<IActionResult> GetContributionOfUser([FromQuery] GetAllContributionPagingRequest request)
-        {
-            var query = _mapper.Map<GetAllContributionsPagingQuery>(request);
-            query.UserId = User.GetUserId();
-            var result = await _mediatorSender.Send(query);
-            return result.Match(result => Ok(result), errors => Problem(errors));
-        }
+        
 
 
     }

@@ -25,4 +25,10 @@ public static class IdentityExtentions
 
         return Guid.Parse(userId);
     }
+
+    public static Guid GetFacultyId(this ClaimsPrincipal claimsPrincipal)
+    {
+        var facultyId = ((ClaimsIdentity)claimsPrincipal.Identity!).GetSpecificClaim(UserClaims.FacultyId);
+        return Guid.Parse(facultyId);
+    }
 }
