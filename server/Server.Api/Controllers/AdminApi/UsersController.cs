@@ -24,7 +24,7 @@ public class UsersController : AdminApiController
 
     [HttpPost]
     [Authorize(Permissions.Users.Create)]
-    public async Task<IActionResult> CreateUser(CreateUserRequest createUserRequest)
+    public async Task<IActionResult> CreateUser([FromForm] CreateUserRequest createUserRequest)
     {
         var command = _mapper.Map<CreateUserCommand>(createUserRequest);
 

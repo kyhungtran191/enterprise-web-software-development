@@ -29,5 +29,7 @@ public static partial class Errors
 
         public static Error FailResetPassword => Error.Unexpected(code: "User.FailResetPassword",
             description: "Error occurs while reset password");
+
+        public static Error NoAvatarFound => Error.Validation(code: "User.NoAvatarFound", description: "No Avatar Found");
     }
 }

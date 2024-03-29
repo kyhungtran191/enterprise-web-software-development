@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Server.Contracts.Identity.Users;
 
 public class CreateUserRequest
@@ -10,6 +12,6 @@ public class CreateUserRequest
     public string Password { get; set; } = default!;
     public Guid FacultyId { get; set; }
     public DateTime? Dob { get; set; }
-    public string? Avatar { get; set; }
+    public IFormFile? Avatar { get; set; }
     public bool IsActive { get; set; }
 }

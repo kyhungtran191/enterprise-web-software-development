@@ -31,9 +31,5 @@ public class UserCommandValidator<T>
                 .WithMessage("Phone Number have to 11 characters")
             .NotEmpty()
                 .WithMessage("Phone Number must not be empty.");
-
-        RuleFor(x => x.Avatar)
-            .MaximumLength(500)
-                .WithMessage("{PropertyName} must be less than 500 characters");
     }
 }
