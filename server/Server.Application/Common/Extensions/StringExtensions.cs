@@ -40,7 +40,7 @@ namespace Server.Application.Common.Extensions
                 case ContributionStatus.Reject:
                     return "REJECTED";
                 default:
-                    return null;
+                    return "UNKNOWN";
             }
         }
     }

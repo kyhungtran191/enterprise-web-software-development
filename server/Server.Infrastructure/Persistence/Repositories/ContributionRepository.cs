@@ -38,7 +38,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             var contribution =  GetByIdAsync(contributionId).GetAwaiter().GetResult();
             return contribution.IsConfirmed;
         }
-        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, Guid? yearId, Guid? facultyId, int pageIndex = 1, int pageSize = 10)
+        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10)
         {
             var query = from c in _dbContext.Contributions
                 where c.DateDeleted == null
@@ -47,22 +47,40 @@ namespace Server.Infrastructure.Persistence.Repositories
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
                 select new { c, u, f, a };
 
-            // Apply filters
             if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.c.Title.Contains(keyword));
+                query = query.Where(x => EF.Functions.Like(x.c.Title, $"%{keyword}%"));
             }
 
-            if (yearId.HasValue)
+            if (!string.IsNullOrEmpty(year))
             {
-                query = query.Where(x => x.c.AcademicYearId == yearId);
+                query = query.Where(x => x.a.Name == year);
             }
 
-            if (facultyId.HasValue)
+            if (!string.IsNullOrEmpty(facultyName))
             {
-                query = query.Where(x => x.c.FacultyId == facultyId);
+                query = query.Where(x => x.f.Name == facultyName);
             }
 
+            if (userId.HasValue)
+            {
+                query = query.Where(x => x.c.UserId == userId);
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                
+                if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var statusEnum)) 
+                {
+                    query = query.Where(x => x.c.Status == statusEnum);
+                }
+                else
+                {
+                    throw new Exception("Invalid Status");
+                }
+                
+
+            }
             var totalRow = await query.CountAsync();
 
             var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageIndex;

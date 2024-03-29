@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Server.Api.Common.Helper;
 using Server.Infrastructure.Services.Media;
 using System.Diagnostics;
+using FluentValidation;
 
 namespace Server.Api.Common.Filters
 {
@@ -53,7 +54,7 @@ namespace Server.Api.Common.Filters
                             anyFileAttempted = true;
                             if (files.Count > 5)
                             {
-                                throw new Exception("Maximum of 5 files can be submitted.");
+                                throw new ValidationException("Maximum of 5 files can be submitted.");
                             }
 
                             foreach (var file in files)
@@ -88,13 +89,13 @@ namespace Server.Api.Common.Filters
             if (!_allowedExtensions.Any(ext => file.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)))
             {
                 var allowedExtensionsMessage = String.Join(", ", _allowedExtensions).Replace(".", "").ToUpper();
-                throw new Exception($"Invalid file type. Allowed extensions: {allowedExtensionsMessage}.");
+                throw new ValidationException($"Invalid file type. Allowed extensions: {allowedExtensionsMessage}.");
             }
 
             if (!FileValidator.IsFileSizeWithinLimit(file, _maxSize))
             {
                 var mbSize = (double)_maxSize / 1024 / 1024;
-                throw new Exception($"File size exceeds the maximum allowed size ({mbSize} MB).");
+                throw new ValidationException($"File size exceeds the maximum allowed size ({mbSize} MB).");
                
             }
             return true;
