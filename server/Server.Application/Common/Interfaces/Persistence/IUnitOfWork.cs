@@ -10,5 +10,6 @@ public interface IUnitOfWork : IDisposable
     IContributionRepository ContributionRepository { get; }
     IFileRepository FileRepository { get; }
     IPublicContributionRepository PublicContributionRepository { get; }
+    ILikeRepository LikeRepository { get; }
 }
 

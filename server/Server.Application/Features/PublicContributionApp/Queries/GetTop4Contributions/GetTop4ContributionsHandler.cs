@@ -23,7 +23,8 @@ namespace Server.Application.Features.PublicContributionApp.Queries.GetTop4Contr
                 Messages = new List<string>
                 {
                     $"Get contributions successfully"
-                }
+                },
+                ResponseData = items
             };
         }
     }

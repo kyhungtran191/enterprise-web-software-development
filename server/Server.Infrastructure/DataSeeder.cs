@@ -434,7 +434,112 @@ public static class DataSeeder
                 Slug = "test-8",
                 SubmissionDate = DateTime.Now,
                 Status = ContributionStatus.Pending,
+            },
+             new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[0].Id,
+                UserId = studentList[0].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 9",
+                Slug = "test-9",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[1].Id,
+                UserId = studentList[1].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 10",
+                Slug = "test-10",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[2].Id,
+                UserId =studentList[2].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 11",
+                Slug = "test-11",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[3].Id,
+                UserId = studentList[3].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 12",
+                Slug = "test-12",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[0].Id,
+                UserId = studentList[0].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 13",
+                Slug = "test-13",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[1].Id,
+                UserId = studentList[1].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 14",
+                Slug = "test-14",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[2].Id,
+                UserId =studentList[2].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 15",
+                Slug = "test-15",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[3].Id,
+                UserId = studentList[3].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 16",
+                Slug = "test-16",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
             }
+
         };
         if (!context.Contributions.Any())
         {
@@ -451,6 +556,10 @@ public static class DataSeeder
             await contributionRepository.Approve(listContribution[1], adminId); 
             await contributionRepository.Approve(listContribution[2], adminId);
             await contributionRepository.Approve(listContribution[3], adminId);
+            await contributionRepository.Approve(listContribution[4], adminId);
+            await contributionRepository.Approve(listContribution[5], adminId);
+            await contributionRepository.Approve(listContribution[6], adminId);
+            await contributionRepository.Approve(listContribution[7], adminId);
 
             await context.SaveChangesAsync();
         }
