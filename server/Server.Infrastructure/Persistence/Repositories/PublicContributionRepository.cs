@@ -72,8 +72,10 @@ namespace Server.Infrastructure.Persistence.Repositories
             var files = await _dbContext.Files
                 .Where(f => contributionIds.Contains(f.ContributionId))
                 .ToListAsync();
+          
             var publicContribution = contributions.Select(x => new PublicContributionInListDto
             {
+                Id = x.c.Id,
                 Title = x.c.Title,
                 UserName = x.u.FirstName,
                 FacultyName = x.f.Name,
@@ -83,6 +85,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 DateEdited = x.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                Like = x.c.LikeQuantity,
+                View = x.c.Views
             }).ToList();
             return new PagedResult<PublicContributionInListDto>
             {
@@ -108,9 +112,10 @@ namespace Server.Infrastructure.Persistence.Repositories
             var files = await _dbContext.Files
                 .Where(f => contributionIds.Contains(f.ContributionId))
                 .ToListAsync();
-
+          
             var publicContribution = contributions.Select(x => new PublicContributionInListDto
             {
+                Id = x.c.Id,
                 Title = x.c.Title,
                 UserName = x.u.FirstName,
                 FacultyName = x.f.Name,
@@ -120,6 +125,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 DateEdited = x.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                Like = x.c.LikeQuantity,
+                View = x.c.Views
             }).ToList();
             return publicContribution;
         }

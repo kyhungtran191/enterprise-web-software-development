@@ -36,6 +36,8 @@ using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
+using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
+using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
@@ -50,6 +52,8 @@ using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
 using Server.Contracts.Identity.Users;
 using Server.Contracts.PublicContributions;
+using Server.Contracts.PublicContributions.Like;
+using Server.Contracts.PublicContributions.View;
 using Server.Contracts.Tags;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
@@ -136,6 +140,8 @@ public class MappingProfiles : Profile
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
         CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
+        CreateMap<LikeContributionRequest, LikeContributionCommand>();
+        CreateMap<ViewContributionRequest, ViewContributionCommand>();
         // activity log
         CreateMap<ContributionActivityLog, ActivityLogDto>();
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();
