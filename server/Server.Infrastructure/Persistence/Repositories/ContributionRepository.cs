@@ -5,7 +5,6 @@ using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Common.Dtos.Tags;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
-using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers.PagedResult;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
@@ -38,7 +37,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             var contribution =  GetByIdAsync(contributionId).GetAwaiter().GetResult();
             return contribution.IsConfirmed;
         }
-        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, Guid? yearId, Guid? facultyId, int pageIndex = 1, int pageSize = 10)
+        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10)
         {
             var query = from c in _dbContext.Contributions
                 where c.DateDeleted == null
@@ -47,22 +46,40 @@ namespace Server.Infrastructure.Persistence.Repositories
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
                 select new { c, u, f, a };
 
-            // Apply filters
             if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.c.Title.Contains(keyword));
+                query = query.Where(x => EF.Functions.Like(x.c.Title, $"%{keyword}%"));
             }
 
-            if (yearId.HasValue)
+            if (!string.IsNullOrEmpty(year))
             {
-                query = query.Where(x => x.c.AcademicYearId == yearId);
+                query = query.Where(x => x.a.Name == year);
             }
 
-            if (facultyId.HasValue)
+            if (!string.IsNullOrEmpty(facultyName))
             {
-                query = query.Where(x => x.c.FacultyId == facultyId);
+                query = query.Where(x => x.f.Name == facultyName);
             }
 
+            if (userId.HasValue)
+            {
+                query = query.Where(x => x.c.UserId == userId);
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                
+                if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var statusEnum)) 
+                {
+                    query = query.Where(x => x.c.Status == statusEnum);
+                }
+                else
+                {
+                    throw new Exception("Invalid Status");
+                }
+                
+
+            }
             var totalRow = await query.CountAsync();
 
             var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageIndex;
@@ -79,8 +96,9 @@ namespace Server.Infrastructure.Persistence.Repositories
 
             var contributionsDto = contributions.Select(x => new ContributionInListDto
             {
+                Id = x.c.Id,
                 Title = x.c.Title,
-                UserName = x.u.FirstName,
+                UserName = x.u.UserName,
                 FacultyName = x.f.Name,
                 AcademicYear = x.a.Name,
                 SubmissionDate = x.c.SubmissionDate,
@@ -135,10 +153,11 @@ namespace Server.Infrastructure.Persistence.Repositories
             
             var result = new ContributionDto
             {
+                Id = contributionDetail.c.Id,
                 Title = contributionDetail.c.Title,
                 Slug = contributionDetail.c.Slug,
                 Status = contributionDetail.c.Status.ToStringValue(),
-                UserName = contributionDetail.u.FirstName,
+                UserName = contributionDetail.u.UserName,
                 FacultyName = contributionDetail.f.Name,
                 AcademicYear = contributionDetail.a.Name,
                 SubmissionDate = contributionDetail.c.SubmissionDate,
@@ -185,6 +204,7 @@ namespace Server.Infrastructure.Persistence.Repositories
         }
         public async Task Approve(Contribution contribution, Guid userId)
         {
+            // who approve
             var user = await _dbContext.Users.FindAsync(userId);
             if (user is null)
             {
@@ -207,13 +227,15 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Description = $"{user?.UserName} approve"
 
             });
+            // who send contribution
+            var contributionOwner = await _dbContext.Users.FindAsync(contribution.UserId);
             contribution.Status = ContributionStatus.Approve;
             contribution.PublicDate = DateTime.UtcNow;
             _dbContext.Contributions.Update(contribution);
             var publicContribution = _mapper.Map<ContributionPublic>(contribution);
-            publicContribution.Id = Guid.NewGuid();
-            publicContribution.Avatar = user.Avatar ?? String.Empty;
-            publicContribution.UserName = user.UserName;
+            publicContribution.Id = contribution.Id;
+            publicContribution.Avatar = contributionOwner.Avatar ?? String.Empty;
+            publicContribution.UserName = contributionOwner.UserName;
             publicContribution.FacultyName = faculty.Name;
             publicContribution.DateCreated = DateTime.UtcNow;
             

@@ -21,6 +21,7 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<ContributionPublic> ContributionPublics { get; set; }
     public DbSet<ContributionPublicComment> ContributionPublicComments { get; set; }
     public DbSet<ContributionPublicFavorite> ContributionPublicFavorites { get; set; }
+    public DbSet<ContributionPublicReadLater> ContributionPublicReadLaters { get; set; }
     public DbSet<ContributionActivityLog> ContributionActivityLogs { get; set; }
     public DbSet<ContributionTag> ContributionTags { get; set; }
     public DbSet<AcademicYear> AcademicYears { get; set; }

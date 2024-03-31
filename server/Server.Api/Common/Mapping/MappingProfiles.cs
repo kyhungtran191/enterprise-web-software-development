@@ -16,6 +16,7 @@ using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
+using Server.Application.Features.ContributionApp.Queries.DownloadFile;
 using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
@@ -30,9 +31,16 @@ using Server.Application.Features.Identity.Users.Commands.CreateUser;
 using Server.Application.Features.Identity.Users.Commands.DeleteUserById;
 using Server.Application.Features.Identity.Users.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Users.Commands.ResetPassword;
+using Server.Application.Features.Identity.Users.Commands.UpdateProfile;
 using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
+using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
+using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
+using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
+using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
+using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
+using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
@@ -45,6 +53,11 @@ using Server.Contracts.Contributions;
 using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
 using Server.Contracts.Identity.Users;
+using Server.Contracts.PublicContributions;
+using Server.Contracts.PublicContributions.Favorite;
+using Server.Contracts.PublicContributions.Like;
+using Server.Contracts.PublicContributions.ReadLater;
+using Server.Contracts.PublicContributions.View;
 using Server.Contracts.Tags;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
@@ -82,7 +95,11 @@ public class MappingProfiles : Profile
 
         // Refresh Token
         CreateMap<TokenRequest, RefreshTokenCommand>();        
-
+        // User Profile
+        CreateMap<GetProfileRequest, GetProfileQuery>();
+        CreateMap<AppUser, UserProfileDto>();
+        CreateMap<UpdateProfileRequest, UpdateProfileCommand>();
+        CreateMap<UpdateProfileCommand, AppUser>();
         // Faculty
         CreateMap<Faculty, FacultyDto>();
         CreateMap<GetAllFacultiesPagingQuery, GetAllFacultiesPagingQuery>();
@@ -123,8 +140,14 @@ public class MappingProfiles : Profile
         CreateMap<ApproveContributionsRequest, ApproveContributionsCommand>();
         CreateMap<RejectContributionRequest, RejectContributionCommand>();
         CreateMap<GetRejectReasonRequest, GetRejectReasonQuery>();
+        CreateMap<DownloadFileRequest, DownloadFileQuery>();
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
+        CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
+        CreateMap<LikeContributionRequest, LikeContributionCommand>();
+        CreateMap<ViewContributionRequest, ViewContributionCommand>();
+        CreateMap<ReadLaterRequest, CreateReadLaterCommand>();
+        CreateMap<FavoriteRequest, CreateFavoriteCommand>();
         // activity log
         CreateMap<ContributionActivityLog, ActivityLogDto>();
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();

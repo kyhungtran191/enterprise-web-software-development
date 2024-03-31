@@ -412,16 +412,38 @@ namespace Server.Infrastructure.Migrations
                     b.Property<DateTime?>("DateEdited")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.ToTable("ContributionPublicFavorites");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.ContributionPublicReadLater", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContributionPublicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateDeleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateEdited")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContributionPublicReadLaters");
                 });
 
             modelBuilder.Entity("Server.Domain.Entity.Content.ContributionTag", b =>

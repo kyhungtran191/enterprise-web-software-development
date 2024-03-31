@@ -8,6 +8,7 @@ using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Persistence.Repositories;
+using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Infrastructure;
 
@@ -93,7 +94,7 @@ public static class DataSeeder
         }
     }
 
-    public static async Task SeedContribution(AppDbContext context, RoleManager<AppRole> roleManager)
+    public static async Task SeedContribution(AppDbContext context, RoleManager<AppRole> roleManager, IContributionRepository contributionRepository)
     {
         var allFaculties = new List<string>
         {
@@ -151,6 +152,7 @@ public static class DataSeeder
         var passwordHasher = new PasswordHasher<AppUser>();
 
         var rootAdminRoleId = Guid.NewGuid();
+        var adminId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
         AppRole? role = new AppRole
         {
@@ -184,6 +186,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
+                Avatar = "/default.png"
 
             },
             new()
@@ -195,6 +198,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
+                Avatar = "/default.png"
 
             },
             new()
@@ -206,6 +210,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
+                Avatar = "/default.png"
 
             },
             new()
@@ -217,6 +222,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
+                Avatar = "/default.png"
 
             },
         };
@@ -227,12 +233,12 @@ public static class DataSeeder
         if (!context.Users.Any())
         {
             // admin
-            var userId = Guid.NewGuid();
+            
             var userEmail = "admin@gmail.com";
             var userName = "admin";
             var user = new AppUser
             {
-                Id = userId,
+                Id = adminId,
                 FirstName = "An",
                 LastName = "Minh",
                 Email = userEmail,
@@ -244,6 +250,8 @@ public static class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
+                Avatar = "/default.png",
+                FacultyId = facultiesList[1].Id,
             };
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
 
@@ -252,7 +260,7 @@ public static class DataSeeder
             await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
             {
                 RoleId = rootAdminRoleId,
-                UserId = userId
+                UserId = adminId
             });
             // student
             foreach (var item in studentList)
@@ -313,7 +321,7 @@ public static class DataSeeder
                     {
                         Selected = true,
                         Value = "Permissions.Contributions.Edit"
-                    }
+                    },
                 };
                 foreach (var permission in studentPermissionList)
                 {
@@ -376,7 +384,164 @@ public static class DataSeeder
                 Slug = "test-4",
                 SubmissionDate = DateTime.Now,
                 Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[0].Id,
+                UserId = studentList[0].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 5",
+                Slug = "test-5",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[1].Id,
+                UserId = studentList[1].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 6",
+                Slug = "test-6",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[2].Id,
+                UserId =studentList[2].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 7",
+                Slug = "test-7",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[3].Id,
+                UserId = studentList[3].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 8",
+                Slug = "test-8",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+             new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[0].Id,
+                UserId = studentList[0].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 9",
+                Slug = "test-9",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[1].Id,
+                UserId = studentList[1].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 10",
+                Slug = "test-10",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[2].Id,
+                UserId =studentList[2].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 11",
+                Slug = "test-11",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[3].Id,
+                UserId = studentList[3].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 12",
+                Slug = "test-12",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[0].Id,
+                UserId = studentList[0].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 13",
+                Slug = "test-13",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[1].Id,
+                UserId = studentList[1].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 14",
+                Slug = "test-14",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[0].Id,
+                FacultyId = facultiesList[2].Id,
+                UserId =studentList[2].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 15",
+                Slug = "test-15",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
+            },
+            new()
+            {
+                AcademicYearId = yearList[1].Id,
+                FacultyId = facultiesList[3].Id,
+                UserId = studentList[3].Id,
+                Id = Guid.NewGuid(),
+                IsConfirmed = true,
+                DateCreated = DateTime.Now,
+                Title = "test 16",
+                Slug = "test-16",
+                SubmissionDate = DateTime.Now,
+                Status = ContributionStatus.Pending,
             }
+
         };
         if (!context.Contributions.Any())
         {
@@ -386,6 +551,43 @@ public static class DataSeeder
             }
             await context.SaveChangesAsync();
         }
+        // add file 
+        if (!context.Files.Any())
+        {
+            foreach (var contribution in listContribution)
+            {
+                await context.Files.AddRangeAsync(new List<File>
+                {
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "/default.png", Name = "default.png", Type = FileType.Thumbnail
+                    },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "/default.png", Name = "default.png", Type = FileType.File
+                    },
+                });
+            }
+        }
+
+    
+        // approve
+        if (!context.ContributionPublics.Any())
+        {
+            await contributionRepository.Approve(listContribution[0], adminId);
+            await contributionRepository.Approve(listContribution[1], adminId); 
+            await contributionRepository.Approve(listContribution[2], adminId);
+            await contributionRepository.Approve(listContribution[3], adminId);
+            await contributionRepository.Approve(listContribution[4], adminId);
+            await contributionRepository.Approve(listContribution[5], adminId);
+            await contributionRepository.Approve(listContribution[6], adminId);
+            await contributionRepository.Approve(listContribution[7], adminId);
+
+            await context.SaveChangesAsync();
+        }
+
     }
     public static async Task SeedFaculty(AppDbContext context,
                                          IFacultyRepository facultyRepository)

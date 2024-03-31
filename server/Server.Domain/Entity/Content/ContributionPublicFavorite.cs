@@ -8,8 +8,5 @@ namespace Server.Domain.Entity.Content
     {
         public Guid ContributionPublicId { get; set; }
         public Guid UserId {get; set;}
-        
-        [MaxLength(2048)]
-        public string? Description { get; set; }
     }
 }

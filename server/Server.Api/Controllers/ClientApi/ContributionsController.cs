@@ -1,28 +1,27 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Common.Filters;
 using Server.Application.Common.Extensions;
-using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
 
 namespace Server.Api.Controllers.ClientApi
-{ 
+{
     [Authorize]
    public class ContributionsController : ClientApiController
     {
         private readonly IMapper _mapper;
-        private readonly IMediaService _mediaService;
-        public ContributionsController(ISender mediatorSender,IMapper mapper,IMediaService mediaService) : base(mediatorSender)
+
+        public ContributionsController(ISender mediatorSender, IMapper mapper) : base(
+            mediatorSender)
         {
             _mapper = mapper;
-            _mediaService = mediaService;
         }
+
         [HttpPost]
         [FileValidationFilter(5*1024*1024)]
         [Authorize(Permissions.Contributions.Create)]
@@ -30,6 +29,7 @@ namespace Server.Api.Controllers.ClientApi
         {
             var command = _mapper.Map<CreateContributionCommand>(createContributionRequest);
             command.UserId = User.GetUserId();
+            command.FacultyId = User.GetFacultyId();
             command.Slug = createContributionRequest.Title.Slugify();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
@@ -43,10 +43,14 @@ namespace Server.Api.Controllers.ClientApi
         {
             var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
             command.UserId = User.GetUserId();
+            command.FacultyId = User.GetFacultyId();
             command.Slug = updateContributionRequest.Title.Slugify();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
+
+        
+
 
     }
 }

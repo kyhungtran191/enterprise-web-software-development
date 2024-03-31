@@ -5,7 +5,8 @@ namespace Server.Contracts.Contributions
 {
     public class GetAllContributionPagingRequest : PagingRequest
     {
-        [FromQuery] public Guid? AcademicYearId { get; set; }
-        [FromQuery] public Guid? FacultyId { get; set; }
+        [FromQuery] public string? Year { get; set; }
+        [FromQuery] public string? FacultyName { get; set; }
+        [FromQuery] public string? Status { get; set; }
     }
 }
