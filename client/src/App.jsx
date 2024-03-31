@@ -12,6 +12,29 @@ import { useEffect, useState } from "react";
 import Loading from "./components/Loading";
 import NotFound from "./pages/404";
 function App() {
+
+  const login = async () => {
+    let data;
+    await fetch('http://localhost:5272/api/admin/auth/login', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify( {
+        email: "admin@gmail.com",
+        password: "Admin123@"
+      }), 
+    })
+    .then(response => response.json())
+    .then((response) => data = response);
+
+    return data;
+  }
+
+  useEffect( () => {
+    login().then(console.log);
+  }, []);
+
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true);
   const location = useLocation();
