@@ -4,6 +4,7 @@ import { CustomTable } from '@/components/CustomTable.jsx'
 import { AuthorizeDialog } from '@/components/AuthorizeDialog'
 import { ArrowUpDown } from 'lucide-react'
 import DynamicBreadcrumb from './DynamicBreadcrumbs'
+import { NewRoleDialog } from './NewRoleDialog'
 export function RolesTable() {
   const columns = [
     {
@@ -103,7 +104,7 @@ export function RolesTable() {
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
-        <Button>Add new</Button>
+        <NewRoleDialog />
       </div>
       <div className='h-full px-4 py-6 lg:px-8'>
         <CustomTable columns={columns} data={data} />
