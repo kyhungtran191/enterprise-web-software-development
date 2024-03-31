@@ -28,64 +28,64 @@ const AdminLayout = ({ children, isAdmin = true }) => {
 
   const links = isAdmin
     ? [
-      {
-        title: 'Dashboard',
-        icon: CircleGauge,
-        href: '/admin/dashboard'
-      },
-      {
-        title: 'Contributions',
-        icon: BookText,
-        href: '/admin/contributions'
-      },
-      {
-        title: 'Academic Years',
-        icon: CalendarDays,
-        href: '/admin/academic-years'
-      },
-      {
-        title: 'Users',
-        icon: User,
-        href: '/admin/users'
-      },
-      {
-        title: 'Roles & Permissions',
-        icon: UserCog,
-        href: '/admin/roles'
-      },
-      {
-        title: 'Settings',
-        icon: Settings,
-        href: '/admin/settings'
-      }
-    ]
+        {
+          title: 'Dashboard',
+          icon: CircleGauge,
+          href: '/admin/dashboard'
+        },
+        {
+          title: 'Contributions',
+          icon: BookText,
+          href: '/admin/contributions'
+        },
+        {
+          title: 'Academic Years',
+          icon: CalendarDays,
+          href: '/admin/academic-years'
+        },
+        {
+          title: 'Users',
+          icon: User,
+          href: '/admin/users'
+        },
+        {
+          title: 'Roles & Permissions',
+          icon: UserCog,
+          href: '/admin/roles'
+        },
+        {
+          title: 'Settings',
+          icon: Settings,
+          href: '/admin/settings'
+        }
+      ]
     : [
-      {
-        title: 'Recents Posts',
-        icon: CircleGauge,
-        href: '/student-manage/recent'
-      },
-      {
-        title: 'Profile',
-        icon: UserCog,
-        href: '/student-manage/profile'
-      },
-      {
-        title: 'Read Later',
-        icon: Clock,
-        href: '/student-manage/read-later'
-      },
-      {
-        title: 'Favorites',
-        icon: Heart,
-        href: '/student-manage/academic-years'
-      },
-      {
-        title: 'Settings',
-        icon: Settings,
-        href: '/student-manage/settings'
-      }
-    ]
+        {
+          title: 'Recents Posts',
+          icon: CircleGauge,
+          href: '/student-manage/recent'
+        },
+        {
+          title: 'Profile',
+          icon: UserCog,
+          href: '/student-manage/profile'
+        },
+        {
+          title: 'Read Later',
+          icon: Clock,
+          href: '/student-manage/read-later'
+        },
+        {
+          title: 'Favorites',
+          icon: Heart,
+          href: '/student-manage/academic-years'
+        },
+        {
+          title: 'Settings',
+          icon: Settings,
+          href: '/student-manage/settings'
+        }
+      ]
 
   const columns = [
     {
@@ -201,7 +201,7 @@ const AdminLayout = ({ children, isAdmin = true }) => {
                 <CustomTable columns={columns} data={data} />
               </div>
             </div> */}
-          <div className="flex flex-col flex-1 min-h-screen p-4">
+          <div className='flex flex-col flex-1 min-h-screen p-4'>
             {children}
           </div>
         </div>
