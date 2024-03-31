@@ -64,7 +64,6 @@ export function NewUserForm() {
   function onSubmit(values) {
     console.log(values)
   }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
@@ -186,7 +185,12 @@ export function NewUserForm() {
             <FormItem>
               <FormLabel>User Type</FormLabel>
               <FormControl>
-                <Select onValueChange={field.onChange}>
+                <Select
+                  onValueChange={(value) => {
+                    setUserType(value)
+                    field.onChange(value)
+                  }}
+                >
                   <SelectTrigger className='w-min-[180px] w-full'>
                     <SelectValue placeholder='Select user type' />
                   </SelectTrigger>
@@ -205,31 +209,33 @@ export function NewUserForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='faculty'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Faculty</FormLabel>
-              <FormControl>
-                <Select onValueChange={field.onChange}>
-                  <SelectTrigger className='w-min-[180px] w-full'>
-                    <SelectValue placeholder='Select faculty' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value='it'>IT</SelectItem>
-                    <SelectItem value='business'>Business</SelectItem>
-                    <SelectItem value='design'>Design</SelectItem>
-                    <SelectItem value='marketing'>Marketing</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {userType !== 'marketingManager' && (
+          <FormField
+            control={form.control}
+            name='faculty'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Faculty</FormLabel>
+                <FormControl>
+                  <Select onValueChange={field.onChange}>
+                    <SelectTrigger className='w-min-[180px] w-full'>
+                      <SelectValue placeholder='Select faculty' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='it'>IT</SelectItem>
+                      <SelectItem value='business'>Business</SelectItem>
+                      <SelectItem value='design'>Design</SelectItem>
+                      <SelectItem value='marketing'>Marketing</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <DialogFooter>
-          <DialogClose>
+          <DialogClose disabled={!form.formState.isValid}>
             <Button type='submit'>Submit</Button>
           </DialogClose>
         </DialogFooter>
