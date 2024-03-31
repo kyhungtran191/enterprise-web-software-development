@@ -24,10 +24,8 @@ namespace Server.Infrastructure.Persistence.Repositories
         {
             var query = from c in _dbContext.ContributionPublics
                 where c.DateDeleted == null
-                join u in _dbContext.Users on c.UserId equals u.Id
-                join f in _dbContext.Faculties on c.FacultyId equals f.Id
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
-                select new { c, u, f, a };
+                select new { c, a };
 
            
             if (!string.IsNullOrEmpty(keyword))
@@ -42,7 +40,7 @@ namespace Server.Infrastructure.Persistence.Repositories
 
             if (!string.IsNullOrEmpty(facultyName))
             {
-                query = query.Where(x => x.f.Name == facultyName);
+                query = query.Where(x => x.c.FacultyName == facultyName);
             }
 
             if (!string.IsNullOrEmpty(status))
@@ -77,9 +75,10 @@ namespace Server.Infrastructure.Persistence.Repositories
             {
                 Id = x.c.Id,
                 Title = x.c.Title,
-                UserName = x.u.FirstName,
-                FacultyName = x.f.Name,
+                UserName = x.c.UserName,
+                FacultyName = x.c.FacultyName,
                 AcademicYear = x.a.Name,
+                Avatar = x.c.Avatar,
                 PublicDate = x.c.PublicDate,
                 Slug = x.c.Slug,
                 DateEdited = x.c.DateEdited,
@@ -100,10 +99,8 @@ namespace Server.Infrastructure.Persistence.Repositories
         {
             var query = from c in _dbContext.ContributionPublics
                 where c.DateDeleted == null
-                join u in _dbContext.Users on c.UserId equals u.Id
-                join f in _dbContext.Faculties on c.FacultyId equals f.Id
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
-                select new { c, u, f, a };
+                select new { c, a };
             var contributions = await query
                 .OrderBy(x => x.c.DateCreated)
                 .Take(quantity)
@@ -117,9 +114,10 @@ namespace Server.Infrastructure.Persistence.Repositories
             {
                 Id = x.c.Id,
                 Title = x.c.Title,
-                UserName = x.u.FirstName,
-                FacultyName = x.f.Name,
+                UserName = x.c.UserName,
+                FacultyName = x.c.FacultyName,
                 AcademicYear = x.a.Name,
+                Avatar = x.c.Avatar,
                 PublicDate = x.c.PublicDate,
                 Slug = x.c.Slug,
                 DateEdited = x.c.DateEdited,
@@ -130,6 +128,131 @@ namespace Server.Infrastructure.Persistence.Repositories
             }).ToList();
             return publicContribution;
         }
+
+        public async Task AddToReadLater(ContributionPublic contribution,Guid userId)
+        {
+            await  _dbContext.ContributionPublicReadLaters.AddAsync(new ContributionPublicReadLater
+                { ContributionPublicId = contribution.Id, UserId = userId, DateCreated = DateTime.UtcNow });
+        }
+
+        public async Task AddToFavorite(ContributionPublic contribution, Guid userId)
+        {
+            await _dbContext.ContributionPublicFavorites.AddAsync(new ContributionPublicFavorite
+                { ContributionPublicId = contribution.Id, UserId = userId, DateCreated = DateTime.UtcNow });
+        }
+
+        public async Task<bool> AlreadyReadLater(ContributionPublic contribution, Guid userId)
+        {
+            return await _dbContext.ContributionPublicReadLaters.AnyAsync(x =>
+                x.ContributionPublicId == contribution.Id && x.UserId == userId);
+        }
+
+        public async Task<ContributionPublicReadLater> GetReadLater(ContributionPublic contribution, Guid userId)
+        {
+            return await _dbContext.ContributionPublicReadLaters.Where(x =>
+                x.ContributionPublicId == contribution.Id && x.UserId == userId).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> AlreadyFavorite(ContributionPublic contribution, Guid userId)
+        {
+            return await _dbContext.ContributionPublicFavorites.AnyAsync(x =>
+                x.ContributionPublicId == contribution.Id && x.UserId == userId);
+        }
+
+        public async Task<ContributionPublicFavorite> GetFavorite(ContributionPublic contribution, Guid userId)
+        {
+            return await _dbContext.ContributionPublicFavorites.Where(x =>
+                x.ContributionPublicId == contribution.Id && x.UserId == userId).SingleOrDefaultAsync();
+        }
+
+        public void RemoveReadLater(ContributionPublicReadLater readLater)
+        {
+            _dbContext.ContributionPublicReadLaters.Remove(readLater);
+        }
+
+        public void RemoveFavorite(ContributionPublicFavorite favorite)
+        {
+            _dbContext.ContributionPublicFavorites.Remove(favorite);
+        }
+        public async Task<List<PublicContributionInListDto>> GetUserFavoriteContributions(Guid userId)
+        {
+            
+            var query = from f in _dbContext.ContributionPublicFavorites
+                where f.UserId == userId
+                join c in _dbContext.ContributionPublics on f.ContributionPublicId equals c.Id
+                where c.DateDeleted == null
+                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                select new { c, a };
+
+            var favoriteContributions = await query
+                .OrderBy(x => x.c.DateCreated)
+                .ToListAsync();
+
+            var contributionIds = favoriteContributions.Select(x => x.c.Id).ToList();
+
+            var files = await _dbContext.Files
+                .Where(f => contributionIds.Contains(f.ContributionId))
+                .ToListAsync();
+
+            var publicContribution = favoriteContributions.Select(x => new PublicContributionInListDto
+            {
+                Id = x.c.Id,
+                Title = x.c.Title,
+                UserName = x.c.UserName,
+                FacultyName = x.c.FacultyName,
+                AcademicYear = x.a.Name,
+                Avatar = x.c.Avatar,
+                PublicDate = x.c.PublicDate,
+                Slug = x.c.Slug,
+                DateEdited = x.c.DateEdited,
+                Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                Like = x.c.LikeQuantity,
+                View = x.c.Views
+            }).ToList();
+
+            return publicContribution;
+        }
+        public async Task<List<PublicContributionInListDto>> GetUserReadLaterContributions(Guid userId)
+        {
+
+            var query = from f in _dbContext.ContributionPublicReadLaters
+                where f.UserId == userId
+                join c in _dbContext.ContributionPublics on f.ContributionPublicId equals c.Id
+                where c.DateDeleted == null
+                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                select new { c, a };
+
+            var readlaterContributions = await query
+                .OrderBy(x => x.c.DateCreated)
+                .ToListAsync();
+
+            var contributionIds = readlaterContributions.Select(x => x.c.Id).ToList();
+
+            var files = await _dbContext.Files
+                .Where(f => contributionIds.Contains(f.ContributionId))
+                .ToListAsync();
+
+            var publicContribution = readlaterContributions.Select(x => new PublicContributionInListDto
+            {
+                Id = x.c.Id,
+                Title = x.c.Title,
+                UserName = x.c.UserName,
+                FacultyName = x.c.FacultyName,
+                AcademicYear = x.a.Name,
+                Avatar = x.c.Avatar,
+                PublicDate = x.c.PublicDate,
+                Slug = x.c.Slug,
+                DateEdited = x.c.DateEdited,
+                Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                Like = x.c.LikeQuantity,
+                View = x.c.Views
+            }).ToList();
+
+            return publicContribution;
+        }
+
     }
-    
+
 }

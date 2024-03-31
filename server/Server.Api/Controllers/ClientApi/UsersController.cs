@@ -9,8 +9,12 @@ using Server.Application.Features.Identity.Users.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Users.Commands.ResetPassword;
 using Server.Application.Features.Identity.Users.Commands.UpdateProfile;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
+using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
+using Server.Application.Features.PublicContributionApp.Queries.GetFavorite;
+using Server.Application.Features.PublicContributionApp.Queries.GetReadLater;
 using Server.Contracts.Contributions;
 using Server.Contracts.Identity.Users;
+using Server.Contracts.PublicContributions.ReadLater;
 using Server.Domain.Common.Constants;
 
 namespace Server.Api.Controllers.ClientApi
@@ -65,6 +69,26 @@ namespace Server.Api.Controllers.ClientApi
             var command = _mapper.Map<UpdateProfileCommand>(request);
             command.UserId = User.GetUserId();
             var result = await _mediatorSender.Send(command);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+        }
+
+        [HttpGet("read-later")]
+        [Authorize]
+        public async Task<IActionResult> GetReadLater()
+        {
+            var query = new GetReadLaterQuery();
+            query.UserId = User.GetUserId();
+            var result = await _mediatorSender.Send(query);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+        }
+
+        [HttpGet("my-favorite")]
+        [Authorize]
+        public async Task<IActionResult> GetFavorite()
+        {
+            var query = new GetFavoriteQuery();
+            query.UserId = User.GetUserId();
+            var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
     }

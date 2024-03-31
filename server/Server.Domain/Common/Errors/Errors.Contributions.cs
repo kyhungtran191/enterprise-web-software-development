@@ -32,6 +32,9 @@ namespace Server.Domain.Common.Errors
 
             public static Error NoFilesFound => Error.NotFound(code: "Contribution.NoFilesFound",
                 description: "Contribution do not have any files");
+
+            public static Error NotFoundPublic => Error.NotFound(code: "ContributionPublic.NotFound",
+                description: "This contribution not found or not public");
         }
     }
 }

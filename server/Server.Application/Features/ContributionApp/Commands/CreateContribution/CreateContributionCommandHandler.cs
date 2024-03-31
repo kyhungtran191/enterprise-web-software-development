@@ -57,6 +57,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
             var contributon = new Contribution
             {
+                Id = Guid.NewGuid(),
                 AcademicYearId = request.AcademicYearId,
                 Title = request.Title,
                 Slug = request.Slug,
@@ -67,54 +68,53 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
             };
             _unitOfWork.ContributionRepository.Add(contributon);
-
-            await _unitOfWork.CompleteAsync();
-            if (request.Thumbnail  is not null || request.Files.Count > 0)
-            {
-                var thumbnailList = new List<IFormFile>();
-
-                if (request.Thumbnail != null)
-                {
-                    thumbnailList.Add(request.Thumbnail);
-                }
-
-
-                var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
-                var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
-
-                foreach (var info in fileInfo.Concat(thumbnailInfo))
-                {
-                    _unitOfWork.FileRepository.Add(new File
-                    {
-                        ContributionId = contributon.Id,
-                        Path = info.Path,
-                        Type = info.Type,
-                        Name = info.Name,
-                    });
-                }
-            }
+            var thumbnailList = new List<IFormFile>();
+            var filePath = new List<string>();
+            var thumbnailPath = new List<string>();
            
-            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-            if (user == null)
-            {
-                return Errors.User.CannotFound;
-            }
+                if (request.Thumbnail is not null || request.Files.Count > 0)
+                {
 
-             _emailService.SendEmail(new MailRequest
-            {
-                ToEmail = "nguahoang2003@gmail.com",
-                Body = $"User with Id {user.Id} submit new contribution",
-                Subject = "NEW CONTRIBUTION"
-            });
-            // send to approve 
-            await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
-            await _unitOfWork.CompleteAsync();
-            return new ResponseWrapper
-            {
-                IsSuccessfull = true,
-                Messages = new List<string> { $"Create contribution successfully!" }
-            };
+                    thumbnailList.Add(request.Thumbnail);
+                    var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
+                    var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
+                    filePath = fileInfo.Select(x => x.Path).ToList();
+                    thumbnailPath = thumbnailInfo.Select(x => x.Path).ToList();
+                    foreach (var info in fileInfo.Concat(thumbnailInfo))
+                    {
+                        _unitOfWork.FileRepository.Add(new File
+                        {
+                            ContributionId = contributon.Id,
+                            Path = info.Path,
+                            Type = info.Type,
+                            Name = info.Name,
+                        });
+                    }
+                }
 
+                var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+                if (user == null)
+                {
+                    await _mediaService.RemoveFile(filePath);
+                    await _mediaService.RemoveFile(thumbnailPath);
+                    return Errors.User.CannotFound;
+                }
+
+                _emailService.SendEmail(new MailRequest
+                {
+                    ToEmail = "nguahoang2003@gmail.com",
+                    Body = $"User with Id {user.Id} submit new contribution",
+                    Subject = "NEW CONTRIBUTION"
+                });
+                await _unitOfWork.CompleteAsync();
+                // send to approve 
+                await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
+                await _unitOfWork.CompleteAsync();
+                return new ResponseWrapper
+                {
+                    IsSuccessfull = true,
+                    Messages = new List<string> { $"Create contribution successfully!" }
+                };
         }
     }
 }
