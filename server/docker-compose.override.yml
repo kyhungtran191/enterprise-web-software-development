@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  server.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080;https://+:8081
+      - ConnectionStrings__DefaultConnection=Server=db;Database=WebEnterpriseSubjectDb;User Id=SA;Password=SA_1234556;Encrypt=False;TrustServerCertificate=True
+    depends_on:
+      - db
+    ports:
+      - "6000:8080"
+      - "6060:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  db:
+    container_name: db
+    environment:
+        - ACCEPT_EULA=y
+        - SA_PASSWORD=SA_1234556
+    restart: always
+    ports:
+        - "1433:1433"

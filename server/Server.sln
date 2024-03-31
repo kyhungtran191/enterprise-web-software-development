@@ -3,23 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Api", "Server.Api\Server.Api.csproj", "{6037F3C2-F470-4886-B8AE-C1316A0771FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Api", "Server.Api\Server.Api.csproj", "{6037F3C2-F470-4886-B8AE-C1316A0771FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Application", "Server.Application\Server.Application.csproj", "{BA9444C4-B918-4798-B81C-F2DC65B26C68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Application", "Server.Application\Server.Application.csproj", "{BA9444C4-B918-4798-B81C-F2DC65B26C68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Contracts", "Server.Contracts\Server.Contracts.csproj", "{3E2F2F0E-118A-464F-B93F-CE2A3E768409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Contracts", "Server.Contracts\Server.Contracts.csproj", "{3E2F2F0E-118A-464F-B93F-CE2A3E768409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Domain", "Server.Domain\Server.Domain.csproj", "{94B616FC-1A63-4E4C-B2A2-10A794E5DFD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Domain", "Server.Domain\Server.Domain.csproj", "{94B616FC-1A63-4E4C-B2A2-10A794E5DFD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Infrastructure", "Server.Infrastructure\Server.Infrastructure.csproj", "{292D1208-6C20-434B-B29F-7628CA89EF69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.Infrastructure", "Server.Infrastructure\Server.Infrastructure.csproj", "{292D1208-6C20-434B-B29F-7628CA89EF69}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6037F3C2-F470-4886-B8AE-C1316A0771FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -42,5 +41,12 @@ Global
 		{292D1208-6C20-434B-B29F-7628CA89EF69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{292D1208-6C20-434B-B29F-7628CA89EF69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{292D1208-6C20-434B-B29F-7628CA89EF69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

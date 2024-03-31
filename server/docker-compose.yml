@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  server.api:
+    image: ${DOCKER_REGISTRY-}serverapi
+    build:
+      context: .
+      dockerfile: Server.Api/Dockerfile
+
+  db:  
+    image: mcr.microsoft.com/mssql/server

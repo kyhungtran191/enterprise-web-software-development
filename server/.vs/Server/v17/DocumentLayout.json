@@ -1,0 +1,160 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}|docker-compose.dcproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.override.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}|docker-compose.dcproj|solutionrelative:docker-compose.override.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\server.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|solutionrelative:server.api\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\server.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|solutionrelative:server.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\server.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|solutionrelative:server.api\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\server.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|solutionrelative:server.api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\server.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6037F3C2-F470-4886-B8AE-C1316A0771FC}|Server.Api\\Server.Api.csproj|solutionrelative:server.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}|docker-compose.dcproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}|docker-compose.dcproj|solutionrelative:docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}|docker-compose.dcproj|d:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.dcproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2B7D61E4-15F8-4F4D-A822-FCE12D8C6341}|docker-compose.dcproj|solutionrelative:docker-compose.dcproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "Server.Api\\Properties\\launchSettings.json",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\Properties\\launchSettings.json",
+              "RelativeToolTip": "Server.Api\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-03-31T16:14:57.083Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\Program.cs",
+              "RelativeDocumentMoniker": "Server.Api\\Program.cs",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\Program.cs",
+              "RelativeToolTip": "Server.Api\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-31T15:46:54.306Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "Server.Api\\appsettings.Development.json",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\appsettings.Development.json",
+              "RelativeToolTip": "Server.Api\\appsettings.Development.json",
+              "ViewState": "AQIAABAAAAAAAAAAAAAYwCAAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-03-31T15:45:53.315Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\appsettings.json",
+              "RelativeDocumentMoniker": "Server.Api\\appsettings.json",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\appsettings.json",
+              "RelativeToolTip": "Server.Api\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-03-31T15:45:50.812Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "docker-compose.override.yml",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.override.yml",
+              "RelativeDocumentMoniker": "docker-compose.override.yml",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.override.yml",
+              "RelativeToolTip": "docker-compose.override.yml",
+              "ViewState": "AQIAAAIAAAAAAAAAAAAAAAgAAAAPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2024-03-31T15:41:34.749Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "docker-compose.yml",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.yml",
+              "RelativeDocumentMoniker": "docker-compose.yml",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.yml",
+              "RelativeToolTip": "docker-compose.yml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2024-03-31T15:41:32.53Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "docker-compose",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.dcproj",
+              "RelativeDocumentMoniker": "docker-compose.dcproj",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\docker-compose.dcproj",
+              "RelativeToolTip": "docker-compose.dcproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-03-31T15:41:29.954Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\Dockerfile",
+              "RelativeDocumentMoniker": "Server.Api\\Dockerfile",
+              "ToolTip": "D:\\web__enterprise_asm\\source_code\\enterprise-web-software-development\\server\\Server.Api\\Dockerfile",
+              "RelativeToolTip": "Server.Api\\Dockerfile",
+              "ViewState": "AQIAAAMAAAAAAAAAAADwvwYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-03-31T15:40:53.08Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
