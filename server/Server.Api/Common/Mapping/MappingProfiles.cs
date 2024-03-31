@@ -36,6 +36,8 @@ using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
+using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
+using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
@@ -52,7 +54,9 @@ using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
 using Server.Contracts.Identity.Users;
 using Server.Contracts.PublicContributions;
+using Server.Contracts.PublicContributions.Favorite;
 using Server.Contracts.PublicContributions.Like;
+using Server.Contracts.PublicContributions.ReadLater;
 using Server.Contracts.PublicContributions.View;
 using Server.Contracts.Tags;
 using Server.Domain.Entity.Content;
@@ -142,6 +146,8 @@ public class MappingProfiles : Profile
         CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
         CreateMap<LikeContributionRequest, LikeContributionCommand>();
         CreateMap<ViewContributionRequest, ViewContributionCommand>();
+        CreateMap<ReadLaterRequest, CreateReadLaterCommand>();
+        CreateMap<FavoriteRequest, CreateFavoriteCommand>();
         // activity log
         CreateMap<ContributionActivityLog, ActivityLogDto>();
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();

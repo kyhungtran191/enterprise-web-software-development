@@ -98,7 +98,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             {
                 Id = x.c.Id,
                 Title = x.c.Title,
-                UserName = x.u.FirstName,
+                UserName = x.u.UserName,
                 FacultyName = x.f.Name,
                 AcademicYear = x.a.Name,
                 SubmissionDate = x.c.SubmissionDate,
@@ -157,7 +157,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Title = contributionDetail.c.Title,
                 Slug = contributionDetail.c.Slug,
                 Status = contributionDetail.c.Status.ToStringValue(),
-                UserName = contributionDetail.u.FirstName,
+                UserName = contributionDetail.u.UserName,
                 FacultyName = contributionDetail.f.Name,
                 AcademicYear = contributionDetail.a.Name,
                 SubmissionDate = contributionDetail.c.SubmissionDate,
@@ -204,6 +204,7 @@ namespace Server.Infrastructure.Persistence.Repositories
         }
         public async Task Approve(Contribution contribution, Guid userId)
         {
+            // who approve
             var user = await _dbContext.Users.FindAsync(userId);
             if (user is null)
             {
@@ -226,13 +227,15 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Description = $"{user?.UserName} approve"
 
             });
+            // who send contribution
+            var contributionOwner = await _dbContext.Users.FindAsync(contribution.UserId);
             contribution.Status = ContributionStatus.Approve;
             contribution.PublicDate = DateTime.UtcNow;
             _dbContext.Contributions.Update(contribution);
             var publicContribution = _mapper.Map<ContributionPublic>(contribution);
-            publicContribution.Id = Guid.NewGuid();
-            publicContribution.Avatar = user.Avatar ?? String.Empty;
-            publicContribution.UserName = user.UserName;
+            publicContribution.Id = contribution.Id;
+            publicContribution.Avatar = contributionOwner.Avatar ?? String.Empty;
+            publicContribution.UserName = contributionOwner.UserName;
             publicContribution.FacultyName = faculty.Name;
             publicContribution.DateCreated = DateTime.UtcNow;
             

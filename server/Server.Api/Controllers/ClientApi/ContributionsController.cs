@@ -1,19 +1,16 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.Api.Common.Filters;
 using Server.Application.Common.Extensions;
-using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
-using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
 
 namespace Server.Api.Controllers.ClientApi
-{ 
+{
     [Authorize]
    public class ContributionsController : ClientApiController
     {

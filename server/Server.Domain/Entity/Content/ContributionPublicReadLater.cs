@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Domain.Entity.Content
 {
-    [Table("ContributionPublicFavorites")]
-    public class ContributionPublicFavorite : BaseEntity
+    [Table("ContributionPublicReadLaters")]
+    public class ContributionPublicReadLater : BaseEntity
     {
         public Guid ContributionPublicId { get; set; }
         public Guid UserId {get; set;}

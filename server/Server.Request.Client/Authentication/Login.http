@@ -2,6 +2,7 @@
 @adminPath=api/admin/auth
 @contentType=application/json
 
+### Admin Account :
 Post {{host}}/{{adminPath}}/login HTTP/1.1
 Content-Type: {{contentType}}
 
@@ -10,3 +11,14 @@ Content-Type: {{contentType}}
     "password": "Admin123@"
 }
 
+
+
+### Student Account :
+
+Post {{host}}/{{adminPath}}/login HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "email": "student@gmail.com",
+    "password": "Admin123@"
+}

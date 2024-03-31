@@ -8,6 +8,7 @@ using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Persistence.Repositories;
+using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Infrastructure;
 
@@ -249,7 +250,8 @@ public static class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                Avatar = "/default.png"
+                Avatar = "/default.png",
+                FacultyId = facultiesList[1].Id,
             };
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
 
@@ -549,6 +551,28 @@ public static class DataSeeder
             }
             await context.SaveChangesAsync();
         }
+        // add file 
+        if (!context.Files.Any())
+        {
+            foreach (var contribution in listContribution)
+            {
+                await context.Files.AddRangeAsync(new List<File>
+                {
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "/default.png", Name = "default.png", Type = FileType.Thumbnail
+                    },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "/default.png", Name = "default.png", Type = FileType.File
+                    },
+                });
+            }
+        }
+
+    
         // approve
         if (!context.ContributionPublics.Any())
         {
