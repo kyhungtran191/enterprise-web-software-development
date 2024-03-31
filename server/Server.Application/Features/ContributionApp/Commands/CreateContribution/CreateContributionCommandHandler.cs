@@ -69,18 +69,28 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             };
             _unitOfWork.ContributionRepository.Add(contributon);
             var thumbnailList = new List<IFormFile>();
-            var filePath = new List<string>();
-            var thumbnailPath = new List<string>();
-           
-                if (request.Thumbnail is not null || request.Files.Count > 0)
+            //var filePath = new List<string>();
+            //var thumbnailPath = new List<string>();
+            var filePublicId = new List<string>();
+            var fileTypes = new List<string>();
+            var thumbnailPublicId = new List<string>();
+            var thumbnailTypes = new List<string>();
+
+            if (request.Thumbnail is not null || request.Files.Count > 0)
                 {
 
                     thumbnailList.Add(request.Thumbnail);
-                    var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
-                    var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
-                    filePath = fileInfo.Select(x => x.Path).ToList();
-                    thumbnailPath = thumbnailInfo.Select(x => x.Path).ToList();
-                    foreach (var info in fileInfo.Concat(thumbnailInfo))
+                //var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
+                //var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
+                var thumbnailInfo = await _mediaService.UploadFileCloudinary(thumbnailList, FileType.Thumbnail,contributon.Id);
+                var fileInfo = await _mediaService.UploadFileCloudinary(request.Files, FileType.File,contributon.Id);
+                //filePath = fileInfo.Select(x => x.Path).ToList();
+                //thumbnailPath = thumbnailInfo.Select(x => x.Path).ToList();
+                filePublicId = fileInfo.Select(x => x.PublicId).ToList();
+                fileTypes = fileInfo.Select(x => x.Type).ToList();
+                thumbnailPublicId = thumbnailInfo.Select(x => x.PublicId).ToList();
+                thumbnailTypes = thumbnailInfo.Select(x => x.Type).ToList();
+                foreach (var info in fileInfo.Concat(thumbnailInfo))
                     {
                         _unitOfWork.FileRepository.Add(new File
                         {
@@ -88,6 +98,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                             Path = info.Path,
                             Type = info.Type,
                             Name = info.Name,
+                            PublicId = info.PublicId,
                         });
                     }
                 }
@@ -95,8 +106,8 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 var user = await _userManager.FindByIdAsync(request.UserId.ToString());
                 if (user == null)
                 {
-                    await _mediaService.RemoveFile(filePath);
-                    await _mediaService.RemoveFile(thumbnailPath);
+                    await _mediaService.RemoveFromCloudinary(filePublicId,fileTypes);
+                    await _mediaService.RemoveFromCloudinary(thumbnailPublicId,thumbnailTypes);
                     return Errors.User.CannotFound;
                 }
 

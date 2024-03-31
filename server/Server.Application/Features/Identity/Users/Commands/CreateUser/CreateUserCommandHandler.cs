@@ -51,7 +51,7 @@ public class CreateUserCommandHandler
         var newUser = new AppUser();
 
         _mapper.Map(request, newUser);
-
+        newUser.Id = Guid.NewGuid();
         newUser.FacultyId = facultyFromDb.Id;
         newUser.PasswordHash = new PasswordHasher<AppUser>().HashPassword(newUser, request.Password);
         // avatar
@@ -59,10 +59,11 @@ public class CreateUserCommandHandler
         {
             var avatarList = new List<IFormFile>();
             avatarList.Add(request.Avatar);
-            var avatarInfo = await _mediaService.UploadFiles(avatarList, FileType.Avatar);
+            var avatarInfo = await _mediaService.UploadFileCloudinary(avatarList, FileType.Avatar,newUser.Id);
             foreach (var info in avatarInfo)
             {
                 newUser.Avatar = info.Path;
+                newUser.AvatarPublicId = info.PublicId;
             }
         }
      

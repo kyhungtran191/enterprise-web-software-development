@@ -56,14 +56,16 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                     return Errors.Contribution.NoFilesFound;
                 }
                 var removeFilePaths = new List<string>();
+                var removeFileTypes = new List<string>();
                 foreach (var existingFile in existingFiles)
                 {
                     _unitOfWork.FileRepository.Remove(existingFile);
-                    removeFilePaths.Add(existingFile.Path);
+                    removeFilePaths.Add(existingFile.PublicId);
+                    removeFileTypes.Add(existingFile.Type);
 
                 }
 
-                await _mediaService.RemoveFile(removeFilePaths);
+                await _mediaService.RemoveFromCloudinary(removeFilePaths,removeFileTypes);
 
                 // create new files
                 var thumbnailList = new List<IFormFile>
@@ -71,8 +73,8 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                     request.Thumbnail
                 };
 
-                var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
-                var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
+                var thumbnailInfo = await _mediaService.UploadFileCloudinary(thumbnailList, FileType.Thumbnail,itemFromDb.Id);
+                var fileInfo = await _mediaService.UploadFileCloudinary(request.Files, FileType.File, itemFromDb.Id);
 
                 foreach (var info in fileInfo.Concat(thumbnailInfo))
                 {
@@ -82,6 +84,7 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                         Path = info.Path,
                         Type = info.Type,
                         Name = info.Name,
+                        PublicId = info.PublicId,
                         DateEdited = _dateTimeProvider.UtcNow
                     });
                 }

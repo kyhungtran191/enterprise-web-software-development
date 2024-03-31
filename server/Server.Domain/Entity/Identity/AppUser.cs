@@ -29,4 +29,6 @@ public class AppUser : IdentityUser<Guid>
 
     [MaxLength(500)]
     public string? Avatar { get; set; }
+    [MaxLength(500)]
+    public string? AvatarPublicId { get; set; }
 }
