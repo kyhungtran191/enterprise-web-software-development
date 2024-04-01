@@ -2,13 +2,11 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.Identity.Users.Commands.CreateUser;
 using Server.Application.Features.Identity.Users.Commands.DeleteUserById;
 using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
-using Server.Contracts.Common;
 using Server.Contracts.Identity.Users;
 using Server.Domain.Common.Constants;
 
