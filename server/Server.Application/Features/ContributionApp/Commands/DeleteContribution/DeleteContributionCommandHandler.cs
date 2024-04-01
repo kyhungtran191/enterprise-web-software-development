@@ -39,14 +39,16 @@ namespace Server.Application.Features.ContributionApp.Commands.DeleteContributio
                     return Errors.Contribution.NoFilesFound;
                 }
                 var removeFilePaths = new List<string>();
+                var removeFileTypes = new List<string>();
                 foreach (var existingFile in existingFiles)
                 {
                     _unitOfWork.FileRepository.Remove(existingFile);
-                    removeFilePaths.Add(existingFile.Path);
+                    removeFilePaths.Add(existingFile.PublicId);
+                    removeFileTypes.Add(existingFile.Type);
 
                 }
 
-                await _mediaService.RemoveFile(removeFilePaths);
+                await _mediaService.RemoveFromCloudinary(removeFilePaths,removeFileTypes);
                 item.DateDeleted = _dateTimeProvider.UtcNow;
                 successfullyDeletedItems.Add(id);
             }
