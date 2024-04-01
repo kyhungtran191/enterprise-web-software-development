@@ -13,6 +13,7 @@ import Loading from './components/Loading'
 import NotFound from './pages/404'
 import { AcademicYearTable } from './components/AcademicYearTable'
 import ContributionDetail from './pages/general/ContributionDetail'
+import ForgotPassword from './pages/general/ForgotPassword'
 function App() {
 
   const login = async () => {
@@ -22,18 +23,18 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify( {
+      body: JSON.stringify({
         email: "admin@gmail.com",
         password: "Admin123@"
-      }), 
+      }),
     })
-    .then(response => response.json())
-    .then((response) => data = response);
+      .then(response => response.json())
+      .then((response) => data = response);
 
     return data;
   }
 
-  useEffect( () => {
+  useEffect(() => {
     login().then(console.log);
   }, []);
 
@@ -42,7 +43,6 @@ function App() {
   const location = useLocation()
   useEffect(() => {
     setLoading(true) // Bắt đầu loading khi route thay đổi
-
     const timeoutId = setTimeout(() => {
       setLoading(false) // Dừng loading sau một khoảng thời gian
     }, 1000)
@@ -108,6 +108,7 @@ function App() {
         ></Route>
         <Route path='/contributions'></Route>
         <Route path='/contributions/:id' element={<ContributionDetail></ContributionDetail>}></Route>
+        <Route path="/forgot-password" element={<ForgotPassword />}></Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
       </Routes>
     </>
