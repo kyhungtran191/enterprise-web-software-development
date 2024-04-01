@@ -1,7 +1,6 @@
-import React, { SetStateAction, useState } from 'react'
-import { User } from 'src/@types/auth'
+import { getAccessTokenFromLS, getUserFromLS } from '@/utils/auth'
+import React, { useState } from 'react'
 
-import { getAccessTokenFromLS, getUserFromLS } from 'src/utils/auth'
 
 const initialAppContext = {
   isAuthenticated: Boolean(getAccessTokenFromLS()),
