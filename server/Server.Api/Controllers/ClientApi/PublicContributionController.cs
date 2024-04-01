@@ -11,6 +11,7 @@ using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
 using Server.Application.Features.PublicContributionApp.Queries.DownSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
 using Server.Application.Features.PublicContributionApp.Queries.GetDetailPublicContributionBySlug;
+using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetTop4Contributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopContribution;
 using Server.Contracts.PublicContributions;
@@ -39,7 +40,7 @@ public class PublicContributionController : ClientApiController
     }
 
     [HttpGet]
-    [Route("top-4")]
+    [Route("latest")]
     public async Task<IActionResult> GetTop4Contributions()
     {
         var query = new GetTop4ContributionQuery();
@@ -57,7 +58,15 @@ public class PublicContributionController : ClientApiController
         return result.Match(success => Ok(success), errors => Problem(errors));
     }
 
-    [HttpPost]
+    [HttpGet]
+    [Route("who-liked/{ContributionId}")]
+    public async Task<IActionResult> GetListUserLiked([FromRoute] GetListUserLikedRequest request)
+    {
+        var query = _mapper.Map<GetListUserLikedQuery>(request);
+        var result = await _mediatorSender.Send(query);
+        return result.Match(success => Ok(success), errors => Problem(errors));
+    }
+    [HttpGet]
     [Route("{Slug}")]
     public async Task<IActionResult> GetDetailContribution([FromRoute] GetDetailPublicContributionBySlugRequest request)
     {
@@ -117,13 +126,13 @@ public class PublicContributionController : ClientApiController
         return result.Match(result => Ok(result), errors => Problem(errors));
     }
 
-    [HttpPost("toggle-favorite/{ContributionId}")]
-    [Authorize]
-    public async Task<IActionResult> AddFavorite([FromRoute] FavoriteRequest request)
-    {
-        var command = _mapper.Map<CreateFavoriteCommand>(request);
-        command.UserId = User.GetUserId();
-        var result = await _mediatorSender.Send(command);
-        return result.Match(result => Ok(result), errors => Problem(errors));
-    }
+    //[HttpPost("toggle-favorite/{ContributionId}")]
+    //[Authorize]
+    //public async Task<IActionResult> AddFavorite([FromRoute] FavoriteRequest request)
+    //{
+    //    var command = _mapper.Map<CreateFavoriteCommand>(request);
+    //    command.UserId = User.GetUserId();
+    //    var result = await _mediatorSender.Send(command);
+    //    return result.Match(result => Ok(result), errors => Problem(errors));
+    //}
 }

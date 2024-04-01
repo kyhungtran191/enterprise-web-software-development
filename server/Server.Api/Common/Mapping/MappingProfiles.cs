@@ -46,6 +46,7 @@ using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
 using Server.Application.Features.PublicContributionApp.Queries.DownSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
 using Server.Application.Features.PublicContributionApp.Queries.GetDetailPublicContributionBySlug;
+using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
@@ -157,6 +158,7 @@ public class MappingProfiles : Profile
         CreateMap<GetDetailPublicContributionBySlugRequest, GetDetailPublicContributionBySlugQuery>();
         CreateMap<DownSingleFileRequest, DownSingleFileQuery>();
         CreateMap<DownloadAllFileRequest, DownloadAllFileQuery>();
+        CreateMap<GetListUserLikedRequest, GetListUserLikedQuery>();
         // activity log
         CreateMap<ContributionActivityLog, ActivityLogDto>();
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();

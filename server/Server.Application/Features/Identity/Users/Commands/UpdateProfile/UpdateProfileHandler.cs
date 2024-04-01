@@ -30,24 +30,20 @@ namespace Server.Application.Features.Identity.Users.Commands.UpdateProfile
         public async Task<ErrorOr<IResponseWrapper>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
         {
             var userFromDb = await _userManager.FindByIdAsync(request.UserId.ToString());
-            var faculty = await _unitOfWork.FacultyRepository.GetFacultyByName(request.FacultyName);
+           
 
             if (userFromDb is null)
             {
                 return Errors.User.CannotFound;
             }
 
-            if (faculty is null)
-            {
-                return Errors.Faculty.CannotFound;
-            }
            
             userFromDb.FirstName = request.FirstName;
             userFromDb.LastName = request.LastName;
             userFromDb.Email = request.Email;
             userFromDb.PhoneNumber = request.PhoneNumber;
             userFromDb.Dob = request.Dob;
-            userFromDb.FacultyId = faculty.Id;
+          
             // update avatar
             if (request.Avatar is not null)
             {
