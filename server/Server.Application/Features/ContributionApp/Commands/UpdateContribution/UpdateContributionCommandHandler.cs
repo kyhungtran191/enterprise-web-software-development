@@ -85,11 +85,15 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                         Type = info.Type,
                         Name = info.Name,
                         PublicId = info.PublicId,
+                        Extension = info.Extension,
                         DateEdited = _dateTimeProvider.UtcNow
                     });
                 }
                 await _unitOfWork.CompleteAsync();
             }
+
+            await _unitOfWork.ContributionRepository.SendToApprove(request.ContributionId, request.UserId);
+            await _unitOfWork.CompleteAsync();
             // add email service later
 
 

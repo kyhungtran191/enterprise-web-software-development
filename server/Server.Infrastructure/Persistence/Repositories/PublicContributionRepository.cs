@@ -47,9 +47,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Like = query.c.LikeQuantity,
                 View = query.c.Views,
                 Thumbnails = files.Where(f => f.ContributionId == query.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension}).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
                 Files = files.Where(f => f.ContributionId == query.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
             };
             return result;
         }
