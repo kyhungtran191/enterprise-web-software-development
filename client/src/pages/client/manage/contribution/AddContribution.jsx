@@ -8,6 +8,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import Dropzone from '@/components/dropzone'
 import { useDropzone } from 'react-dropzone'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 export default function AddContribution() {
   const [files, setFiles] = useState([])
 
@@ -74,6 +75,11 @@ export default function AddContribution() {
           <div className='py-4'>
             <label className="text-2xl font-semibold">Attach Files</label>
             <Dropzone files={files} setFiles={setFiles}></Dropzone>
+          </div>
+
+          <div className="flex items-center w-full space-x-2">
+            <Checkbox id="terms" className="p-2" />
+            <Label htmlFor="terms" className="text-lg font-bold">Accept terms and conditions</Label>
           </div>
         </form>
         <Button className="w-full text-lg bg-green-600 py-7 hover:bg-green-700">Upload</Button>
