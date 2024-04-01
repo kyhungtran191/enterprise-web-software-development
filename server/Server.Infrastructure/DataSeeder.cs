@@ -579,7 +579,7 @@ public static class DataSeeder
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png",
+                        Path = "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg",
                         Name = "default.png", Type = FileType.Thumbnail,
                         PublicId = "thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce",
                         Extension = ".png"
@@ -587,7 +587,7 @@ public static class DataSeeder
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1711952063/file/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qmwnzwl5ysx6blolevgd.docx\"",
                         Name = "1_Unit 1 - Assignment 1 frontsheet.docx", Type = FileType.File,
                         PublicId = "file/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qmwnzwl5ysx6blolevgd.docx",
                         Extension = ".docx"
