@@ -21,7 +21,6 @@ export default function ForgotPassword() {
           </div>
           <Button className='w-full my-4 font-bold p-7 md:my-10 md:text-xl md:p-10'>Send Verify Email</Button>
         </form>
-
       </div>
     </div>
   )

@@ -14,6 +14,7 @@ import NotFound from './pages/404'
 import { AcademicYearTable } from './components/AcademicYearTable'
 import ContributionDetail from './pages/general/ContributionDetail'
 import ForgotPassword from './pages/general/ForgotPassword'
+import ResetPassword from './pages/general/ResetPassword'
 function App() {
 
   const login = async () => {
@@ -108,7 +109,8 @@ function App() {
         ></Route>
         <Route path='/contributions'></Route>
         <Route path='/contributions/:id' element={<ContributionDetail></ContributionDetail>}></Route>
-        <Route path="/forgot-password" element={<ForgotPassword />}></Route>
+        <Route path="/forgot-password" element={<ForgotPassword></ForgotPassword>}></Route>
+        <Route path="/reset-password" element={<ResetPassword></ResetPassword>}></Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
       </Routes>
     </>
