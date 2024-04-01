@@ -70,7 +70,7 @@ export default function Login() {
             </div>
           </div>
 
-          <Link to='/' className='inline-block ml-auto text-blue-500 underline'>
+          <Link to='/forgot-password' className='inline-block ml-auto text-blue-500 underline'>
             Forgot password?
           </Link>
           <Button

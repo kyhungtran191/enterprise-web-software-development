@@ -11,6 +11,7 @@ public class UserCommandBase : IRequest<ErrorOr<IResponseWrapper>>
     public string? LastName { get; set; }
     public string? PhoneNumber { get; set; }
     public Guid FacultyId { get; set; }
+    public Guid RoleId { get; set; }
     public DateTime? Dob { get; set; }
     public IFormFile? Avatar { get; set; }
     public bool IsActive { get; set; }

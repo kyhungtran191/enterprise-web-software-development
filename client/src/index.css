@@ -77,3 +77,15 @@
     @apply bg-background text-foreground font-body;
   }
 }
+.richtext-css {
+  line-height: 1.5;
+  text-align: justify;
+}
+.richtext-css img,
+picture,
+.image {
+  width: 100%;
+  height: auto;
+  object-cover: center;
+  margin: 20px auto;
+}

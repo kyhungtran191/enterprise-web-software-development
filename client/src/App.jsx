@@ -12,6 +12,9 @@ import { useEffect, useState } from 'react'
 import Loading from './components/Loading'
 import NotFound from './pages/404'
 import { AcademicYearTable } from './components/AcademicYearTable'
+import ContributionDetail from './pages/general/ContributionDetail'
+import ForgotPassword from './pages/general/ForgotPassword'
+import ResetPassword from './pages/general/ResetPassword'
 function App() {
 
   const login = async () => {
@@ -21,18 +24,18 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify( {
+      body: JSON.stringify({
         email: "admin@gmail.com",
         password: "Admin123@"
-      }), 
+      }),
     })
-    .then(response => response.json())
-    .then((response) => data = response);
+      .then(response => response.json())
+      .then((response) => data = response);
 
     return data;
   }
 
-  useEffect( () => {
+  useEffect(() => {
     login().then(console.log);
   }, []);
 
@@ -41,7 +44,6 @@ function App() {
   const location = useLocation()
   useEffect(() => {
     setLoading(true) // Bắt đầu loading khi route thay đổi
-
     const timeoutId = setTimeout(() => {
       setLoading(false) // Dừng loading sau một khoảng thời gian
     }, 1000)
@@ -51,7 +53,7 @@ function App() {
 
   return (
     <>
-      {loading && (
+      {/* {loading && (
         <div className='fixed inset-0 z-50 flex flex-col items-center justify-center h-screen text-white bg-blue-800'>
           <img
             src='../greenwich-logo.png'
@@ -60,8 +62,8 @@ function App() {
           />
           <Loading></Loading>
         </div>
-      )}
-      {}
+      )} */}
+      { }
       <Routes>
         <Route
           path='/admin/roles'
@@ -105,6 +107,10 @@ function App() {
           path='/manage/add-contribution'
           element={<AddContribution></AddContribution>}
         ></Route>
+        <Route path='/contributions'></Route>
+        <Route path='/contributions/:id' element={<ContributionDetail></ContributionDetail>}></Route>
+        <Route path="/forgot-password" element={<ForgotPassword></ForgotPassword>}></Route>
+        <Route path="/reset-password" element={<ResetPassword></ResetPassword>}></Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
       </Routes>
     </>
