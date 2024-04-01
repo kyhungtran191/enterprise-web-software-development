@@ -30,7 +30,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 select new { c, a }).FirstOrDefaultAsync();
             if (query is null)
             {
-                throw new Exception("Not Found Contribution");
+                return null;
             }
             var files = await _dbContext.Files.Where(f => f.ContributionId == query.c.Id).ToListAsync();
             var result = new PublicContributionDetailDto
