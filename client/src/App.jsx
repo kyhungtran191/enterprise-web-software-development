@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import Loading from './components/Loading'
 import NotFound from './pages/404'
 import { AcademicYearTable } from './components/AcademicYearTable'
+import ContributionDetail from './pages/general/ContributionDetail'
 function App() {
 
   const login = async () => {
@@ -51,7 +52,7 @@ function App() {
 
   return (
     <>
-      {loading && (
+      {/* {loading && (
         <div className='fixed inset-0 z-50 flex flex-col items-center justify-center h-screen text-white bg-blue-800'>
           <img
             src='../greenwich-logo.png'
@@ -60,8 +61,8 @@ function App() {
           />
           <Loading></Loading>
         </div>
-      )}
-      {}
+      )} */}
+      { }
       <Routes>
         <Route
           path='/admin/roles'
@@ -105,6 +106,8 @@ function App() {
           path='/manage/add-contribution'
           element={<AddContribution></AddContribution>}
         ></Route>
+        <Route path='/contributions'></Route>
+        <Route path='/contributions/:id' element={<ContributionDetail></ContributionDetail>}></Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
       </Routes>
     </>
