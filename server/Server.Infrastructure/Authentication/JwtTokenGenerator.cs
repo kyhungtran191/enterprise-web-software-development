@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Authentication;
+using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Identity;
@@ -21,16 +22,19 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
     private readonly JwtSettings _jwtSettings;
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<AppRole> _roleManager;
+    private readonly IFacultyRepository _facultyRepository;
 
     public JwtTokenGenerator(IDateTimeProvider dateTimeProvider,
                              IOptions<JwtSettings> jwtSettings,
                              UserManager<AppUser> userManager,
-                             RoleManager<AppRole> roleManager)
+                             RoleManager<AppRole> roleManager,
+                             IFacultyRepository facultyRepository)
     {
         _dateTimeProvider = dateTimeProvider;
         _jwtSettings = jwtSettings.Value;
         _userManager = userManager;
         _roleManager = roleManager;
+        _facultyRepository = facultyRepository;
     }
 
     public async Task<string> GenerateToken(AppUser applicationUser)
@@ -45,6 +49,13 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
         var roles = await _userManager.GetRolesAsync(applicationUser);
         var permissions = await GetPermissions(roles.ToHashSet());
 
+        string faculty = string.Empty;
+        if (applicationUser.FacultyId is not null) {
+
+            var facultyFromDb = await _facultyRepository.GetByIdAsync(applicationUser.FacultyId.Value);
+            faculty = facultyFromDb.Name;
+        }
+
         return new Claim[] {
              // Subject (Principal)
             new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id.ToString()),
@@ -56,7 +67,7 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
             new Claim(JwtRegisteredClaimNames.FamilyName, applicationUser.LastName),
             new Claim(UserClaims.Roles, string.Join(";", roles)),
             new Claim(UserClaims.Permissions, JsonSerializer.Serialize(permissions)),
-            new Claim(UserClaims.FacultyId,applicationUser.FacultyId.ToString()),
+            new Claim(UserClaims.FacultyId, faculty),
             // Jwt ID
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
