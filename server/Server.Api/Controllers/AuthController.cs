@@ -6,10 +6,11 @@ using Server.Application.Features.Authentication;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Requests;
 
-namespace Server.Api.Controllers.AdminApi;
+namespace Server.Api.Controllers;
 
 [AllowAnonymous]
-public class AuthController : AdminApiController
+[Route("[controller]")]
+public class AuthController : ApiController
 {
     private readonly IMapper _mapper;
     public AuthController(ISender mediatorSender, IMapper mapper) : base(mediatorSender)
