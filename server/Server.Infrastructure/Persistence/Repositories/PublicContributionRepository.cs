@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.SymbolStore;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Contributions;
@@ -20,6 +21,112 @@ namespace Server.Infrastructure.Persistence.Repositories
             _mapper = mapper;
                 
         }
+
+        public async Task<PublicContributionDetailDto> GetBySlug(string slug)
+        {
+            var query = await (from c in _dbContext.ContributionPublics
+                where c.DateDeleted == null && c.Slug == slug
+                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                select new { c, a }).FirstOrDefaultAsync();
+            if (query is null)
+            {
+                throw new Exception("Not Found Contribution");
+            }
+            var files = await _dbContext.Files.Where(f => f.ContributionId == query.c.Id).ToListAsync();
+            var result = new PublicContributionDetailDto
+            {
+                Id = query.c.Id,
+                Title = query.c.Title,
+                Slug = query.c.Slug,
+                AcademicYear = query.a.Name,
+                Avatar = query.c.Avatar,
+                FacultyName = query.c.FacultyName,
+                DateEdited = query.c.DateEdited,
+                PublicDate = query.c.PublicDate,
+                UserName = query.c.UserName,
+                Like = query.c.LikeQuantity,
+                View = query.c.Views,
+                Thumbnails = files.Where(f => f.ContributionId == query.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension}).ToList(),
+                Files = files.Where(f => f.ContributionId == query.c.Id && f.Type == FileType.File)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
+            };
+            return result;
+        }
+
+        public async Task<List<PublicContributionInListDto>> GetFeaturedContribution()
+        {
+            var query = from c in _dbContext.ContributionPublics
+                where c.DateDeleted == null
+                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                select new { c, a };
+            var contributions = await query
+                .OrderBy(x => x.c.LikeQuantity)
+                .Take(4)
+                .ToListAsync();
+            var contributionIds = contributions.Select(x => x.c.Id).ToList();
+            var files = await _dbContext.Files
+                .Where(f => contributionIds.Contains(f.ContributionId))
+                .ToListAsync();
+            var publicContribution = contributions.Select(x => new PublicContributionInListDto
+            {
+                Id = x.c.Id,
+                Title = x.c.Title,
+                UserName = x.c.UserName,
+                FacultyName = x.c.FacultyName,
+                AcademicYear = x.a.Name,
+                Avatar = x.c.Avatar,
+                PublicDate = x.c.PublicDate,
+                Slug = x.c.Slug,
+                DateEdited = x.c.DateEdited,
+                Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
+                Like = x.c.LikeQuantity,
+                View = x.c.Views
+            }).ToList();
+            return publicContribution;
+        }
+        public async Task<List<TopContributorDto>> GetTopContributors()
+        {
+          
+            var contributions = await _dbContext.ContributionPublics
+                .Where(c => c.DateDeleted == null)
+                .Select(c => new
+                {
+                    c.UserName,
+                    c.Avatar,
+                    c.LikeQuantity,
+                    c.PublicDate
+                })
+                .ToListAsync();
+
+          
+            var topContributorsQuery = contributions
+                .GroupBy(c => c.UserName)
+                .Select(group => new
+                {
+                    UserName = group.Key,
+                    Avatar = group.OrderByDescending(c => c.PublicDate).FirstOrDefault().Avatar,
+                    TotalLikes = group.Sum(c => c.LikeQuantity),
+                    ContributionCount = group.Count()
+                })
+                .OrderByDescending(x => x.TotalLikes)
+                .ThenByDescending(x => x.ContributionCount)
+                .Take(10) 
+                .Select(x => new TopContributorDto
+                {
+                    UserName = x.UserName,
+                    Avatar = x.Avatar,
+                    TotalLikes = x.TotalLikes,
+                    ContributionCount = x.ContributionCount
+                });
+
+            var topContributors = topContributorsQuery.ToList();
+
+            return topContributors;
+        }
+
+
         public async Task<PagedResult<PublicContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, string? status, int pageIndex = 1, int pageSize = 10)
         {
             var query = from c in _dbContext.ContributionPublics
@@ -83,7 +190,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Slug = x.c.Slug,
                 DateEdited = x.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
                 View = x.c.Views
             }).ToList();
@@ -122,7 +229,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Slug = x.c.Slug,
                 DateEdited = x.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
                 View = x.c.Views
             }).ToList();
@@ -206,7 +313,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Slug = x.c.Slug,
                 DateEdited = x.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
                 View = x.c.Views
             }).ToList();
@@ -245,7 +352,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Slug = x.c.Slug,
                 DateEdited = x.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
                 View = x.c.Views
             }).ToList();

@@ -105,18 +105,8 @@ namespace Server.Api.Controllers.AdminApi
         {
             var query = _mapper.Map<DownloadFileQuery>(request);
             var result = await _mediatorSender.Send(query);
-            if (result.IsError)
-            {
-                return Problem(result.Errors);
-            }
+            return result.Match(result => Ok(result), errors => Problem(errors));
 
-            var (fileStream, contentType, fileName) = result.Value;
-            if (fileStream is MemoryStream memoryStream)
-            {
-                return File(memoryStream.ToArray(), contentType, fileName);
-            }
-            return File(fileStream, contentType, fileName);
-            
 
         }
 

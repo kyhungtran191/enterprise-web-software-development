@@ -146,7 +146,7 @@ namespace Server.Infrastructure.Persistence.Repositories
 
             if (contributionDetail == null)
             {
-                return null; 
+                return null;
             }
             var files = await _dbContext.Files.Where(f=>f.ContributionId==contributionDetail.c.Id).ToListAsync();
 

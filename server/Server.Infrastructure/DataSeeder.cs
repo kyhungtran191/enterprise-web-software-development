@@ -185,7 +185,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "/default.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
 
             },
             new()
@@ -197,7 +197,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "/default.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
 
             },
             new()
@@ -209,7 +209,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "/default.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
 
             },
             new()
@@ -221,7 +221,7 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "/default.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
 
             },
         };
@@ -560,12 +560,18 @@ public static class DataSeeder
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "/default.png", Name = "default.png", Type = FileType.Thumbnail
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png",
+                        Name = "default.png", Type = FileType.Thumbnail,
+                        PublicId = "thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce",
+                        Extension = ".png"
                     },
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "/default.png", Name = "default.png", Type = FileType.File
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1711952063/file/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qmwnzwl5ysx6blolevgd.docx",
+                        Name = "1_Unit 1 - Assignment 1 frontsheet.docx", Type = FileType.File,
+                        PublicId = "file/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qmwnzwl5ysx6blolevgd.docx",
+                        Extension = ".docx"
                     },
                 });
             }

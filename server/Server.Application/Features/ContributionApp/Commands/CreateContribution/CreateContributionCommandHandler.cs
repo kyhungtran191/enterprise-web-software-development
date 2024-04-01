@@ -99,6 +99,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                             Type = info.Type,
                             Name = info.Name,
                             PublicId = info.PublicId,
+                            Extension = info.Extension,
                         });
                     }
                 }

@@ -8,6 +8,7 @@ using Server.Application.Common.Dtos.Users;
 using Server.Application.Features.AcademicYearApp.Commands.CreateAcademicYear;
 using Server.Application.Features.AcademicYearApp.Commands.DeleteAcademicYear;
 using Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYear;
+using Server.Application.Features.AcademicYearApp.Queries.ActiveYear;
 using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
 using Server.Application.Features.Authentication;
@@ -41,6 +42,7 @@ using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
+using Server.Application.Features.PublicContributionApp.Queries.GetDetailPublicContributionBySlug;
 using Server.Application.Features.TagApp.Commands.CreateTag;
 using Server.Application.Features.TagApp.Commands.DeleteTag;
 using Server.Application.Features.TagApp.Commands.UpdateTag;
@@ -127,6 +129,7 @@ public class MappingProfiles : Profile
         CreateMap<GetYearByIdRequest, GetAcademicYearByIdQuery>();
         CreateMap<DeleteAcademicYearRequest, DeleteAcademicYearCommand>();
         CreateMap<UpdateAcademicYearRequest, UpdateAcademicYearCommand>();
+        CreateMap<ActiveAcademicYearRequest, ActiveYearCommand>();
 
         // contributions
         CreateMap<Contribution, ContributionDto>();
@@ -148,6 +151,7 @@ public class MappingProfiles : Profile
         CreateMap<ViewContributionRequest, ViewContributionCommand>();
         CreateMap<ReadLaterRequest, CreateReadLaterCommand>();
         CreateMap<FavoriteRequest, CreateFavoriteCommand>();
+        CreateMap<GetDetailPublicContributionBySlugRequest, GetDetailPublicContributionBySlugQuery>();
         // activity log
         CreateMap<ContributionActivityLog, ActivityLogDto>();
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();

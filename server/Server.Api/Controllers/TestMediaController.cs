@@ -36,25 +36,26 @@ namespace Server.Api.Controllers
         [Route("download-files")]
         public async Task<IActionResult> DownloadFilesAction([FromQuery] List<string> filePaths)
         {
-            try
-            {
-                var (fileStream, contentType, fileName) = await _mediaService.DownloadFiles(filePaths);
+            //try
+            //{
+            //    var (fileStream, contentType, fileName) = await _mediaService.DownloadFiles(filePaths);
 
-                if (fileStream is MemoryStream memoryStream)
-                {
-                    return File(memoryStream.ToArray(), contentType, fileName);
-                }
-                return File(fileStream, contentType, fileName);
+            //    if (fileStream is MemoryStream memoryStream)
+            //    {
+            //        return File(memoryStream.ToArray(), contentType, fileName);
+            //    }
+            //    return File(fileStream, contentType, fileName);
                 
-            }
-            catch (FileNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
+            //}
+            //catch (FileNotFoundException ex)
+            //{
+            //    return NotFound(ex.Message);
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500, $"An error occurred: {ex.Message}");
+            //}
+            return Ok(_mediaService.GenerateDownloadUrl(filePaths));
         }
 
     }

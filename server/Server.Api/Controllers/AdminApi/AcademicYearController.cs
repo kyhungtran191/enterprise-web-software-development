@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Application.Features.AcademicYearApp.Commands.CreateAcademicYear;
 using Server.Application.Features.AcademicYearApp.Commands.DeleteAcademicYear;
 using Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYear;
+using Server.Application.Features.AcademicYearApp.Queries.ActiveYear;
 using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
 using Server.Contracts.AcademicYears;
@@ -70,6 +71,17 @@ namespace Server.Api.Controllers.AdminApi
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
+
+        [HttpPost]
+        [Route("activate/{YearId}")]
+        [Authorize(Permissions.AcademicYears.Create)]
+        public async Task<IActionResult> ActiveAcademicYear([FromRoute] ActiveAcademicYearRequest request)
+        {
+            var command = _mapper.Map<ActiveYearCommand>(request);
+            var result = await _mediatorSender.Send(command);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+        }
+
 
     }
 }

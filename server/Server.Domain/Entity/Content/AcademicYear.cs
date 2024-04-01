@@ -17,4 +17,6 @@ public class AcademicYear : BaseEntity
 
     [MaxLength(256)]
     public required string UserNameCreated { get; set; }
+
+    [Required] public bool IsActive { get; set; } = false;
 }
