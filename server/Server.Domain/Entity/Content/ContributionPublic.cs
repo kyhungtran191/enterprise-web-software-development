@@ -42,5 +42,6 @@ namespace Server.Domain.Entity.Content
         public int LikeQuantity { get; set; } = 0;
                 
         public int Views { get; set; } = 0;
+        public string Content { get; set; }
     }
 }
