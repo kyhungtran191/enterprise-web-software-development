@@ -14,6 +14,6 @@
         public int Like { get; set; } = 0;
         public int View { get; set; } = 0;
         public string? Avatar { get; set; }
-        public string Content { get; set; }
+        public string? ShortDescription { get; set; }
     }
 }

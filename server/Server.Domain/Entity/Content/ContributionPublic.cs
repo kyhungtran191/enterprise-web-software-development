@@ -43,5 +43,6 @@ namespace Server.Domain.Entity.Content
                 
         public int Views { get; set; } = 0;
         public string Content { get; set; }
+        public string ShortDescription { get; set; }
     }
 }
