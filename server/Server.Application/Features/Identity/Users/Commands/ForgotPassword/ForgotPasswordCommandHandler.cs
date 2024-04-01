@@ -34,7 +34,7 @@ namespace Server.Application.Features.Identity.Users.Commands.ForgotPassword
 
           var token = await _userManager.GeneratePasswordResetTokenAsync(user);
           var resetPasswordBaseUrl = _configuration["ApplicationSettings:ResetPasswordBaseUrl"];
-          var resetPasswordUrl = $"{resetPasswordBaseUrl}?token={Uri.EscapeDataString(token)}";
+          var resetPasswordUrl = $"{resetPasswordBaseUrl}/{Uri.EscapeDataString(token)}";
           var emailBody = $"Please reset your password by clicking the following link: {resetPasswordUrl}";
             _emailService.SendEmail(new MailRequest
           {

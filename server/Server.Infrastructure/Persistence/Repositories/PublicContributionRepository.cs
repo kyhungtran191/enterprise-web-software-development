@@ -1,13 +1,12 @@
-﻿using System.Diagnostics.SymbolStore;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Contributions;
+using Server.Application.Common.Dtos.Users;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrappers.PagedResult;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
-using System.Drawing.Printing;
 
 namespace Server.Infrastructure.Persistence.Repositories
 {
@@ -38,6 +37,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Id = query.c.Id,
                 Title = query.c.Title,
                 Slug = query.c.Slug,
+                Content = query.c.Content,
                 AcademicYear = query.a.Name,
                 Avatar = query.c.Avatar,
                 FacultyName = query.c.FacultyName,
@@ -73,6 +73,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Id = x.c.Id,
                 Title = x.c.Title,
                 UserName = x.c.UserName,
+                ShortDescription = x.c.ShortDescription,
                 FacultyName = x.c.FacultyName,
                 AcademicYear = x.a.Name,
                 Avatar = x.c.Avatar,
@@ -184,6 +185,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Title = x.c.Title,
                 UserName = x.c.UserName,
                 FacultyName = x.c.FacultyName,
+                ShortDescription = x.c.ShortDescription,
                 AcademicYear = x.a.Name,
                 Avatar = x.c.Avatar,
                 PublicDate = x.c.PublicDate,
@@ -223,6 +225,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Title = x.c.Title,
                 UserName = x.c.UserName,
                 FacultyName = x.c.FacultyName,
+                ShortDescription = x.c.ShortDescription,
                 AcademicYear = x.a.Name,
                 Avatar = x.c.Avatar,
                 PublicDate = x.c.PublicDate,
@@ -281,6 +284,23 @@ namespace Server.Infrastructure.Persistence.Repositories
         {
             _dbContext.ContributionPublicFavorites.Remove(favorite);
         }
+        public async Task<List<UserInListDto>> GetListUserLiked(Guid contributionId)
+        {
+            var users = await (from like in _dbContext.Likes 
+                    join user in _dbContext.Users 
+                        on like.UserId equals user.Id
+                    where like.ContributionPublicId == contributionId
+                    select new UserInListDto
+                    {
+                        Email = user.Email,
+                        Avatar = user.Avatar,
+                        UserName = user.UserName
+                    })
+                .Distinct()
+                .ToListAsync();
+
+            return users;
+        }
         public async Task<List<PublicContributionInListDto>> GetUserFavoriteContributions(Guid userId)
         {
             
@@ -307,6 +327,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Title = x.c.Title,
                 UserName = x.c.UserName,
                 FacultyName = x.c.FacultyName,
+                ShortDescription = x.c.ShortDescription,
                 AcademicYear = x.a.Name,
                 Avatar = x.c.Avatar,
                 PublicDate = x.c.PublicDate,
@@ -345,6 +366,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Id = x.c.Id,
                 Title = x.c.Title,
                 UserName = x.c.UserName,
+                ShortDescription = x.c.ShortDescription,
                 FacultyName = x.c.FacultyName,
                 AcademicYear = x.a.Name,
                 Avatar = x.c.Avatar,
