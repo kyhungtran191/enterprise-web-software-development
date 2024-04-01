@@ -8,9 +8,12 @@ export const loginAPI = `${URL}/Auth/login`
 export const forgotPasswordAPI = `${URL}${clientAPI}/Users/forgot-password`
 export const resetPasswordAPI = `${URL}${clientAPI}/Users/reset-password`
 /**Client(Authenticated) */
+// Done
 export const recentContributionAPI = `${URL}${clientAPI}/Users/recent-contribution`
+
 export const profileAPI = `${URL}${clientAPI}/Users/my-profile`
 export const editProfileAPI = `${URL}${clientAPI}/Users/edit-profile`
+
 // Like
 export const favoriteAPI = `${URL}${clientAPI}/Users/my-favorite`
 export const toggleFavoriteAPI = `${URL}${clientAPI}/PublicContribution/toggle-like`
@@ -23,6 +26,7 @@ export const allContributionAPI = `${URL}${clientAPI}/PublicContribution/paging`
 export const latestContribution = `${URL}${clientAPI}/PublicContribution/latest`
 export const featuredContribution = `${URL}${clientAPI}/PublicContribution/featured-contribution`
 // Faculty
+// Done
 export const allFacultiesAPI = `${URL}${clientAPI}/Faculties`
 // Contributor
 export const topContributors = `${URL}${clientAPI}/PublicContribution/top-contributors`
