@@ -1,12 +1,13 @@
 import React from 'react'
 
-export default function Contributor() {
+export default function Contributor({ info }) {
+  console.log()
   return (
     <div className="flex items-center w-full gap-x-8">
-      <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className="object-cover w-10 h-10 rounded-full flex-shirk-0" />
+      <img src={`${info?.avatar ? info?.avatar : "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"}`} alt="" className="object-cover w-10 h-10 rounded-full flex-shirk-0" />
       <div className='flex-1'>
-        <h1 className='font-semibold'>Tran Ky Hung</h1>
-        <p className='text-ellipsis line-clamp-1'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse, exercitationem porro. Repudiandae quia non tempore quibusdam, incidunt consequuntur molestias laudantium minus dicta corporis hic perspiciatis consectetur sunt ratione in voluptas.</p>
+        <h1 className='font-semibold'>{info?.userName}</h1>
+        <p className='font-semibold text-ellipsis line-clamp-1'>Contribution: {info.contributionCount}</p>
       </div>
     </div>
   )

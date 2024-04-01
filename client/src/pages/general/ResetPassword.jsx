@@ -2,9 +2,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@radix-ui/react-dropdown-menu'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 export default function ResetPassword() {
+  const { token } = useParams();
+  console.log(token)
   return (
     <div className="container flex flex-col items-center justify-center h-screen">
       <div className="md:w-[50%]  min-h-[400px] shadow-2xl  p-10 rounded-lg ">

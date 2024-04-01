@@ -16,29 +16,6 @@ import ContributionDetail from './pages/general/ContributionDetail'
 import ForgotPassword from './pages/general/ForgotPassword'
 import ResetPassword from './pages/general/ResetPassword'
 function App() {
-
-  const login = async () => {
-    let data;
-    await fetch('http://localhost:5272/api/admin/auth/login', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: "admin@gmail.com",
-        password: "Admin123@"
-      }),
-    })
-      .then(response => response.json())
-      .then((response) => data = response);
-
-    return data;
-  }
-
-  useEffect(() => {
-    login().then(console.log);
-  }, []);
-
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
   const location = useLocation()
@@ -110,7 +87,7 @@ function App() {
         <Route path='/contributions'></Route>
         <Route path='/contributions/:id' element={<ContributionDetail></ContributionDetail>}></Route>
         <Route path="/forgot-password" element={<ForgotPassword></ForgotPassword>}></Route>
-        <Route path="/reset-password" element={<ResetPassword></ResetPassword>}></Route>
+        <Route path="/reset-password/:token" element={<ResetPassword></ResetPassword>}></Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
       </Routes>
     </>
