@@ -7,7 +7,6 @@ using Server.Application.Common.Interfaces.Persistence;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
-using Server.Infrastructure.Persistence.Repositories;
 using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Infrastructure;
@@ -572,7 +571,6 @@ public static class DataSeeder
             }
         }
 
-    
         // approve
         if (!context.ContributionPublics.Any())
         {

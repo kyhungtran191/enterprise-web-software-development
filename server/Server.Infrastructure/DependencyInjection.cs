@@ -3,9 +3,7 @@ using System.Net.Mime;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -71,7 +69,7 @@ public static class DependencyInjection
             {
                 services.Add(new ServiceDescriptor(directInterface, concreteService, ServiceLifetime.Scoped));
             }
-        }
+        }        
 
         return services;
     }

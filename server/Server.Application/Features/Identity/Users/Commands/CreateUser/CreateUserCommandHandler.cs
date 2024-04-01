@@ -17,17 +17,20 @@ public class CreateUserCommandHandler
     : IRequestHandler<CreateUserCommand, ErrorOr<IResponseWrapper>>
 {
     private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<AppRole> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IMediaService _mediaService;
 
     public CreateUserCommandHandler(UserManager<AppUser> userManager,
+                                    RoleManager<AppRole> roleManager,
                                     IMapper mapper,
                                     IUnitOfWork unitOfWork, IMediaService mediaService)
     {
         _userManager = userManager;
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _roleManager = roleManager;
         _mediaService = mediaService;
     }
 
@@ -37,6 +40,13 @@ public class CreateUserCommandHandler
         if (await _userManager.FindByEmailAsync(request.Email) is not null)
         {
             return Errors.User.DuplicateEmail;
+        }
+
+        var role = await _roleManager.FindByIdAsync(request.RoleId.ToString());
+
+        if (role is null) 
+        {
+            return Errors.Roles.NotFound;
         }
 
         var facultyFromDb =
@@ -54,6 +64,7 @@ public class CreateUserCommandHandler
 
         newUser.FacultyId = facultyFromDb.Id;
         newUser.PasswordHash = new PasswordHasher<AppUser>().HashPassword(newUser, request.Password);
+
         // avatar
         if (request.Avatar is not null)
         {
@@ -65,9 +76,15 @@ public class CreateUserCommandHandler
                 newUser.Avatar = info.Path;
             }
         }
-     
 
         var result = await _userManager.CreateAsync(newUser);
+
+        if (!result.Succeeded)
+        {
+            return result.GetIdentityResultErrorDescriptions();
+        }
+
+        result = await _userManager.AddToRoleAsync(newUser, role.Name!);
 
         if (!result.Succeeded)
         {
