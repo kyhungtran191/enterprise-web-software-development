@@ -10,6 +10,9 @@ namespace Server.Application.Common.Interfaces.Services
         Task RemoveFile(List<string> filePaths);
 
         Task<(Stream fileStream, string contentType, string fileName)> DownloadFiles(List<string> filePaths);
+        Task<List<FileDto>> UploadFileCloudinary(List<IFormFile> files, string type, Guid id);
+
+        Task RemoveFromCloudinary(List<string> publicIds,List<string> types);
         //Task<(byte[], string, string)> DownloadFile(string FileName);
     }
 }

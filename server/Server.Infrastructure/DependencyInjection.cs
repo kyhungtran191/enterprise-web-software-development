@@ -38,6 +38,9 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, EmailService>();
         // upload file
         services.Configure<MediaSettings>(configuration.GetSection("MediaSettings"));
+        // cloudinary
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
         services.AddTransient<IMediaService, MediaService>();
         services
             .AddDatabase(configuration)
