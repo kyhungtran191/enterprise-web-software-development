@@ -49,11 +49,11 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
         var roles = await _userManager.GetRolesAsync(applicationUser);
         var permissions = await GetPermissions(roles.ToHashSet());
 
-        string faculty = string.Empty;
+        string facultyName = string.Empty;
         if (applicationUser.FacultyId is not null) {
 
             var facultyFromDb = await _facultyRepository.GetByIdAsync(applicationUser.FacultyId.Value);
-            faculty = facultyFromDb.Name;
+            facultyName = facultyFromDb.Name;
         }
 
         return new Claim[] {
@@ -67,7 +67,8 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
             new Claim(JwtRegisteredClaimNames.FamilyName, applicationUser.LastName),
             new Claim(UserClaims.Roles, string.Join(";", roles)),
             new Claim(UserClaims.Permissions, JsonSerializer.Serialize(permissions)),
-            new Claim(UserClaims.FacultyId, faculty),
+            new Claim(UserClaims.FacultyId, applicationUser.FacultyId.ToString()),
+            new Claim(UserClaims.FacultyName, facultyName),
             // Jwt ID
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
