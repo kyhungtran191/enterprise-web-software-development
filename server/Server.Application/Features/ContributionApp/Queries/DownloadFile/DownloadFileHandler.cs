@@ -8,7 +8,7 @@ using Server.Domain.Common.Errors;
 
 namespace Server.Application.Features.ContributionApp.Queries.DownloadFile
 {
-    public class DownloadFileHandler : IRequestHandler<DownloadFileQuery, ErrorOr<(Stream fileStream, string contentType, string fileName)>>
+    public class DownloadFileHandler : IRequestHandler<DownloadFileQuery, ErrorOr<IResponseWrapper<string>>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediaService _mediaService;
@@ -18,15 +18,21 @@ namespace Server.Application.Features.ContributionApp.Queries.DownloadFile
             _unitOfWork = unitOfWork;
             _mediaService = mediaService;
         }
-        public async Task<ErrorOr<(Stream fileStream, string contentType, string fileName)>> Handle(DownloadFileQuery request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<IResponseWrapper<string>>> Handle(DownloadFileQuery request, CancellationToken cancellationToken)
         {
             var filePaths = await _unitOfWork.FileRepository.GetPathByContribution(request.ContributionId);
             if (filePaths.Count == 0 || filePaths.Contains(""))
             {
                 return Errors.Contribution.NoFilesFound;
             }
+            var result = _mediaService.GenerateDownloadUrl(filePaths);
 
-           return await _mediaService.DownloadFiles(filePaths);
+            return new ResponseWrapper<string>
+            {
+                IsSuccessfull = true,
+                Messages = new List<string>{ $"Link download below"},
+                ResponseData = result
+            };
         }
     }
 }

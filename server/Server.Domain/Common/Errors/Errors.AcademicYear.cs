@@ -17,6 +17,9 @@ namespace Server.Domain.Common.Errors
 
             public static Error ContributionExist => Error.Conflict(code: "AcademicYear.ContributionExist",
                 description: "Can not delete. Still have contributions in this academic year ");
+
+            public static Error HasActiveYearAlready => Error.Conflict(code: "AcademicYear.HasActiveYearAlready",
+                description: "Has active academic year already");
         }
         
     }

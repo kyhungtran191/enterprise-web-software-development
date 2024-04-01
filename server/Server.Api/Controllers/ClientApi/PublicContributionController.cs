@@ -3,12 +3,15 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.ContributionApp.Queries.GetTopContributors;
 using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
+using Server.Application.Features.PublicContributionApp.Queries.GetDetailPublicContributionBySlug;
 using Server.Application.Features.PublicContributionApp.Queries.GetTop4Contributions;
+using Server.Application.Features.PublicContributionApp.Queries.GetTopContribution;
 using Server.Contracts.PublicContributions;
 using Server.Contracts.PublicContributions.Favorite;
 using Server.Contracts.PublicContributions.Like;
@@ -55,13 +58,41 @@ public class PublicContributionController : ClientApiController
     }
 
     [HttpPost]
-    [Route("view/{ContributionId}")]
-    public async Task<IActionResult> ViewContribution([FromRoute] ViewContributionRequest request)
+    [Route("{Slug}")]
+    public async Task<IActionResult> GetDetailContribution([FromRoute] GetDetailPublicContributionBySlugRequest request)
     {
-        var command = _mapper.Map<ViewContributionCommand>(request);
-        var result = await _mediatorSender.Send(command);
+        var query = _mapper.Map<GetDetailPublicContributionBySlugQuery>(request);
+        var result = await _mediatorSender.Send(query);
+        return result.Match(success => Ok(success), errors => Problem(errors));
+
+
+    }
+
+    [HttpGet]
+    [Route("featured-contribution")]
+    public async Task<IActionResult> GetTopContribution()
+    {
+        var query = new GetFeaturedContributionQuery();
+        var result = await _mediatorSender.Send(query);
         return result.Match(success => Ok(success), errors => Problem(errors));
     }
+
+    [HttpGet]
+    [Route("top-contributors")]
+    public async Task<IActionResult> GetTopContributors()
+    {
+        var query = new GetTopContributorsQuery();
+        var result = await _mediatorSender.Send(query);
+        return result.Match(success => Ok(success), errors => Problem(errors));
+    }
+    //[HttpPost]
+    //[Route("view/{ContributionId}")]
+    //public async Task<IActionResult> ViewContribution([FromRoute] ViewContributionRequest request)
+    //{
+    //    var command = _mapper.Map<ViewContributionCommand>(request);
+    //    var result = await _mediatorSender.Send(command);
+    //    return result.Match(success => Ok(success), errors => Problem(errors));
+    //}
     [HttpPost("toggle-read-later/{ContributionId}")]
     [Authorize]
     public async Task<IActionResult> AddReadLater([FromRoute] ReadLaterRequest request)

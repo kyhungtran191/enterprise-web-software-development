@@ -2,6 +2,7 @@
 {
     public class AcademicYearDto
     {
+        public Guid Id { get; set; }
         public string Name { get; set; } = default!;
         public DateTime StartClosureDate { get; set; }
         public DateTime EndClosureDate { get; set; }

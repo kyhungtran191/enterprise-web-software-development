@@ -13,6 +13,8 @@ namespace Server.Application.Common.Interfaces.Services
         Task<List<FileDto>> UploadFileCloudinary(List<IFormFile> files, string type, Guid id);
 
         Task RemoveFromCloudinary(List<string> publicIds,List<string> types);
+
+        string GenerateDownloadUrl(List<string> publicIds);
         //Task<(byte[], string, string)> DownloadFile(string FileName);
     }
 }

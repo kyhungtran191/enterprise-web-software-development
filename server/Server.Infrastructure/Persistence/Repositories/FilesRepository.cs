@@ -27,7 +27,7 @@ namespace Server.Infrastructure.Persistence.Repositories
         public async Task<List<string>> GetPathByContribution(Guid contributionId)
         {
             var files = await _context.Files.Where(x => x.ContributionId == contributionId && x.Type == FileType.File).ToListAsync();
-            var filePath = files.Select(x => x.Path).ToList();
+            var filePath = files.Select(x => x.PublicId).ToList();
             return filePath;
 
         }

@@ -8,6 +8,9 @@ namespace Server.Application.Common.Interfaces.Persistence
     public interface IPublicContributionRepository : IRepository<ContributionPublic,Guid>
     {
         Task<PagedResult<PublicContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, string? status, int pageIndex = 1, int pageSize = 10);
+        Task<List<PublicContributionInListDto>> GetFeaturedContribution();
+        Task<List<TopContributorDto>> GetTopContributors();
+        Task<PublicContributionDetailDto> GetBySlug(string slug);
         Task<List<PublicContributionInListDto>> GetTopContributions(int quantity = 4);
         Task AddToReadLater(ContributionPublic contribution, Guid userId);
         Task<bool> AlreadyReadLater(ContributionPublic contribution, Guid userId);

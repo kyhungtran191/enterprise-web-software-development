@@ -2,6 +2,7 @@
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers;
 using Server.Contracts.Common;
@@ -15,11 +16,13 @@ namespace Server.Application.Features.Identity.Users.Commands.ForgotPassword
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
-        public ForgotPasswordCommandHandler(UserManager<AppUser> userManager, IEmailService emailService)
+        public ForgotPasswordCommandHandler(UserManager<AppUser> userManager, IEmailService emailService,IConfiguration configuration)
         {
             _userManager = userManager;
             _emailService = emailService;
+            _configuration = configuration;
         }
       public async Task<ErrorOr<IResponseWrapper<string>>> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
       {
@@ -30,10 +33,13 @@ namespace Server.Application.Features.Identity.Users.Commands.ForgotPassword
           }
 
           var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-           _emailService.SendEmail(new MailRequest
+          var resetPasswordBaseUrl = _configuration["ApplicationSettings:ResetPasswordBaseUrl"];
+          var resetPasswordUrl = $"{resetPasswordBaseUrl}?token={Uri.EscapeDataString(token)}";
+          var emailBody = $"Please reset your password by clicking the following link: {resetPasswordUrl}";
+            _emailService.SendEmail(new MailRequest
           {
               ToEmail = user?.Email,
-              Body = token,
+              Body = emailBody,
               Subject = "RESET PASSWORD"
           });
            return new ResponseWrapper<string>

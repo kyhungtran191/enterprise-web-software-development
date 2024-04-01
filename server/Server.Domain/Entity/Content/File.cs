@@ -21,5 +21,8 @@ namespace Server.Domain.Entity.Content
         [Required]
         [MaxLength(500)]
         public string PublicId { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string Extension { get; set; }
     }
 }

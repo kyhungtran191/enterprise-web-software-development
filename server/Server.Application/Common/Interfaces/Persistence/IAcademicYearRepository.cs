@@ -9,6 +9,6 @@ namespace Server.Application.Common.Interfaces.Persistence
         Task<AcademicYear> GetAcademicYearByName(string name);
         Task<PagedResult<AcademicYearDto>> GetAllYearsPaging(string? keyword, int pageIndex = 1, int pageSize = 10);
         Task<bool> HasContributionsAsync(Guid academicYearId);
-
+        Task<bool> AnyActiveYear();
     }
 }

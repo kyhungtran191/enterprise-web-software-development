@@ -180,6 +180,7 @@ namespace Server.Infrastructure.Services.Media
                                 Name = file.FileName,
                                 Type = type,
                                 PublicId = uploadResult.PublicId,
+                                Extension = extension
                             });
                         }
                     }
@@ -223,6 +224,25 @@ namespace Server.Infrastructure.Services.Media
                 }
             }
         }
+        public string GenerateDownloadUrl(List<string> publicIds)
+        {
+
+            var downloadParams = new ArchiveParams();
+            downloadParams.PublicIds(publicIds);
+            downloadParams.ResourceType("raw");
+            if (publicIds.Count > 1)
+            {
+                return _cloudinary.DownloadArchiveUrl(downloadParams);
+            }
+               
+            
+            if (publicIds.Count == 1)
+            {
+                return $"http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1711946007/{publicIds[0]}";
+            }
+
+            return null;
         }
+    }
 
 }
