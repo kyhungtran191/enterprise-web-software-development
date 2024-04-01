@@ -29,6 +29,7 @@ public class Contribution : BaseEntity
    
     public ContributionStatus Status { get; set; }
     public string Content { get; set; }
+    public string ShortDescription { get; set; }
 }
 public enum ContributionStatus
 {
