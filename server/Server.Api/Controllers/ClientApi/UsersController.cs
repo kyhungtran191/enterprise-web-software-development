@@ -9,6 +9,7 @@ using Server.Application.Features.Identity.Users.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Users.Commands.ResetPassword;
 using Server.Application.Features.Identity.Users.Commands.UpdateProfile;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
+using Server.Application.Features.Identity.Users.Queries.ValidateForgotToken;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Queries.GetFavorite;
 using Server.Application.Features.PublicContributionApp.Queries.GetReadLater;
@@ -41,6 +42,14 @@ namespace Server.Api.Controllers.ClientApi
             var command = _mapper.Map<ResetPasswordCommand>(request);
             var result = await _mediatorSender.Send(command);
             return result.Match(success => Ok(success), errors => Problem(errors));
+        }
+
+        [HttpPost("validate-forgot-token")]
+        public async Task<IActionResult> ValidateToken(ValidateForgotTokenRequest request)
+        {
+            var query = _mapper.Map<ValidateForgotTokenQuery>(request);
+            var result = await _mediatorSender.Send(query);
+            return result.Match(result => Ok(result), errors => Problem(errors));
         }
         [HttpGet("recent-contribution")]
         [Authorize]

@@ -7,7 +7,8 @@ using Server.Application.Features.ContributionApp.Queries.GetTopContributors;
 using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
-using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
+using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
+using Server.Application.Features.PublicContributionApp.Queries.DownSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
 using Server.Application.Features.PublicContributionApp.Queries.GetDetailPublicContributionBySlug;
 using Server.Application.Features.PublicContributionApp.Queries.GetTop4Contributions;
@@ -16,7 +17,6 @@ using Server.Contracts.PublicContributions;
 using Server.Contracts.PublicContributions.Favorite;
 using Server.Contracts.PublicContributions.Like;
 using Server.Contracts.PublicContributions.ReadLater;
-using Server.Contracts.PublicContributions.View;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -67,7 +67,21 @@ public class PublicContributionController : ClientApiController
 
 
     }
+    [HttpGet("download-files/{ContributionId}")]
+    public async Task<IActionResult> DownloadFiles([FromRoute] DownloadAllFileRequest request)
+    {
+        var query = _mapper.Map<DownloadAllFileQuery>(request);
+        var result = await _mediatorSender.Send(query);
+        return result.Match(result => Ok(result), errors => Problem(errors));
+    }
 
+    [HttpGet("download-file")]
+    public async Task<IActionResult> DownloadFile(DownSingleFileRequest request)
+    {
+        var query = _mapper.Map<DownSingleFileQuery>(request);
+        var result = await _mediatorSender.Send(query);
+        return result.Match(result => Ok(result), errors => Problem(errors));
+    }
     [HttpGet]
     [Route("featured-contribution")]
     public async Task<IActionResult> GetTopContribution()

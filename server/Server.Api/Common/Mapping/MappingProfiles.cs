@@ -37,10 +37,13 @@ using Server.Application.Features.Identity.Users.Commands.UpdateUser;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
+using Server.Application.Features.Identity.Users.Queries.ValidateForgotToken;
 using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
+using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
+using Server.Application.Features.PublicContributionApp.Queries.DownSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
 using Server.Application.Features.PublicContributionApp.Queries.GetDetailPublicContributionBySlug;
 using Server.Application.Features.TagApp.Commands.CreateTag;
@@ -152,6 +155,8 @@ public class MappingProfiles : Profile
         CreateMap<ReadLaterRequest, CreateReadLaterCommand>();
         CreateMap<FavoriteRequest, CreateFavoriteCommand>();
         CreateMap<GetDetailPublicContributionBySlugRequest, GetDetailPublicContributionBySlugQuery>();
+        CreateMap<DownSingleFileRequest, DownSingleFileQuery>();
+        CreateMap<DownloadAllFileRequest, DownloadAllFileQuery>();
         // activity log
         CreateMap<ContributionActivityLog, ActivityLogDto>();
         CreateMap<GetActivityLogRequest, GetActivityLogQuery>();
@@ -160,5 +165,6 @@ public class MappingProfiles : Profile
         // for-got password
         CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
         CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
+        CreateMap<ValidateForgotTokenRequest, ValidateForgotTokenQuery>();
     }    
 }
