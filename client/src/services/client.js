@@ -1,4 +1,4 @@
-import { allFacultiesAPI, featuredContribution, latestContribution, publicContributionAPI, topContributors } from "@/apis"
+import { allFacultiesAPI, featuredContribution, latestContribution, loginAPI, publicContributionAPI, topContributors } from "@/apis"
 import axios from "axios"
 
 export const Contributions = {
@@ -10,4 +10,7 @@ export const Contributions = {
   getAllPublicContribution: async (queryParams) => await axios.get(`${publicContributionAPI}/paging`, {
     params: queryParams
   })
+}
+export const Auth = {
+  login: async (body) => axios.post(loginAPI, body)
 }

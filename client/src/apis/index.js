@@ -3,7 +3,7 @@ export const adminAPI = `/admin`
 export const clientAPI = `/client`
 
 // Authenticate API
-export const loginAPI = `${URL}/Auth/login`
+export const loginAPI = `http://localhost:5272/Auth/login`
 export const forgotPasswordAPI = `${URL}${clientAPI}/Users/forgot-password`
 export const resetPasswordAPI = `${URL}${clientAPI}/Users/reset-password`
 /**Client(Authenticated) */
