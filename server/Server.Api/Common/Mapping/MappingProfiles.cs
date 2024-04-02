@@ -144,6 +144,7 @@ public class MappingProfiles : Profile
         CreateMap<GetContributionBySlugRequest, GetContributionBySlugQuery>();
         CreateMap<CreateContributionRequest, CreateContributionCommand>();
         CreateMap<GetAllContributionPagingRequest, GetAllContributionsPagingQuery>();
+        CreateMap<GetFacultyContributionRequest, GetAllContributionsPagingQuery>();
         CreateMap<UpdateContributionRequest, UpdateContributionCommand>();
         CreateMap<DeleteContributionRequest, DeleteContributionCommand>();
         CreateMap<ApproveContributionsRequest, ApproveContributionsCommand>();

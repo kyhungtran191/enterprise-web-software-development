@@ -8,6 +8,7 @@ using Server.Application.Wrappers;
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
 using Server.Domain.Common.Errors;
+using Server.Domain.Entity.Content;
 using File = Server.Domain.Entity.Content.File;
 
 
@@ -43,6 +44,11 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
             if (itemFromDb.DateDeleted.HasValue)
             {
                 return Errors.Contribution.Deleted;
+            }
+
+            if (itemFromDb.Status == ContributionStatus.Approve)
+            {
+                return Errors.Contribution.AlreadyApproved;
             }
             _mapper.Map(request,itemFromDb);
             itemFromDb.DateEdited = _dateTimeProvider.UtcNow;
@@ -92,8 +98,7 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                 await _unitOfWork.CompleteAsync();
             }
 
-            await _unitOfWork.ContributionRepository.SendToApprove(request.ContributionId, request.UserId);
-            await _unitOfWork.CompleteAsync();
+           
             // add email service later
 
 
