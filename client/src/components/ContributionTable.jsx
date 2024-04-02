@@ -3,7 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { CustomTable } from '@/components/CustomTable.jsx'
 import { ArrowUpDown } from 'lucide-react'
 import DynamicBreadcrumb from './DynamicBreadcrumbs'
-import { format } from 'date-fns'
+import { NewUserDialog } from './NewUserDialog'
 import { Pencil, UserRoundX, EllipsisVertical, User } from 'lucide-react'
 import {
   DropdownMenu,
@@ -12,13 +12,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { UserDialog } from './UserDialog'
 import { useState } from 'react'
-import { NewAcademicYearDialog } from './NewAcademicYearDialog'
-import { useQuery } from '@tanstack/react-query'
-import useParamsVariables from '@/hooks/useParams'
-import { AcademicYears } from '@/services/admin'
-import Spinner from './Spinner'
-export function AcademicYearTable() {
+
+export function ContributionTable() {
   const [isOpenViewUser, setIsOpenViewUser] = useState(false)
   const [viewUser, setViewUser] = useState({})
   const handleViewUser = (user) => {
@@ -50,7 +47,63 @@ export function AcademicYearTable() {
       enableHiding: false
     },
     {
-      accessorKey: 'name',
+      accessorKey: 'title',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Title
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'submissionDate',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Submission Date
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'studentName',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Student Name
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'facultyName',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Faculty
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'academicYear',
       header: ({ column }) => {
         return (
           <Button
@@ -58,48 +111,6 @@ export function AcademicYearTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Academic Year
-            <ArrowUpDown className='w-4 h-4 ml-2' />
-          </Button>
-        )
-      }
-    },
-    {
-      accessorKey: 'startClosureDate',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant='ghost'
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Start Closure Date
-            <ArrowUpDown className='w-4 h-4 ml-2' />
-          </Button>
-        )
-      }
-    },
-    {
-      accessorKey: 'endClosureDate',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant='ghost'
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            End Closure Date
-            <ArrowUpDown className='w-4 h-4 ml-2' />
-          </Button>
-        )
-      }
-    },
-    {
-      accessorKey: 'finalClosureDate',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant='ghost'
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Final Closure Date
             <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
@@ -152,43 +163,32 @@ export function AcademicYearTable() {
       }
     }
   ]
-  const queryParams = useParamsVariables()
-  const { data, isLoading } = useQuery({
-    queryKey: ['academicYears', queryParams],
-    queryFn: (_) => AcademicYears.getAllAcademicYears(queryParams),
-    keepPreviousData: true,
-    staleTime: 3 * 60 * 1000
-  })
-  const academicYearsData =
-    data &&
-    data?.data?.responseData?.results.map((year) => ({
-      ...year,
-      startClosureDate: format(new Date(year.startClosureDate), 'dd-MM-yyyy'),
-      endClosureDate: format(new Date(year.endClosureDate), 'dd-MM-yyyy'),
-      finalClosureDate: format(new Date(year.finalClosureDate), 'dd-MM-yyyy')
-    }))
+  const data = [
+    {
+      id: '728ed52f',
+      title: 'First Contribution',
+      submissionDate: '22/03/2023',
+      studentName: 'John Doe',
+      academicYear: '2023-2024',
+      facultyName: 'IT',
+      status: 'Active'
+    }
+  ]
+
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
-        <NewAcademicYearDialog />
+        <NewUserDialog />
       </div>
-      {isLoading && (
-        <div className='container flex items-center justify-center min-h-screen'>
-          <Spinner className={'border-blue-500'}></Spinner>
-        </div>
-      )}
-      {!isLoading && (
-        <div className='h-full px-4 py-6 lg:px-8'>
-          <CustomTable columns={columns} data={academicYearsData} />
-        </div>
-      )}
-
-      {/* <UserDialog
+      <div className='h-full px-4 py-6 lg:px-8'>
+        <CustomTable columns={columns} data={data} />
+      </div>
+      <UserDialog
         isOpen={isOpenViewUser}
         handleOpenChange={setIsOpenViewUser}
         user={viewUser}
-      /> */}
+      />
     </div>
   )
 }

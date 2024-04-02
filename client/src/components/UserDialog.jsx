@@ -13,7 +13,6 @@ import { Label } from '@/components/ui/label'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { User } from 'lucide-react'
 export function UserDialog({ isOpen, handleOpenChange, user }) {
-  console.log(user)
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className='sm:max-w-[425px]'>
