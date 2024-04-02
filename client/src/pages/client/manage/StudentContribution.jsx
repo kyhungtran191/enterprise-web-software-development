@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/pagination'
 import Contributor from '@/components/contributor'
 import Article from '@/components/article'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function StudentContribution() {
   const [position, setPosition] = React.useState('publish')
@@ -70,11 +70,11 @@ export default function StudentContribution() {
         </div>
       </div>
       <div className="">
-        {Array(5)
+        {/* {Array(5)
           .fill(0)
           .map((item, index) => (
             <Article key={index} isRevert={true} status={true} className={'my-4'}></Article>
-          ))}
+          ))} */}
       </div>
       <Pagination className={"py-4"}>
         <PaginationContent>

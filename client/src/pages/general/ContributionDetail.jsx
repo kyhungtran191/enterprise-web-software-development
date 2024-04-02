@@ -18,8 +18,7 @@ export default function ContributionDetail() {
   const detailData = data && data?.data?.responseData
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
   useEffect(() => {
-    // console.log(detailData)
-    if (detailData.files) {
+    if (detailData?.files) {
       console.log(detailData.files)
     }
   }, [detailData])
@@ -31,7 +30,7 @@ export default function ContributionDetail() {
         <DynamicBreadcrumb></DynamicBreadcrumb>
         {/* Top post */}
         <div className='flex flex-col items-center gap-6 my-5 medium:flex-row'>
-          <img src={`${detailData?.thumbnails[0]?.path || 'https://plus.unsplash.com/premium_photo-1686149758342-9f0f249f2989?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8'}`} alt="" className='rounded-lg w-full xl:h-[500px] medium:w-[60%] xl:w-auto object-cover flex-shrink-0' />
+          <img src={`${detailData?.thumbnails?.length > 0 && detailData?.thumbnails[0]?.path || 'https://plus.unsplash.com/premium_photo-1686149758342-9f0f249f2989?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8'}`} alt="" className='rounded-lg w-full xl:h-[500px] medium:w-[60%] xl:w-auto object-cover flex-shrink-0' />
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <Badge variant="destructive">{detailData?.facultyName}</Badge>

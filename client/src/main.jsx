@@ -8,6 +8,7 @@ import { AppProvider } from './contexts/app.context.jsx'
 import { AxiosInterceptor } from './utils/axiosInstance.jsx'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <App />
         </AxiosInterceptor>
       </AppProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </BrowserRouter>
 )
