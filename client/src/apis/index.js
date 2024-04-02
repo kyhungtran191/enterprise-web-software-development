@@ -1,4 +1,3 @@
-// Example
 export const URL = "http://localhost:5272/api"
 export const adminAPI = `/admin`
 export const clientAPI = `/client`
@@ -25,6 +24,7 @@ export const toggleReadLaterAPI = `${URL}${clientAPI}/PublicContribution/toggle-
 export const allContributionAPI = `${URL}${clientAPI}/PublicContribution/paging`
 export const latestContribution = `${URL}${clientAPI}/PublicContribution/latest`
 export const featuredContribution = `${URL}${clientAPI}/PublicContribution/featured-contribution`
+export const publicContributionAPI = `${URL}${clientAPI}/PublicContribution`
 // Faculty
 // Done
 export const allFacultiesAPI = `${URL}${clientAPI}/Faculties`

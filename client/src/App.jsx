@@ -25,7 +25,7 @@ function App() {
     const timeoutId = setTimeout(() => {
       setLoading(false) // Dừng loading sau một khoảng thời gian
     }, 1000)
-
+    window.scrollTo(0, 0)
     return () => clearTimeout(timeoutId) // Hủy bỏ timeout khi component unmount hoặc khi route thay đổi
   }, [location.pathname])
 
