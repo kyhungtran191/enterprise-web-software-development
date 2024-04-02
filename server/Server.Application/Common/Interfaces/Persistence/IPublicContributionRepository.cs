@@ -11,6 +11,7 @@ namespace Server.Application.Common.Interfaces.Persistence
         Task<PagedResult<PublicContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, string? status, int pageIndex = 1, int pageSize = 10);
         Task<List<PublicContributionInListDto>> GetFeaturedContribution();
         Task<List<UserInListDto>> GetListUserLiked(Guid contributionId);
+        Task<List<PublicContributionInListDto>> GetLikedContribution(Guid userId);
         Task<List<TopContributorDto>> GetTopContributors();
         Task<PublicContributionDetailDto> GetBySlug(string slug);
         Task<List<PublicContributionInListDto>> GetTopContributions(int quantity = 4);

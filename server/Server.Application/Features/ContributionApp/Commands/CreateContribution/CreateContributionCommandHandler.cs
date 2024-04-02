@@ -64,8 +64,9 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 FacultyId = request.FacultyId,
                 UserId = request.UserId,
                 IsConfirmed = true,
-                SubmissionDate = _dateTimeProvider.UtcNow
-
+                SubmissionDate = _dateTimeProvider.UtcNow,
+                Content = request.Content,
+                ShortDescription = request.ShortDescription
             };
             _unitOfWork.ContributionRepository.Add(contributon);
             var thumbnailList = new List<IFormFile>();

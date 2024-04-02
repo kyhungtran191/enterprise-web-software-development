@@ -1,5 +1,5 @@
 @host=http://localhost:5272
-@adminPath=api/admin/auth
+@adminPath=auth
 @contentType=application/json
 
 ### Admin Account :

@@ -5,8 +5,8 @@ namespace Server.Contracts.Contributions
 {
     public class GetAllContributionPagingRequest : PagingRequest
     {
-        [FromQuery] public string? Year { get; set; }
-        [FromQuery] public string? FacultyName { get; set; }
-        [FromQuery] public string? Status { get; set; }
+        [FromQuery(Name = "year")] public string? Year { get; set; }
+        [FromQuery(Name = "facultyname")] public string? FacultyName { get; set; }
+        [FromQuery(Name = "status")] public string? Status { get; set; }
     }
 }

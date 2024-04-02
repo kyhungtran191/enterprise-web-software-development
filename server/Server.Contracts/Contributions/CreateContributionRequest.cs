@@ -9,6 +9,8 @@ namespace Server.Contracts.Contributions
         public List<IFormFile>? Files { get; set; }
         public Guid AcademicYearId { get; set; }
         public bool IsConfirmed { get; set; }
+        public string Content { get; set; }
+        public string ShortDescription { get; set; }
 
     }
 }
