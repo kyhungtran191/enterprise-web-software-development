@@ -11,13 +11,12 @@ import { useNavigate } from "react-router-dom"
 const instanceAxios = axios.create({
   baseURL: URL
 })
+
 const AxiosInterceptor = ({ children }) => {
-  let accessToken = getAccessTokenFromLS();
-  let refreshToken = getRefreshToken();
-  console.log("accessToken", accessToken);
-  console.log("refreshToken", refreshToken);
   const navigate = useNavigate()
   instanceAxios.interceptors.request.use(async function (config) {
+    let accessToken = getAccessTokenFromLS();
+    let refreshToken = getRefreshToken();
     if (accessToken) {
       const decoded = jwtDecode(accessToken)
       if (decoded.exp > Date.now() / 1000) {
@@ -25,24 +24,26 @@ const AxiosInterceptor = ({ children }) => {
         return config
       } else {
         if (refreshToken) {
-          console.log(refreshToken)
+          console.log("current", refreshToken)
           await axios
             .post(
               refreshTokenAPI,
               { accessToken, refreshToken },
-            )
-            .then(res => {
-              console.log(res)
-              if (res && res?.data && res?.data?.responseData) {
+            ).then(res => {
+              if (res && res?.data?.responseData) {
                 const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res?.data?.responseData
-                config.headers.authorization = `Bearer ${newAccessToken}`
-                if (newAccessToken && newRefreshToken) {
+                if (newAccessToken) {
+                  config.headers.authorization = `Bearer ${newAccessToken}`
                   saveAccessTokenToLS(newAccessToken)
+                }
+                if (newRefreshToken) {
                   saveRefreshTokenToLS(newRefreshToken)
-                } else {
+                }
+                else {
                   toast.error("Không có access và refresh")
                 }
               }
+              return config;
             })
             .catch((error) => {
               // clearLS()
