@@ -1,7 +1,6 @@
 import React from 'react'
 
 export default function Contributor({ info }) {
-  console.log()
   return (
     <div className="flex items-center w-full gap-x-8">
       <img src={`${info?.avatar ? info?.avatar : "https://cdn-icons-png.flaticon.com/512/6596/6596121.png"}`} alt="" className="object-cover w-10 h-10 rounded-full flex-shirk-0" />
