@@ -3,15 +3,17 @@ import Spinner from '@/components/Spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Auth } from '@/services/client'
 import { Icon } from '@iconify/react'
+import { useMutation } from '@tanstack/react-query'
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Controller, useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import * as yup from 'yup'
 export default function Login() {
   const [isOpen, setIsOpen] = useState(false)
-  const isLoading = false
-
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -19,8 +21,23 @@ export default function Login() {
     watch,
     formState: { errors }
   } = useForm()
-
-  const onSubmit = (data) => console.log(data)
+  const { isLoading, mutate } = useMutation({
+    mutationFn: (body) => Auth.login(body),
+  })
+  const onSubmit = (data) => {
+    mutate(data, {
+      onSuccess(data) {
+        if (data.data.accessToken && data.data.refreshToken) {
+          toast.success("Login Successfully!")
+          navigate('/')
+        }
+      },
+      onError(data) {
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
+      }
+    })
+  }
   return (
     <div className='fixed grid w-screen h-screen medium:grid-cols-2'>
       {/* Left */}
@@ -45,19 +62,33 @@ export default function Login() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='my-4'>
             <Label className='text-md'>Email</Label>
-            <Input
-              className='p-4 mt-2 outline-none'
-              placeholder='Student Email'
-            ></Input>
+            <Controller
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <Input
+                  className='p-4 mt-2 outline-none'
+                  placeholder='Student Email'
+                  {...field}
+                ></Input>
+              )}
+            />
           </div>
           <div className='my-4'>
             <Label className='text-md'>Password</Label>
             <div className='relative'>
-              <Input
-                className='p-4 mt-2 outline-none'
-                placeholder='Enter Password'
-                type={isOpen ? 'text' : 'password'}
-              ></Input>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <Input
+                    className='p-4 mt-2 outline-none'
+                    placeholder='Enter Password'
+                    type={isOpen ? 'text' : 'password'}
+                    {...field}
+                  ></Input>
+                )}
+              />
               <div
                 className='absolute -translate-y-1/2 top-[50%] w-5 h-5 cursor-pointer right-5'
                 onClick={() => setIsOpen(!isOpen)}
@@ -78,7 +109,8 @@ export default function Login() {
             type='submit'
             className={`w-full py-6 mt-8 text-lg transition-all duration-300 ease-in-out bg-blue-600 hover:bg-blue-700 ${isLoading ? 'pointer-events-none bg-opacity-65' : ''}`}
           >
-            Sign In
+
+            {isLoading ? <Spinner></Spinner> : "Sign In"}
           </Button>
         </form>
       </div>

@@ -20,7 +20,6 @@ export default function ContributionDetail() {
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
 
   const handleDownloadFile = (file) => {
-    console.log(file)
     fetch(file.path)
       .then(response => response.blob())
       .then(blob => {
