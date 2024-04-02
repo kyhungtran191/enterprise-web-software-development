@@ -30,8 +30,6 @@ namespace Server.Application.Features.Identity.Users.Commands.ResetPassword
                 {
                   
                     reader.ReadInt64();
-
-                  
                     var userId = reader.ReadString();
                     var user = await _userManager.FindByIdAsync(userId);
                     if (user == null)

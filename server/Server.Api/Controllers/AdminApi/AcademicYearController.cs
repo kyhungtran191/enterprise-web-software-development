@@ -9,6 +9,7 @@ using Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearApp.Queries.ActiveYear;
 using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
+using Server.Application.Features.AcademicYearApp.Queries.InactiveYear;
 using Server.Contracts.AcademicYears;
 using Server.Contracts.Tags;
 using Server.Domain.Common.Constants;
@@ -78,6 +79,15 @@ namespace Server.Api.Controllers.AdminApi
         public async Task<IActionResult> ActiveAcademicYear([FromRoute] ActiveAcademicYearRequest request)
         {
             var command = _mapper.Map<ActiveYearCommand>(request);
+            var result = await _mediatorSender.Send(command);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+        }
+        [HttpPost]
+        [Route("inactivate/{YearId}")]
+        [Authorize(Permissions.AcademicYears.Create)]
+        public async Task<IActionResult> ActiveAcademicYear([FromRoute] InactiveAcademicYearRequest request)
+        {
+            var command = _mapper.Map<InactiveYearCommand>(request);
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }

@@ -7,6 +7,5 @@ namespace Server.Application.Features.Identity.Users.Queries.ValidateForgotToken
     public class ValidateForgotTokenQuery : IRequest<ErrorOr<IResponseWrapper<bool>>>
     {
         public string Token { get; set; }
-        public string Email { get; set; }
     }
 }
