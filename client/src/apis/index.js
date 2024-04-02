@@ -1,4 +1,4 @@
-export const URL = "http://localhost:5272/api"
+export const URL = 'http://localhost:5272/api'
 export const adminAPI = `/admin`
 export const clientAPI = `/client`
 
@@ -30,3 +30,12 @@ export const publicContributionAPI = `${URL}${clientAPI}/PublicContribution`
 export const allFacultiesAPI = `${URL}${clientAPI}/Faculties`
 // Contributor
 export const topContributors = `${URL}${clientAPI}/PublicContribution/top-contributors`
+// Refresh Token 
+export const refreshTokenAPI = `${URL}/Tokens/Refresh`
+
+// ADMIN
+// Academic Year
+export const getAllAcademicYearsAPI = `${URL}${adminAPI}/AcademicYear/paging`
+export const createAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`
+export const getAcademicYearByIdAPI = `${URL}${adminAPI}/AcademicYear`
+export const updateAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`

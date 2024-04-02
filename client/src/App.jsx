@@ -16,6 +16,7 @@ import ContributionDetail from './pages/general/ContributionDetail'
 import ForgotPassword from './pages/general/ForgotPassword'
 import ResetPassword from './pages/general/ResetPassword'
 import ContributionList from './pages/general/ContributionList'
+import { ContributionTable } from './components/ContributionTable'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -68,6 +69,14 @@ function App() {
           }
         />
         <Route
+          path='/admin/contributions'
+          element={
+            <AdminLayout>
+              <ContributionTable />
+            </AdminLayout>
+          }
+        />
+        <Route
           path='/'
           element={
             <GeneralLayout>
@@ -85,10 +94,22 @@ function App() {
           path='/manage/add-contribution'
           element={<AddContribution></AddContribution>}
         ></Route>
-        <Route path='/contributions' element={<ContributionList></ContributionList>}></Route>
-        <Route path='/contributions/:id' element={<ContributionDetail></ContributionDetail>}></Route>
-        <Route path="/forgot-password" element={<ForgotPassword></ForgotPassword>}></Route>
-        <Route path="/reset-password/:token" element={<ResetPassword></ResetPassword>}></Route>
+        <Route
+          path='/contributions'
+          element={<ContributionList></ContributionList>}
+        ></Route>
+        <Route
+          path='/contributions/:id'
+          element={<ContributionDetail></ContributionDetail>}
+        ></Route>
+        <Route
+          path='/forgot-password'
+          element={<ForgotPassword></ForgotPassword>}
+        ></Route>
+        <Route
+          path='/reset-password'
+          element={<ResetPassword></ResetPassword>}
+        ></Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
       </Routes>
     </>

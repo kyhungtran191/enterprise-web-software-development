@@ -24,10 +24,19 @@ import {
 import Contributor from '@/components/contributor'
 import Article from '@/components/article'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import useParamsVariables from '@/hooks/useParams'
+import { Contributions } from '@/services/client'
 
 export default function StudentContribution() {
   const [position, setPosition] = React.useState('publish')
   const navigate = useNavigate()
+  const recentQuery = useParamsVariables()
+  const { data } = useQuery({
+    queryKey: ['recent', recentQuery],
+    queryFn: (params) => Contributions.getCurrentContribution(params)
+  })
+  const currentData = data && data?.data?.responseData;
   return (
     <AdminLayout isAdmin={false}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
@@ -70,11 +79,11 @@ export default function StudentContribution() {
         </div>
       </div>
       <div className="">
-        {/* {Array(5)
-          .fill(0)
-          .map((item, index) => (
-            <Article key={index} isRevert={true} status={true} className={'my-4'}></Article>
-          ))} */}
+        {currentData && currentData?.results
+          .map((article, index) => (
+            <Article key={index} isRevert={true} status={article?.status} className={'my-4'}
+              article={article}></Article>
+          ))}
       </div>
       <Pagination className={"py-4"}>
         <PaginationContent>
