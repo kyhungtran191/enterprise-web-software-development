@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 
 export default function TopContributors() {
-  const { data, isLoading } = useQuery({ queryKey: ['contributors'], queryFn: Contributions.getTopContributors })
+  const { data, isLoading} = useQuery({ queryKey: ['contributors'], queryFn: Contributions.getTopContributors })
   return (
     <section className="hidden my-4 sm:block">
       <h2 className='text-2xl font-bold'>Top Contributor</h2>
