@@ -195,7 +195,7 @@ public static class DependencyInjection
         });
         // forgot password token lifetime
         services.Configure<DataProtectionTokenProviderOptions>(opt =>
-            opt.TokenLifespan = TimeSpan.FromHours(2));
+            opt.TokenLifespan = TimeSpan.FromSeconds(30));
         return services;
     }
 
