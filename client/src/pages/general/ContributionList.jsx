@@ -60,9 +60,6 @@ export default function ContributionList() {
       }).toString()
     })
   }
-
-  console.log(faculty)
-
   const listData = data && data?.data?.responseData?.results
   const listFaculties = falcultiesData && falcultiesData?.data?.responseData?.results
   return (
