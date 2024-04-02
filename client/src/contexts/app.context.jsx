@@ -14,10 +14,6 @@ export const AppContext = React.createContext(initialAppContext)
 export const AppProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(initialAppContext.isAuthenticated)
   const [profile, setProfile] = useState(initialAppContext.profile)
-  const refetch = () => {
-    setProfile(undefined)
-    setIsAuthenticated(false)
-  }
   return (
     <AppContext.Provider value={{ profile, setProfile, isAuthenticated, setIsAuthenticated }}>
       {children}

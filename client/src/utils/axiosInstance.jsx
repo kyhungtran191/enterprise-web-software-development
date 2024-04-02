@@ -3,14 +3,20 @@ import { useAppContext } from "@/hooks/useAppContext"
 import axios from "axios"
 import { jwtDecode } from "jwt-decode"
 import { useContext } from "react"
+import { clearLS, getAccessTokenFromLS, getRefreshToken, saveAccessTokenToLS, saveRefreshTokenToLS } from "./auth"
+import { refreshTokenAPI } from "@/apis"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
 const instanceAxios = axios.create({
   baseURL: URL
 })
 const AxiosInterceptor = ({ children }) => {
-  let accessToken = "";
-  let refreshToken = "";
-  const { isAuthenticated } = useAppContext()
+  let accessToken = getAccessTokenFromLS();
+  let refreshToken = getRefreshToken();
+  console.log("accessToken", accessToken);
+  console.log("refreshToken", refreshToken);
+  const navigate = useNavigate()
   instanceAxios.interceptors.request.use(async function (config) {
     if (accessToken) {
       const decoded = jwtDecode(accessToken)
@@ -19,39 +25,35 @@ const AxiosInterceptor = ({ children }) => {
         return config
       } else {
         if (refreshToken) {
-          const decodedRF = jwtDecode(refreshToken)
-          if (decodedRF.exp > Date.now() / 1000) {
-            await axios
-              .post(
-                `/refresh-token`,
-                {},
-                {
-                  headers: {
-                    Authorization: `Bearer ${refreshToken}`
-                  }
+          console.log(refreshToken)
+          await axios
+            .post(
+              refreshTokenAPI,
+              { accessToken, refreshToken },
+            )
+            .then(res => {
+              console.log(res)
+              if (res && res?.data && res?.data?.responseData) {
+                const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res?.data?.responseData
+                config.headers.authorization = `Bearer ${newAccessToken}`
+                if (newAccessToken && newRefreshToken) {
+                  saveAccessTokenToLS(newAccessToken)
+                  saveRefreshTokenToLS(newRefreshToken)
+                } else {
+                  toast.error("Không có access và refresh")
                 }
-              )
-              .then(res => {
-                if (res.data.data.access_token) {
-                  const newAccessToken = res.data.data.access_token
-                  if (newAccessToken) {
-                    config.headers.authorization = `Bearer ${newAccessToken}`
-                    // setLocalUserData(JSON.stringify(user), newAccessToken, refreshToken)
-                  } else {
-                    // handleRedirectLogin(router, setUser)
-                  }
-                }
-              })
-              .catch(() => {
-                // handleRedirectLogin(router, setUser)
-              })
-          } else {
-            // handleRedirectLogin(router, setUser)
-          }
+              }
+            })
+            .catch((error) => {
+              // clearLS()
+              // navigate("/login")
+              console.log(error)
+            })
+        } else {
+          clearLS()
+          navigate("/login")
         }
       }
-    } else {
-      // handleRedirectLogin(router, setUser)
     }
     return config
   })
