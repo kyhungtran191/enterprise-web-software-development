@@ -20,7 +20,7 @@ export default function ContributionDetail() {
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
 
   const handleDownloadFile = (file) => {
-    fetch(file.path)
+    fetch(file?.path)
       .then(response => response.blob())
       .then(blob => {
         const url = window.URL.createObjectURL(blob);
@@ -76,7 +76,7 @@ export default function ContributionDetail() {
         <div className='my-5'>
           <div className="flex items-center justify-between my-4">
             <h2 className='font-bold'>File attached</h2>
-            <DownloadAllButton files={detailData.files}></DownloadAllButton>
+            <DownloadAllButton files={detailData?.files}></DownloadAllButton>
           </div>
           <div className="grid-cols-2 gap-6 p-10 rounded-lg shadow-lg h-[250px] overflow-y-scroll md:overflow-auto grid md:h-auto md:grid-cols-5">
             {detailData?.files?.map((file, index) => (
