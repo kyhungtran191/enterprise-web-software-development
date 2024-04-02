@@ -71,6 +71,7 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
             new Claim(UserClaims.Permissions, JsonSerializer.Serialize(permissions)),
             new Claim(UserClaims.FacultyId, applicationUser.FacultyId.ToString()),
             new Claim(UserClaims.FacultyName, facultyName),
+            new Claim(UserClaims.Avatar,applicationUser.Avatar ?? string.Empty),
             // Jwt ID
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
