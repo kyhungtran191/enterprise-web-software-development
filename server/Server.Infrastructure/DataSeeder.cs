@@ -153,6 +153,7 @@ public static class DataSeeder
         var rootAdminRoleId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
+        var coordinatorRoleId = Guid.NewGuid();
         AppRole? role = new AppRole
         {
             Id = rootAdminRoleId,
@@ -167,11 +168,19 @@ public static class DataSeeder
             NormalizedName = Roles.Student.ToUpperInvariant(),
             DisplayName = "Student",
         };
+        AppRole? coordinatorRole = new AppRole
+        {
+            Id = coordinatorRoleId,
+            Name = Roles.Coordinator,
+            NormalizedName = Roles.Coordinator.ToUpperInvariant(),
+            DisplayName = "Marketing Coordinator",
+        };
 
         if (!context.Roles.Any())
         {
             await context.Roles.AddAsync(role);
             await context.Roles.AddAsync(studentRole);
+            await context.Roles.AddAsync(coordinatorRole);
             await context.SaveChangesAsync();
         }
         var studentList = new List<AppUser>
@@ -225,10 +234,67 @@ public static class DataSeeder
 
             },
         };
+        var coordinatorList = new List<AppUser>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "An", LastName = "Minh", Email = "coordinator@gmail.com",
+                NormalizedEmail = "coordinator@gmail.com".ToUpperInvariant(), UserName = "coordinator",
+                NormalizedUserName = "coordinator".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[0].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Vu", LastName = "Nguyen", Email = "coordinator1@gmail.com",
+                NormalizedEmail = "coordinator1@gmail.com".ToUpperInvariant(), UserName = "coordinator1",
+                NormalizedUserName = "coordinator1".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[1].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "nguyenvu260703.dev@gmail.com",
+                NormalizedEmail = "nguyenvu260703.dev@gmail.com".ToUpperInvariant(), UserName = "coordinator2",
+                NormalizedUserName = "coordinator2".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[2].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Khang", LastName = "Nguyen", Email = "coordinator3@gmail.com",
+                NormalizedEmail = "coordinator3@gmail.com".ToUpperInvariant(), UserName = "coordinator3",
+                NormalizedUserName = "coordinator3".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[3].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+        };
         foreach (var user in studentList)
         {
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
         }
+        foreach (var user in coordinatorList)
+        {
+            user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
+        }
+
+
         if (!context.Users.Any())
         {
             // admin
@@ -268,6 +334,16 @@ public static class DataSeeder
                 await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
                 {
                     RoleId = studentRoleId,
+                    UserId = item.Id,
+                });
+            }
+            // coordinator
+            foreach (var item in coordinatorList)
+            {
+                await context.Users.AddAsync(item);
+                await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+                {
+                    RoleId = coordinatorRoleId,
                     UserId = item.Id,
                 });
             }
@@ -325,6 +401,33 @@ public static class DataSeeder
                 foreach (var permission in studentPermissionList)
                 {
                     await roleManager.AddClaimAsync(studentRole, new Claim("permissions", permission.Value!));
+                }
+            }
+            // seed coordinator permission
+            var coordinatorPermissions = await roleManager.GetClaimsAsync(coordinatorRole);
+            if (coordinatorPermissions.Any() == false)
+            {
+                var coordinatorPermissionList = new List<RoleClaimsDto>
+                {
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Dashboard.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Approve"
+                    },
+                };
+                foreach (var permission in coordinatorPermissionList)
+                {
+                    await roleManager.AddClaimAsync(coordinatorRole, new Claim("permissions", permission.Value!));
                 }
             }
         }

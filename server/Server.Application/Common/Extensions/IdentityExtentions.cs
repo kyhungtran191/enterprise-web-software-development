@@ -31,4 +31,11 @@ public static class IdentityExtentions
         var facultyId = ((ClaimsIdentity)claimsPrincipal.Identity!).GetSpecificClaim(UserClaims.FacultyId);
         return Guid.Parse(facultyId);
     }
+    public static string GetFacultyName(this ClaimsPrincipal claimsPrincipal)
+    {
+        var facultyName = ((ClaimsIdentity)claimsPrincipal.Identity!).GetSpecificClaim(UserClaims.FacultyName);
+        return facultyName;
+    }
+
+
 }

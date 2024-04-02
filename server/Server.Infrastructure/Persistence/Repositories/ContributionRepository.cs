@@ -199,23 +199,6 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Description = $"{user.UserName} submit new contribution and waiting for approval"
 
             });
-            if (contribution.Status == ContributionStatus.Approve)
-            {
-              var publicContribution = await _dbContext.ContributionPublics.Where(x => x.Id == contribution.Id).FirstOrDefaultAsync();
-               _dbContext.ContributionPublics.Remove(publicContribution);
-               await _dbContext.ContributionActivityLogs.AddAsync(new ContributionActivityLog
-               {
-                   Id = Guid.NewGuid(),
-                   ContributionId = contribution.Id,
-                   Title = contribution.Title,
-                   UserId = userId,
-                   UserName = user?.UserName,
-                   FromStatus = contribution.Status,
-                   ToStatus = ContributionStatus.Pending,
-                   Description = $"{user.UserName} edit contribution and waiting for approval"
-
-               });
-            }
             contribution.Status = ContributionStatus.Pending;
             _dbContext.Contributions.Update(contribution);
             

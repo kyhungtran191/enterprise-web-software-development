@@ -23,6 +23,7 @@ namespace Server.Application.Features.Identity.Users.Commands.ResetPassword
             var resetTokenArray = Convert.FromBase64String(request.Token);
 
             var unprotectedResetTokenArray = _dataProtector.Unprotect(resetTokenArray);
+            var errorList = new List<Error>();
 
             using (var ms = new MemoryStream(unprotectedResetTokenArray))
             {
@@ -53,5 +54,6 @@ namespace Server.Application.Features.Identity.Users.Commands.ResetPassword
 
 
         }
+
     }
 }
