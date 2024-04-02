@@ -11,6 +11,7 @@ using Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYear;
 using Server.Application.Features.AcademicYearApp.Queries.ActiveYear;
 using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
+using Server.Application.Features.AcademicYearApp.Queries.InactiveYear;
 using Server.Application.Features.Authentication;
 using Server.Application.Features.ContributionApp.Commands.ApproveContributions;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
@@ -134,6 +135,7 @@ public class MappingProfiles : Profile
         CreateMap<DeleteAcademicYearRequest, DeleteAcademicYearCommand>();
         CreateMap<UpdateAcademicYearRequest, UpdateAcademicYearCommand>();
         CreateMap<ActiveAcademicYearRequest, ActiveYearCommand>();
+        CreateMap<InactiveAcademicYearRequest, InactiveYearCommand>();
 
         // contributions
         CreateMap<Contribution, ContributionDto>();
