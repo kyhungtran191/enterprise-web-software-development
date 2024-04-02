@@ -301,6 +301,41 @@ namespace Server.Infrastructure.Persistence.Repositories
 
             return users;
         }
+
+        public async Task<List<PublicContributionInListDto>> GetLikedContribution(Guid userId)
+        {
+            var contributions =  (from like in _dbContext.Likes
+                    join c in _dbContext.ContributionPublics
+                        on like.ContributionPublicId equals c.Id
+                    where like.UserId == userId
+                    join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                    select new { c,a })
+                .Distinct()
+                .ToList();
+            var contributionIds = contributions.Select(x => x.c.Id).ToList();
+            var files = await _dbContext.Files
+                .Where(f => contributionIds.Contains(f.ContributionId))
+                .ToListAsync();
+            var likedContribution = contributions.Select(x => new PublicContributionInListDto
+            {
+                Id = x.c.Id,
+                Title = x.c.Title,
+                UserName = x.c.UserName,
+                FacultyName = x.c.FacultyName,
+                ShortDescription = x.c.ShortDescription,
+                AcademicYear = x.a.Name,
+                Avatar = x.c.Avatar,
+                PublicDate = x.c.PublicDate,
+                Slug = x.c.Slug,
+                DateEdited = x.c.DateEdited,
+                Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
+                Like = x.c.LikeQuantity,
+                View = x.c.Views
+            }).ToList();
+
+            return likedContribution;
+        }
         public async Task<List<PublicContributionInListDto>> GetUserFavoriteContributions(Guid userId)
         {
             

@@ -16,5 +16,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
         public Guid FacultyId { get; set; }
         public Guid UserId { get; set; }
         public bool IsConfirmed { get; set; }
+        public string Content { get; set; }
+        public string ShortDescription { get; set; }
     }
 }

@@ -23,18 +23,20 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<AppRole> _roleManager;
     private readonly IFacultyRepository _facultyRepository;
-
+    private readonly IPublicContributionRepository _publicContributionRepository;
     public JwtTokenGenerator(IDateTimeProvider dateTimeProvider,
                              IOptions<JwtSettings> jwtSettings,
                              UserManager<AppUser> userManager,
                              RoleManager<AppRole> roleManager,
-                             IFacultyRepository facultyRepository)
+                             IFacultyRepository facultyRepository,
+                             IPublicContributionRepository publicContributionRepository)
     {
         _dateTimeProvider = dateTimeProvider;
         _jwtSettings = jwtSettings.Value;
         _userManager = userManager;
         _roleManager = roleManager;
         _facultyRepository = facultyRepository;
+        _publicContributionRepository = publicContributionRepository;
     }
 
     public async Task<string> GenerateToken(AppUser applicationUser)

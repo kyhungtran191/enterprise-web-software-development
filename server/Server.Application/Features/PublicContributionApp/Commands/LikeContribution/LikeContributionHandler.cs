@@ -20,7 +20,7 @@ namespace Server.Application.Features.PublicContributionApp.Commands.LikeContrib
             var contribution = await _unitOfWork.PublicContributionRepository.GetByIdAsync(request.ContributionId);
             if (contribution is null)
             {
-                return Errors.Contribution.NotFound;
+                return Errors.Contribution.NotFoundPublic;
             }
 
             if (await _unitOfWork.LikeRepository.AlreadyLike(contribution, request.UserId))

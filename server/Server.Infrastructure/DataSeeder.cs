@@ -592,6 +592,38 @@ public static class DataSeeder
                         PublicId = "file/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qmwnzwl5ysx6blolevgd.docx",
                         Extension = ".docx"
                     },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034461/file/contribution-8c1205ba-08a3-46d0-ae9c-59633c3f4562/tvkkgtgy1gpmiog6ohoc.docx\"",
+                        Name = "1_Unit 1 - Assignment 2 frontsheet_.docx", Type = FileType.File,
+                        PublicId = "file/contribution-8c1205ba-08a3-46d0-ae9c-59633c3f4562/tvkkgtgy1gpmiog6ohoc.docx",
+                        Extension = ".docx"
+                    },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034501/file/contribution-667b3931-f8c3-4a51-9498-1d1afbe3c704/eitcnx2hbqqhuxrvxioh.docx\"",
+                        Name = "Tutorial-1-Case-study Answers.docx", Type = FileType.File,
+                        PublicId = "file/contribution-667b3931-f8c3-4a51-9498-1d1afbe3c704/eitcnx2hbqqhuxrvxioh.docx",
+                        Extension = ".docx"
+                    },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034524/file/contribution-22fa18a8-da86-4fdb-bd46-e8c421a4801f/iakag4ue4jktpvadw5ec.docx\"",
+                        Name = "TCS2405-group1.docx", Type = FileType.File,
+                        PublicId = "file/contribution-22fa18a8-da86-4fdb-bd46-e8c421a4801f/iakag4ue4jktpvadw5ec.docx",
+                        Extension = ".docx"
+                    },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034599/file/contribution-f5c2a8ef-42e7-45b9-b665-5b148dbe2ce8/fauby4gpe2yr0bw4zbyi.docx\"",
+                        Name = "TCS2405 - group 2.docx", Type = FileType.File,
+                        PublicId = "file/contribution-f5c2a8ef-42e7-45b9-b665-5b148dbe2ce8/fauby4gpe2yr0bw4zbyi.docx",
+                        Extension = ".docx"
+                    },
                 });
             }
         }

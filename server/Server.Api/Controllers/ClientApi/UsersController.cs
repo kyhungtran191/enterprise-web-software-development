@@ -12,6 +12,7 @@ using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.ValidateForgotToken;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Queries.GetFavorite;
+using Server.Application.Features.PublicContributionApp.Queries.GetLikedContribution;
 using Server.Application.Features.PublicContributionApp.Queries.GetReadLater;
 using Server.Contracts.Contributions;
 using Server.Contracts.Identity.Users;
@@ -90,15 +91,22 @@ namespace Server.Api.Controllers.ClientApi
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
-
         [HttpGet("my-favorite")]
-        [Authorize]
-        public async Task<IActionResult> GetFavorite()
+        public async Task<IActionResult> GetLikedContribution()
         {
-            var query = new GetFavoriteQuery();
+            var query = new GetLikedContributionQuery();
             query.UserId = User.GetUserId();
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
+        //[HttpGet("my-favorite")]
+        //[Authorize]
+        //public async Task<IActionResult> GetFavorite()
+        //{
+        //    var query = new GetFavoriteQuery();
+        //    query.UserId = User.GetUserId();
+        //    var result = await _mediatorSender.Send(query);
+        //    return result.Match(result => Ok(result), errors => Problem(errors));
+        //}
     }
 }
