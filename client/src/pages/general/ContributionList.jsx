@@ -30,16 +30,14 @@ import { useFaculty } from '@/query/useFaculty'
 import { Button } from '@/components/ui/button'
 import { ArrowDown } from 'lucide-react'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { omitBy, isUndefined } from "lodash"
 export default function ContributionList() {
   const [faculty, setFaculty] = useState("")
-  const queryClient = useQueryClient();
   //QueryData
   const { data: falcultiesData } = useFaculty()
   //
 
   const queryParams = useParamsVariables()
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['contributions', queryParams], queryFn: (_) => Contributions.getAllPublicContribution(queryParams),
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000

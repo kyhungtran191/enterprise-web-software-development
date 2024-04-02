@@ -12,16 +12,31 @@ import { Contributions } from '@/services/client'
 import { formatDate } from '@/utils/helper'
 import Spinner from '@/components/Spinner'
 import Loading from '@/components/Loading'
+import DownloadAllButton from '@/components/DownloadAllButton'
 export default function ContributionDetail() {
   const { id } = useParams()
   const { data, isLoading } = useQuery({ queryKey: ['featured-contributions'], queryFn: (_) => Contributions.getDetailPublicContribution(id) })
   const detailData = data && data?.data?.responseData
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
-  useEffect(() => {
-    if (detailData?.files) {
-      console.log(detailData.files)
-    }
-  }, [detailData])
+
+  const handleDownloadFile = (file) => {
+    console.log(file)
+    fetch(file.path)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      })
+      .catch(error => {
+        console.error('Error downloading file:', error);
+      });
+  };
   return (
     <GeneralLayout>
       {isLoading && <div className="container flex items-center justify-center min-h-screen"><Spinner className={"border-blue-500"}></Spinner></div>}
@@ -62,39 +77,18 @@ export default function ContributionDetail() {
         <div className='my-5'>
           <div className="flex items-center justify-between my-4">
             <h2 className='font-bold'>File attached</h2>
-            <Button className="bg-blue-500">Download all</Button>
+            <DownloadAllButton files={detailData.files}></DownloadAllButton>
           </div>
           <div className="grid-cols-2 gap-6 p-10 rounded-lg shadow-lg h-[250px] overflow-y-scroll md:overflow-auto grid md:h-auto md:grid-cols-5">
-            <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" >
-              <img src={"../word.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
-              <div className="text-center">File name 1</div>
-              <div className="flex items-center justify-center gap-2">
+            {detailData?.files?.map((file, index) => (
+              <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" key={index} onClick={() => handleDownloadFile(file)}>
+                <img src={file?.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
+                <div className="text-center">{file?.name}</div>
+                <div className="flex items-center justify-center gap-2">
+                </div>
               </div>
-            </div>
-            <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" >
-              <img src={"../word.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
-              <div className="text-center">File name 1</div>
-              <div className="flex items-center justify-center gap-2">
-              </div>
-            </div>
-            <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" >
-              <img src={"../word.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
-              <div className="text-center">File name 1</div>
-              <div className="flex items-center justify-center gap-2">
-              </div>
-            </div>
-            <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" >
-              <img src={"../word.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
-              <div className="text-center">File name 1</div>
-              <div className="flex items-center justify-center gap-2">
-              </div>
-            </div>
-            <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" >
-              <img src={"../word.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
-              <div className="text-center">File name 1</div>
-              <div className="flex items-center justify-center gap-2">
-              </div>
-            </div>
+            ))}
+
           </div>
         </div>
       </div>}
