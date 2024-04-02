@@ -17,6 +17,8 @@ function Dropzone({ open, className, files, setFiles }) {
     setFiles(updatedFiles);
   }
 
+
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
   })
@@ -46,10 +48,10 @@ function Dropzone({ open, className, files, setFiles }) {
     });
   }
 
+
   const handleDownloadFile = (e, file) => {
-    e.stopPropagation()
-    const downloadUrl = URL.createObjectURL(file);
-    fetch(downloadUrl)
+    e.stopPropagation();
+    fetch(file.path)
       .then(response => response.blob())
       .then(blob => {
         const url = window.URL.createObjectURL(blob);
@@ -64,7 +66,7 @@ function Dropzone({ open, className, files, setFiles }) {
       .catch(error => {
         console.error('Error downloading file:', error);
       });
-  }
+  };
 
   return (
     <div {...getRootProps({ className: `w-full rounded-lg border border-dashed h-[300px] overflow-y-scroll cursor-pointer ${className}` })}>
