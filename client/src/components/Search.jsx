@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Search({ className }) {
   const [searchQuery, setSearchQuery] = useState('');
-  console.log("Search Rerender")
   let navigate = useNavigate()
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {

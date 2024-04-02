@@ -3,9 +3,12 @@ import Spinner from '@/components/Spinner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAppContext } from '@/hooks/useAppContext'
 import { Auth } from '@/services/client'
+import { saveAccessTokenToLS, saveRefreshTokenToLS, saveUserToLS } from '@/utils/auth'
 import { Icon } from '@iconify/react'
 import { useMutation } from '@tanstack/react-query'
+import { jwtDecode } from 'jwt-decode'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
@@ -24,13 +27,29 @@ export default function Login() {
   const { isLoading, mutate } = useMutation({
     mutationFn: (body) => Auth.login(body),
   })
+
+  const { setIsAuthenticated, setProfile } = useAppContext()
+
   const onSubmit = (data) => {
     mutate(data, {
       onSuccess(data) {
-        if (data.data.accessToken && data.data.refreshToken) {
-          toast.success("Login Successfully!")
-          navigate('/')
-        }
+        let accessToken = data && data?.data?.accessToken;
+        let refreshToken = data && data?.data?.refreshToken
+        const dataDetail = jwtDecode(accessToken);
+        console.log(accessToken)
+        console.log(refreshToken)
+        let { email, facultyId, facultyName, family_name, given_name, id, permissions, roles } = dataDetail
+        setProfile({
+          email, facultyId, facultyName, family_name, given_name, id, permissions, roles
+        })
+        saveUserToLS({
+          email, facultyId, facultyName, family_name, given_name, id, permissions, roles
+        })
+        saveAccessTokenToLS(accessToken)
+        saveRefreshTokenToLS(refreshToken)
+        setIsAuthenticated(true)
+        toast.success("Login Successfully!")
+        navigate("/")
       },
       onError(data) {
         const errorMessage = data && data?.response?.data?.title

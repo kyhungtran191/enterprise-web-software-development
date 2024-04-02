@@ -8,11 +8,21 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
+import { useAppContext } from '@/hooks/useAppContext'
+import { clearLS } from '@/utils/auth'
 import { Icon } from '@iconify/react'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function Header() {
+  const { isAuthenticated, profile } = useAppContext()
+  let navigate = useNavigate()
+  const handleLogout = () => {
+    clearLS()
+    navigate('/login')
+    toast.success("Logout successfully!")
+  }
   return (
     <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black'>
       <nav className='container h-full flex justify-between items-center leading-[72px] relative'>
@@ -53,9 +63,9 @@ export default function Header() {
               <div className='grid gap-4'>
                 <div className='space-y-2'>
                   <h4 className='font-medium leading-none'>
-                    trankyhung225@gmail.com
+                    {profile && profile?.email}
                   </h4>
-                  <p className='text-sm text-muted-foreground'>Student</p>
+                  <p className='text-sm text-muted-foreground'>{profile && profile?.roles}({(profile?.facultyName)})</p>
                 </div>
                 <div className='gap-2 text-slate-700'>
                   <Link to="/manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
@@ -71,7 +81,7 @@ export default function Header() {
                     <Icon icon='mage:user-fill'></Icon>Admin
                   </Link>
 
-                  <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                  <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3' onClick={handleLogout}>
                     <Icon icon='solar:logout-2-bold'></Icon>Logout
                   </div>
                 </div>
