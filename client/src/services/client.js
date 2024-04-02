@@ -1,4 +1,4 @@
-import { allFacultiesAPI, featuredContribution, latestContribution, loginAPI, publicContributionAPI, recentContributionAPI, topContributors } from "@/apis"
+import { allFacultiesAPI, featuredContribution, forgotPasswordAPI, latestContribution, loginAPI, publicContributionAPI, recentContributionAPI, resetPasswordAPI, topContributors, validateResetPasswordAPI } from "@/apis"
 import instanceAxios from "@/utils/axiosInstance"
 import axios from "axios"
 
@@ -17,5 +17,12 @@ export const Contributions = {
     })
 }
 export const Auth = {
-  login: async (body) => axios.post(loginAPI, body)
+  login: async (body) => axios.post(loginAPI, body),
+  forgotPassword: async (email) => axios.post(forgotPasswordAPI, {
+    email
+  }),
+  validateToken: async (token) => axios.post(validateResetPasswordAPI, {
+    token
+  }),
+  resetPassword: async (body) => axios.post(resetPasswordAPI, body)
 }

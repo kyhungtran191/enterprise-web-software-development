@@ -2,8 +2,10 @@ import React from 'react'
 import { Badge } from './ui/badge'
 import { formatDate } from '@/utils/helper'
 import { Link } from 'react-router-dom'
+import { Button } from './ui/button'
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
+  console.log(article)
   return (
     <Link to={`/contributions/${article?.slug}`}>
       <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg`}>
@@ -15,13 +17,16 @@ export default function Article({ isRevert = false, className, status, classImag
               <h3 className='text-sm font-semibold medium:text-base'>{article?.userName}</h3>
             </div>
             <div className=''>
-              {status && <Badge variant="outline" className={"text-blue-600 mx-1"}>Pending</Badge>}
+              {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-blue-500"} font-semibold`} >{status}</Badge>}
               <Badge variant="outline">{article?.facultyName}</Badge>
             </div>
           </div>
           <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">{article?.title}</h2>
           <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base'>{article.shortDescription}</p>
           <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
+          <div className="my-20">
+            {/* <Button className="w-[150px]">Edit</Button> */}
+          </div>
         </div>
       </div>
     </Link>
