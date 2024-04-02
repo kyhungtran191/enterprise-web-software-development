@@ -32,7 +32,7 @@ export const allFacultiesAPI = `${URL}${clientAPI}/Faculties`
 export const topContributors = `${URL}${clientAPI}/PublicContribution/top-contributors`
 // Refresh Token 
 export const refreshTokenAPI = `${URL}/Tokens/Refresh`
-
+export const validateResetPasswordAPI = `${URL}${clientAPI}/Users/validate-forgot-token`
 // ADMIN
 // Academic Year
 export const getAllAcademicYearsAPI = `${URL}${adminAPI}/AcademicYear/paging`
