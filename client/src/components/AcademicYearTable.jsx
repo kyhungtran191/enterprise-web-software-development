@@ -3,7 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { CustomTable } from '@/components/CustomTable.jsx'
 import { ArrowUpDown } from 'lucide-react'
 import DynamicBreadcrumb from './DynamicBreadcrumbs'
-import { NewUserDialog } from './NewUserDialog'
+import { format } from 'date-fns'
 import { Pencil, UserRoundX, EllipsisVertical, User } from 'lucide-react'
 import {
   DropdownMenu,
@@ -12,9 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { UserDialog } from './UserDialog'
 import { useState } from 'react'
-
+import { NewAcademicYearDialog } from './NewAcademicYearDialog'
+import { useQuery } from '@tanstack/react-query'
+import useParamsVariables from '@/hooks/useParams'
+import { AcademicYears } from '@/services/admin'
+import Spinner from './Spinner'
 export function AcademicYearTable() {
   const [isOpenViewUser, setIsOpenViewUser] = useState(false)
   const [viewUser, setViewUser] = useState({})
@@ -47,7 +50,7 @@ export function AcademicYearTable() {
       enableHiding: false
     },
     {
-      accessorKey: 'academicYear',
+      accessorKey: 'name',
       header: ({ column }) => {
         return (
           <Button
@@ -61,14 +64,28 @@ export function AcademicYearTable() {
       }
     },
     {
-      accessorKey: 'closureDate',
+      accessorKey: 'startClosureDate',
       header: ({ column }) => {
         return (
           <Button
             variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Closure Date
+            Start Closure Date
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'endClosureDate',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            End Closure Date
             <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
@@ -83,6 +100,20 @@ export function AcademicYearTable() {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Final Closure Date
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Status
             <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
@@ -121,29 +152,43 @@ export function AcademicYearTable() {
       }
     }
   ]
-  const data = [
-    {
-      id: '728ed52f',
-      academicYear: '2023-2024',
-      closureDate: '22/03/2023',
-      finalClosureDate: '05/04/2023'
-    }
-  ]
-
+  const queryParams = useParamsVariables()
+  const { data, isLoading } = useQuery({
+    queryKey: ['academicYears', queryParams],
+    queryFn: (_) => AcademicYears.getAllAcademicYears(queryParams),
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000
+  })
+  const academicYearsData =
+    data &&
+    data?.data?.responseData?.results.map((year) => ({
+      ...year,
+      startClosureDate: format(new Date(year.startClosureDate), 'dd-MM-yyyy'),
+      endClosureDate: format(new Date(year.endClosureDate), 'dd-MM-yyyy'),
+      finalClosureDate: format(new Date(year.finalClosureDate), 'dd-MM-yyyy')
+    }))
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
-        <NewUserDialog />
+        <NewAcademicYearDialog />
       </div>
-      <div className='h-full px-4 py-6 lg:px-8'>
-        <CustomTable columns={columns} data={data} />
-      </div>
-      <UserDialog
+      {isLoading && (
+        <div className='container flex items-center justify-center min-h-screen'>
+          <Spinner className={'border-blue-500'}></Spinner>
+        </div>
+      )}
+      {!isLoading && (
+        <div className='h-full px-4 py-6 lg:px-8'>
+          <CustomTable columns={columns} data={academicYearsData} />
+        </div>
+      )}
+
+      {/* <UserDialog
         isOpen={isOpenViewUser}
         handleOpenChange={setIsOpenViewUser}
         user={viewUser}
-      />
+      /> */}
     </div>
   )
 }
