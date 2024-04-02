@@ -11,5 +11,6 @@
         public DateTime? DateEdited { get; set; }
         public DateTime DateCreated { get; set; } = default!;
         public DateTime? DateDeleted { get; set; }
+        public bool IsActive { get; set; }
     }
 }
