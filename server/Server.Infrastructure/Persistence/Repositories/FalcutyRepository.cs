@@ -28,7 +28,7 @@ public class FalcutyRepository : RepositoryBase<Faculty, Guid>, IFacultyReposito
 
         var totalCount = await query.CountAsync();
 
-        var skipPage = (pageIndex - 1) * pageSize;
+        var skipPage = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageSize; ;
 
         query =
              query
