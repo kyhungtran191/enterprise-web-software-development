@@ -131,6 +131,49 @@ namespace Server.Infrastructure.Persistence.Repositories
                 select t;
             return await _mapper.ProjectTo<TagDto>(query).ToListAsync();
         }
+        public async Task<ContributionDto> GetContributionOfUser(string slug, Guid userId)
+        {
+            var contributionDetail = await (from c in _dbContext.Contributions
+                                            where c.Slug == slug && c.DateDeleted == null && c.UserId == userId
+                                            join u in _dbContext.Users on c.UserId equals u.Id
+                                            join f in _dbContext.Faculties on c.FacultyId equals f.Id
+                                            join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                                            select new
+                                            {
+                                                c,
+                                                u,
+                                                f,
+                                                a
+                                            }).FirstOrDefaultAsync();
+
+          
+            if (contributionDetail == null)
+            {
+                return null;
+            }
+
+            var files = await _dbContext.Files.Where(f => f.ContributionId == contributionDetail.c.Id).ToListAsync();
+            var result = new ContributionDto
+            {
+                Id = contributionDetail.c.Id,
+                Title = contributionDetail.c.Title,
+                Slug = contributionDetail.c.Slug,
+                Status = contributionDetail.c.Status.ToStringValue(),
+                UserName = contributionDetail.u.UserName,
+                FacultyName = contributionDetail.f.Name,
+                AcademicYear = contributionDetail.a.Name,
+                SubmissionDate = contributionDetail.c.SubmissionDate,
+                PublicDate = contributionDetail.c.PublicDate,
+                DateEdited = contributionDetail.c.DateEdited,
+                Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+            };
+
+           
+            return result;
+        }
 
         public async Task<ContributionDto> GetContributionBySlug(string slug)
         {
