@@ -23,7 +23,7 @@ namespace Server.Infrastructure.Services.Email
             message.Subject = mailRequest.Subject;
             message.To.Add(new MailAddress(mailRequest.ToEmail));
             message.Body = mailRequest.Body;
-            message.IsBodyHtml = false;
+            message.IsBodyHtml = true;
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
