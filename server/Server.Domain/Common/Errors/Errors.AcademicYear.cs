@@ -20,6 +20,9 @@ namespace Server.Domain.Common.Errors
 
             public static Error HasActiveYearAlready => Error.Conflict(code: "AcademicYear.HasActiveYearAlready",
                 description: "Has active academic year already");
+
+            public static Error AlreadyInactive => Error.Validation(code: "AcademicYear.AlreadyInactive",
+                description: "This academic year is not activated");
         }
         
     }
