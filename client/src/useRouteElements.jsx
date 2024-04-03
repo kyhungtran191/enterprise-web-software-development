@@ -3,8 +3,6 @@ import GeneralLayout from '@/layouts'
 import Home from '@/pages/general/Home'
 import React from 'react'
 import { useRoutes } from 'react-router-dom'
-
-
 export default function useRoutesElements() {
   const routes = useRoutes([
     {

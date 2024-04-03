@@ -1,14 +1,11 @@
 import DynamicBreadcrumb from '@/components/DynamicBreadcrumbs'
-import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import AdminLayout from '@/layouts/AdminLayout'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Editor } from '@tinymce/tinymce-react';
 import Dropzone from '@/components/dropzone'
-import { useDropzone } from 'react-dropzone'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 export default function AddContribution() {
   const [files, setFiles] = useState([])
 
@@ -24,9 +21,6 @@ export default function AddContribution() {
     }
   }
   const editorRef = useRef(null);
-
-
-
 
   return (
     <AdminLayout isAdmin={false}>

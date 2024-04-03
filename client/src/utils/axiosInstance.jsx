@@ -1,8 +1,5 @@
-import { AppContext } from "@/contexts/app.context"
-import { useAppContext } from "@/hooks/useAppContext"
 import axios from "axios"
 import { jwtDecode } from "jwt-decode"
-import { useContext } from "react"
 import { clearLS, getAccessTokenFromLS, getRefreshToken, saveAccessTokenToLS, saveRefreshTokenToLS } from "./auth"
 import { refreshTokenAPI } from "@/apis"
 import { toast } from "react-toastify"
