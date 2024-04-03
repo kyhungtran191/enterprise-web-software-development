@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label'
 import { useAppContext } from '@/hooks/useAppContext'
 import { Auth } from '@/services/client'
 import { saveAccessTokenToLS, saveRefreshTokenToLS, saveUserToLS } from '@/utils/auth'
+import { EMAIL_REG } from '@/utils/regex'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Icon } from '@iconify/react'
 import { useMutation } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
@@ -15,15 +17,21 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 export default function Login() {
+
+
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
+  const schema = yup
+    .object({
+      email: yup.string().matches(EMAIL_REG, 'Please provide correct email type').required('Please provide your email'),
+      password: yup.string().required('Please provide password'),
+    })
+    .required()
   const {
-    register,
     handleSubmit,
     control,
-    watch,
     formState: { errors }
-  } = useForm()
+  } = useForm({ resolver: yupResolver(schema) })
   const { isLoading, mutate } = useMutation({
     mutationFn: (body) => Auth.login(body),
   })
@@ -92,6 +100,7 @@ export default function Login() {
                 ></Input>
               )}
             />
+            <div className='h-5 mt-3 text-base font-semibold text-red-500'>{errors && errors?.email?.message}</div>
           </div>
           <div className='my-4'>
             <Label className='text-md'>Password</Label>
@@ -119,6 +128,7 @@ export default function Login() {
                 )}
               </div>
             </div>
+            <div className='h-5 mt-3 text-base font-semibold text-red-500'>{errors && errors?.password?.message}</div>
           </div>
 
           <Link to='/forgot-password' className='inline-block ml-auto text-blue-500 underline'>
@@ -128,8 +138,7 @@ export default function Login() {
             type='submit'
             className={`w-full py-6 mt-8 text-lg transition-all duration-300 ease-in-out bg-blue-600 hover:bg-blue-700 ${isLoading ? 'pointer-events-none bg-opacity-65' : ''}`}
           >
-
-            {isLoading ? <Spinner></Spinner> : "Sign In"}
+            {isLoading ? <Spinner className={"border-white"}></Spinner> : "Sign In"}
           </Button>
         </form>
       </div>

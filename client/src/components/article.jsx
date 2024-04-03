@@ -1,13 +1,20 @@
 import React from 'react'
 import { Badge } from './ui/badge'
 import { formatDate } from '@/utils/helper'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from './ui/button'
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
-  console.log(article)
+  const navigate = useNavigate()
+  const handleOnClickNavigate = () => {
+    if (article.publicDate || article.status === "APPROVED") {
+      navigate(`/contributions/${article.slug}`)
+    } else {
+      navigate(`/manage/edit-contribution/${article.slug}`)
+    }
+  }
   return (
-    <Link to={`/contributions/${article?.slug}`}>
+    <div onClick={handleOnClickNavigate}>
       <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg`}>
         <img src={`${article?.thumbnails?.length > 0 ? article?.thumbnails[0].path : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`} alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : "w-full h-[600px"}  object-cover rounded-md`} />
         <div className="flex-1 p-2">
@@ -29,7 +36,7 @@ export default function Article({ isRevert = false, className, status, classImag
           </div>
         </div>
       </div>
-    </Link>
+    </div>
 
   )
 }

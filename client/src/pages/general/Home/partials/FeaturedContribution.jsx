@@ -6,6 +6,7 @@ import React from 'react'
 
 export default function FeaturedContribution() {
   const { data, isLoading } = useQuery({ queryKey: ['featured-contributions'], queryFn: Contributions.getFeaturedContributions })
+  console.log(data)
   return (
     <section className="my-4">
       <h2 className='my-2 text-2xl font-bold'>Featured Article</h2>

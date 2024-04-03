@@ -25,7 +25,7 @@ function Dropzone({ open, className, files, setFiles }) {
 
   const handleRenderImage = (filePath) => {
     if (filePath === "docx" || filePath === "doc") {
-      return "../word.png"
+      return "../../word.png"
     } else if (filePath === "pdf") {
       return "../pdf.png"
     }
