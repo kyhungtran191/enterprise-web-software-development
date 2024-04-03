@@ -12,7 +12,6 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
         public required string Slug { get; set; }
         public IFormFile? Thumbnail { get; set; }
         public List<IFormFile>? Files { get; set; }
-        public Guid AcademicYearId { get; set; }
         public Guid FacultyId { get; set; }
         //public Guid UserId { get; set; }
         public bool IsConfirmed { get; set; }

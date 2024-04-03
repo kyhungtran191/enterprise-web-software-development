@@ -21,6 +21,30 @@ public class AcademicYearRepository : RepositoryBase<AcademicYear, Guid>, IAcade
     {
         return await _dbContext.AcademicYears.SingleOrDefaultAsync(x => x.Name == name);
     }
+    public async Task<AcademicYear> GetAcademicYearByDateAsync(DateTime date)
+    {
+        var academicYear = await _dbContext.AcademicYears
+            .Where(a => date >= a.StartClosureDate && date <= a.FinalClosureDate)
+            .FirstOrDefaultAsync();
+
+        return academicYear;
+    }
+    public async Task<bool> CanSubmitAsync(DateTime date)
+    {
+        var academicYear = await _dbContext.AcademicYears
+            .Where(a => date >= a.StartClosureDate && date <= a.EndClosureDate)
+            .FirstOrDefaultAsync();
+
+        return academicYear != null;
+    }
+    public async Task<bool> CanEditAsync(DateTime date)
+    {
+        var academicYear = await _dbContext.AcademicYears
+            .Where(a => date >= a.EndClosureDate && date <= a.FinalClosureDate)
+            .FirstOrDefaultAsync();
+
+        return academicYear != null;
+    }
 
     public async Task<PagedResult<AcademicYearDto>> GetAllYearsPaging(string? keyword, int pageIndex = 1, int pageSize = 10)
     {

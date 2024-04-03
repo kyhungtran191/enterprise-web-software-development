@@ -123,15 +123,29 @@ public static class DataSeeder
             new()
             {
                 Id = Guid.NewGuid(),
-                Name = "2021-2022", StartClosureDate = new DateTime(2022, 5, 1),
-                EndClosureDate = new DateTime(2022, 7, 1), FinalClosureDate = new DateTime(2022, 9, 1),
+                Name = "2021-2022", StartClosureDate = new DateTime(2021, 1, 1),
+                EndClosureDate = new DateTime(2021, 7, 1), FinalClosureDate = new DateTime(2022, 10, 1),
                 UserNameCreated = "Default",DateCreated = DateTime.Now
             },
             new()
             {
                 Id = Guid.NewGuid(),
-                Name = "2022-2023", StartClosureDate = new DateTime(2023, 5, 1),
-                EndClosureDate = new DateTime(2023, 7, 1), FinalClosureDate = new DateTime(2023, 9, 1),
+                Name = "2022-2023", StartClosureDate = new DateTime(2022, 1, 1),
+                EndClosureDate = new DateTime(2022, 7, 1), FinalClosureDate = new DateTime(2022, 10, 1),
+                UserNameCreated = "Default",DateCreated = DateTime.Now
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2023-2024", StartClosureDate = new DateTime(2023, 1, 1),
+                EndClosureDate = new DateTime(2023, 7, 1), FinalClosureDate = new DateTime(2023, 10, 1),
+                UserNameCreated = "Default",DateCreated = DateTime.Now
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Name = "2024-2025", StartClosureDate = new DateTime(2024, 1, 1),
+                EndClosureDate = new DateTime(2024, 7, 1), FinalClosureDate = new DateTime(2024, 10, 1),
                 UserNameCreated = "Default",DateCreated = DateTime.Now
             },
         };

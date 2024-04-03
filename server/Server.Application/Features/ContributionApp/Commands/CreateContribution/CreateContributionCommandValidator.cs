@@ -13,11 +13,6 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 .NotEmpty()
                 .Matches("^[a-z0-9]+(?:-[a-z0-9]+)*$")
                 .WithMessage("Slug must not be empty and must be a valid slug format.");
-
-            RuleFor(x => x.AcademicYearId)
-                .NotEmpty()
-                .WithMessage("Please select an academic year before submitting the contribution.");
-
             RuleFor(x => x.FacultyId)
                 .NotEmpty()
                 .WithMessage("Faculty ID must not be empty.");
