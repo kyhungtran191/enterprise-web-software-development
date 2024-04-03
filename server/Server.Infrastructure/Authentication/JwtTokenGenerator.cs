@@ -127,7 +127,7 @@ public sealed class JwtTokenGenerator : IJwtTokenGenerator
             claims: claims,
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
-            expires: _dateTimeProvider.UtcNow.AddSeconds(_jwtSettings.ExpiryMinutes),
+            expires: _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             signingCredentials: signingCredentials);
 
         var tokenHandler = new JwtSecurityTokenHandler();
