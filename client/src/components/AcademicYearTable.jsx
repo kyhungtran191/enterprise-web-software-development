@@ -14,16 +14,50 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useState } from 'react'
 import { NewAcademicYearDialog } from './NewAcademicYearDialog'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import { AcademicYears } from '@/services/admin'
+import { toast } from 'react-toastify'
 import Spinner from './Spinner'
+import { AcademicYearEditDialog } from './AcademicYearEditDialog'
 export function AcademicYearTable() {
-  const [isOpenViewUser, setIsOpenViewUser] = useState(false)
-  const [viewUser, setViewUser] = useState({})
-  const handleViewUser = (user) => {
-    setIsOpenViewUser(true)
-    setViewUser(user)
+  const [isOpenEditAcademicYear, setIsOpenEditAcademicYear] = useState(false)
+  const [academicYear, setAcademicYear] = useState({})
+  const queryClient = useQueryClient()
+  const { mutate: activateAcademicYear } = useMutation({
+    mutationFn: (id) => AcademicYears.activateAcademicYear(id)
+  })
+  const { mutate: deactivateAcademicYear } = useMutation({
+    mutationFn: (id) => AcademicYears.deactivateAcademicYear(id)
+  })
+
+  const handleEditAcademicYear = (academicYear) => {
+    setIsOpenEditAcademicYear(true)
+    setAcademicYear(academicYear)
+  }
+  const handleActivateAcademicYear = (academicYear) => {
+    activateAcademicYear(academicYear.id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries('adminAcademicYears')
+        toast.success('Activated successfully!')
+      },
+      onError: (error) => {
+        const errorMessage = error?.response?.data?.title
+        toast.error(errorMessage)
+      }
+    })
+  }
+  const handleDeactivateAcademicYear = (academicYear) => {
+    deactivateAcademicYear(academicYear.id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries('adminAcademicYears')
+        toast.success('Deactivated successfully!')
+      },
+      onError: (error) => {
+        const errorMessage = error?.response?.data?.title
+        toast.error(errorMessage)
+      }
+    })
   }
   const columns = [
     {
@@ -129,21 +163,23 @@ export function AcademicYearTable() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
               <DropdownMenuGroup>
-                <DropdownMenuItem onSelect={() => handleViewUser(row.original)}>
-                  <User className='w-4 h-4 mr-2' />
-                  <span>View detail</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => handleEditAcademicYear(row.original)}
+                >
                   <Pencil className='w-4 h-4 mr-2' />
                   <span>Edit academic year</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => handleActivateAcademicYear(row.original)}
+                >
                   <UserRoundX className='w-4 h-4 mr-2' />
-                  <span>Activate year</span>
+                  <span>Activate this year</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => handleDeactivateAcademicYear(row.original)}
+                >
                   <UserRoundX className='w-4 h-4 mr-2' />
-                  <span>Deactivate year</span>
+                  <span>Deactivate this year</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -154,19 +190,20 @@ export function AcademicYearTable() {
   ]
   const queryParams = useParamsVariables()
   const { data, isLoading } = useQuery({
-    queryKey: ['academicYears', queryParams],
+    queryKey: ['adminAcademicYears', queryParams],
     queryFn: (_) => AcademicYears.getAllAcademicYears(queryParams),
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000
   })
-  const academicYearsData =
-    data &&
-    data?.data?.responseData?.results.map((year) => ({
-      ...year,
-      startClosureDate: format(new Date(year.startClosureDate), 'dd-MM-yyyy'),
-      endClosureDate: format(new Date(year.endClosureDate), 'dd-MM-yyyy'),
-      finalClosureDate: format(new Date(year.finalClosureDate), 'dd-MM-yyyy')
-    }))
+  const academicYearsData = data
+    ? data?.data?.responseData?.results.map((year) => ({
+        ...year,
+        startClosureDate: format(new Date(year.startClosureDate), 'MM-dd-yyyy'),
+        endClosureDate: format(new Date(year.endClosureDate), 'MM-dd-yyyy'),
+        finalClosureDate: format(new Date(year.finalClosureDate), 'MM-dd-yyyy'),
+        status: year.isActive ? 'Active' : 'Inactive'
+      }))
+    : []
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
@@ -183,12 +220,13 @@ export function AcademicYearTable() {
           <CustomTable columns={columns} data={academicYearsData} />
         </div>
       )}
-
-      {/* <UserDialog
-        isOpen={isOpenViewUser}
-        handleOpenChange={setIsOpenViewUser}
-        user={viewUser}
-      /> */}
+      {Object.keys(academicYear).length > 0 && (
+        <AcademicYearEditDialog
+          isOpen={isOpenEditAcademicYear}
+          handleOpenChange={setIsOpenEditAcademicYear}
+          data={academicYear}
+        />
+      )}
     </div>
   )
 }

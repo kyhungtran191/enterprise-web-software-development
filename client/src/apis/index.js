@@ -40,3 +40,28 @@ export const getAllAcademicYearsAPI = `${URL}${adminAPI}/AcademicYear/paging`
 export const createAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`
 export const getAcademicYearByIdAPI = `${URL}${adminAPI}/AcademicYear`
 export const updateAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`
+export const deleteAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`
+export const activateAcademicYearAPI = `${URL}${adminAPI}/AcademicYear/activate`
+export const deactivateAcademicYearAPI = `${URL}${adminAPI}/AcademicYear/inactivate`
+// Roles
+export const getAllRolesAPI = `${URL}${adminAPI}/Roles`
+export const getRoleByIdAPI = `${URL}${adminAPI}/Roles`
+export const createRoleAPI = `${URL}${adminAPI}/Roles`
+export const updateRoleAPI = `${URL}${adminAPI}/Roles`
+export const deleteRoleAPI = `${URL}${adminAPI}/Roles`
+// Role permissions
+export const getPermissionsForRoleAPI = `${URL}${adminAPI}/Roles`
+export const updateRolePermissionsAPI = `${URL}${adminAPI}/Roles`
+// Users
+export const getAllUsersAPI = `${URL}${adminAPI}/Users`
+export const getUserByIdAPI = `${URL}${adminAPI}/Users`
+export const createUserAPI = `${URL}${adminAPI}/Users`
+export const updateUserAPI = `${URL}${adminAPI}/Users`
+export const deleteUserAPI = `${URL}${adminAPI}/Users`
+
+// Faculty
+export const createFacultyAPI = `${URL}${adminAPI}/Faculties`
+export const getAllFacultiesAPI = `${URL}${adminAPI}/Faculties`
+export const getFacultyByIdAPI = `${URL}${adminAPI}/Faculties`
+export const updateFacultyAPI = `${URL}${adminAPI}/Faculties`
+export const deleteFacultyAPI = `${URL}${adminAPI}/Faculties`
