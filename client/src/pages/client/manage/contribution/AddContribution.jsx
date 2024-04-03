@@ -7,12 +7,14 @@ import { Editor } from '@tinymce/tinymce-react';
 import Dropzone from '@/components/dropzone'
 import { Button } from '@/components/ui/button'
 import * as yup from 'yup'
-import { EMAIL_REG } from '@/utils/regex'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
-import { file } from 'jszip'
-import Spinner from '@/components/Spinner'
 import ActionSpinner from '@/components/ActionSpinner'
+import { STUDENT_OPTIONS } from '@/constant/menuSidebar'
+import { QueryClient, useMutation } from '@tanstack/react-query'
+import { Contributions } from '@/services/client'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const schema = yup.object({
   title: yup.string().required('Please provide post title'),
@@ -35,9 +37,12 @@ export default function AddContribution() {
   const [thumbnailError, setThumbnailError] = useState(false);
   const [detailError, setDetailError] = useState(false);
   const [fileError, setFileError] = useState(false);
-  const fetchThumbNailFile = (blobUrl) => {
+  const navigate = useNavigate()
+  const queryClient = new QueryClient()
+  const addContributionMutation = useMutation({
+    mutationFn: (body) => Contributions.addContribution(body)
+  })
 
-  }
   const handleChangeImage = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -60,28 +65,47 @@ export default function AddContribution() {
     if (files.length === 0) {
       setFileError(true);
     }
-    if (thumbnailError || detailError || files.length < 0) return;
-    // HandleFile
-    let file = await fetch(currentThumbnail)
-    let thumbNailFile = file ? new File([file], 'thumbnail.jpg', { type: 'image/jpeg' }) : undefined;
+    if (thumbnailError || detailError || files.length < 0 || !watch("terms")) return;
+    let response = await fetch(currentThumbnail)
+    let thumbNailFile;
+    if (response.ok) {
+      let fileBlob = await response.blob();
 
-    let info = {
-      Title: data.title,
-      Thumbnail: thumbNailFile,
-      Files: files,
-      IsConfirmed: watch("terms"),
-      Content: editorRef.current.getContent(),
-      ShortDescription: data.short_description
+      thumbNailFile = new File([fileBlob], 'thumbnail.jpg', { type: 'image/jpeg' });
+
+    } else {
+      console.error('Failed to fetch thumbnail:', response.status);
     }
-    console.log(info)
+    let formData = new FormData();
+    formData.append('Title', data.title);
+    formData.append('IsConfirmed', watch("terms"));
+    formData.append('Content', editorRef.current.getContent());
+    formData.append('ShortDescription', data.short_description);
+    if (thumbNailFile) {
+      formData.append('Thumbnail', thumbNailFile);
+    }
+    for (let i = 0; i < files.length; i++) {
+      formData.append('Files', files[i]);
+    }
+    console.log()
+    console.log(thumbNailFile);
+    addContributionMutation.mutate(formData, {
+      onSuccess(data) {
+        toast.success("Add new successfully!")
+        queryClient.invalidateQueries({ queryKey: ['recent'], exact: true })
+        navigate('/manage/recent?status=PENDING')
+      },
+      onError(data) {
+        toast.error(data && data?.messages[0])
+      }
+    })
   }
 
-  const isLoading = true;
   return (
-    <AdminLayout isAdmin={false}>
+    <AdminLayout link={STUDENT_OPTIONS}>
       <div>
         <DynamicBreadcrumb></DynamicBreadcrumb>
-        {isLoading && <ActionSpinner></ActionSpinner>
+        {addContributionMutation.isLoading && <ActionSpinner></ActionSpinner>
         }
         <form className='py-4' onSubmit={handleSubmit(onSubmit)}>
           <div className='mt-2'>
@@ -91,7 +115,7 @@ export default function AddContribution() {
               name="title"
               render={({ field }) => (
                 <Input
-                  className='p-4 mt-2 outline-none'
+                  className='p-4 mt-2 text-lg font-bold outline-none '
                   placeholder='Title'
                   {...field}
                 ></Input>

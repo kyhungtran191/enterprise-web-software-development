@@ -96,7 +96,7 @@ function App() {
           element={<AddContribution></AddContribution>}
         ></Route>
         <Route
-          path='/manage/edit-contribution/:id'
+          path='/manage/edit-contribution/:slug'
           element={<UpdateContribution></UpdateContribution>}
         ></Route>
         <Route

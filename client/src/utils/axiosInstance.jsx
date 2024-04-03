@@ -16,7 +16,7 @@ const AxiosInterceptor = ({ children }) => {
     let refreshToken = getRefreshToken();
     if (accessToken) {
       const decoded = jwtDecode(accessToken)
-      if (decoded.exp > ((Date.now() / 1000) + 30)) {
+      if (decoded.exp > ((Date.now() / 1000))) {
         config.headers.authorization = `Bearer ${accessToken}`
         return config
       } else {
