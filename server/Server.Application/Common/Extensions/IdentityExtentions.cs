@@ -1,7 +1,9 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Server.Domain.Common.Constants;
 using System.Security.Claims;
+using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Common.Extensions;
 
@@ -35,6 +37,14 @@ public static class IdentityExtentions
     {
         var facultyName = ((ClaimsIdentity)claimsPrincipal.Identity!).GetSpecificClaim(UserClaims.FacultyName);
         return facultyName;
+    }
+    public static async Task<AppUser> FindByFacultyIdAsync(this UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, Guid facultyId )
+    {
+        AppRole coordinatorRole = await roleManager.FindByNameAsync(Roles.Coordinator);
+        var usersInRole = await userManager.GetUsersInRoleAsync(coordinatorRole.Name);
+        AppUser coordinator = usersInRole.FirstOrDefault(u => u.FacultyId == facultyId);
+        return coordinator;
+
     }
 
 

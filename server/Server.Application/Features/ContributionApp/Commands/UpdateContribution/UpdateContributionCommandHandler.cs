@@ -2,13 +2,18 @@
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers;
+using Server.Contracts.Common;
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
+using Server.Domain.Entity.Identity;
+using static Server.Domain.Common.Errors.Errors;
 using File = Server.Domain.Entity.Content.File;
 
 
@@ -20,12 +25,18 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
         private readonly IMapper _mapper;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IMediaService _mediaService;
-        public UpdateContributionCommandHandler(IUnitOfWork unitOfWork,IMapper mapper, IDateTimeProvider dateTimeProvider, IMediaService mediaService)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<AppRole> _roleManager;
+        private readonly IEmailService _emailService;
+        public UpdateContributionCommandHandler(IUnitOfWork unitOfWork,IMapper mapper, IDateTimeProvider dateTimeProvider, IMediaService mediaService, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _dateTimeProvider = dateTimeProvider;
             _mediaService = mediaService;
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _emailService = emailService;
         }
 
         public async Task<ErrorOr<IResponseWrapper>> Handle(UpdateContributionCommand request, CancellationToken cancellationToken)
@@ -53,6 +64,10 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
             _mapper.Map(request,itemFromDb);
             itemFromDb.DateEdited = _dateTimeProvider.UtcNow;
             await _unitOfWork.CompleteAsync();
+            var filePublicId = new List<string>();
+            var fileTypes = new List<string>();
+            var thumbnailPublicId = new List<string>();
+            var thumbnailTypes = new List<string>();
             if (request.Thumbnail is not null || request.Files.Count > 0)
             {
                 // remove old files
@@ -81,7 +96,10 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
 
                 var thumbnailInfo = await _mediaService.UploadFileCloudinary(thumbnailList, FileType.Thumbnail,itemFromDb.Id);
                 var fileInfo = await _mediaService.UploadFileCloudinary(request.Files, FileType.File, itemFromDb.Id);
-
+                filePublicId = fileInfo.Select(x => x.PublicId).ToList();
+                fileTypes = fileInfo.Select(x => x.Type).ToList();
+                thumbnailPublicId = thumbnailInfo.Select(x => x.PublicId).ToList();
+                thumbnailTypes = thumbnailInfo.Select(x => x.Type).ToList();
                 foreach (var info in fileInfo.Concat(thumbnailInfo))
                 {
                     _unitOfWork.FileRepository.Add(new File
@@ -98,9 +116,21 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                 await _unitOfWork.CompleteAsync();
             }
 
-           
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            if (user == null)
+            {
+                await _mediaService.RemoveFromCloudinary(filePublicId, fileTypes);
+                await _mediaService.RemoveFromCloudinary(thumbnailPublicId, thumbnailTypes);
+                return Errors.User.CannotFound;
+            }
             // add email service later
-
+            var coordinator = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
+            _emailService.SendEmail(new MailRequest
+            {
+                ToEmail = coordinator.Email,
+                Body = $"User with Id {user.Id} edit contribution {itemFromDb.Id}",
+                Subject = "Edit CONTRIBUTION"
+            });
 
             return new ResponseWrapper
             {

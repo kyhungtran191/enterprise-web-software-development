@@ -167,7 +167,7 @@ public class RolesController : AdminApiController
     }
 
 
-    [HttpGet("{id}/permisisons")]
+    [HttpGet("{id}/permissions")]
     [Authorize(Permissions.Roles.View)]
     public async Task<IActionResult> GetAllRolePermissions(string id)
     {
