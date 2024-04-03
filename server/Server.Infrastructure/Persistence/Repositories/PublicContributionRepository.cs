@@ -7,6 +7,7 @@ using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Wrappers.PagedResult;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
+using System.Text.RegularExpressions;
 
 namespace Server.Infrastructure.Persistence.Repositories
 {
@@ -138,7 +139,7 @@ namespace Server.Infrastructure.Persistence.Repositories
            
             if (!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => EF.Functions.Like(x.c.Title, $"%{keyword}%"));
+                query = query.Where(x => EF.Functions.Like(x.c.Title, $"%{keyword}%") || EF.Functions.Like(x.c.ShortDescription,$"%{keyword}%"));
             }
             
             if (!string.IsNullOrEmpty(year))
