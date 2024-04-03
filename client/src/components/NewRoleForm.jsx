@@ -11,15 +11,20 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { DialogClose, DialogFooter } from '@/components/ui/dialog'
-
+import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { Input } from '@/components/ui/input'
-
+import { toast } from 'react-toastify'
+import { Roles } from '@/services/admin'
 const formSchema = z.object({
   name: z.string({ required_error: 'A display name is required.' }),
   displayName: z.string({ required_error: 'A display name is required.' })
 })
 
 export function NewRoleForm() {
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation({
+    mutationFn: (data) => Roles.createRole(data)
+  })
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,7 +34,21 @@ export function NewRoleForm() {
   })
 
   function onSubmit(values) {
-    console.log(values)
+    if (!Object.keys(form.formState.errors).length > 0) {
+      mutate(values, {
+        onSuccess: () => {
+          queryClient.invalidateQueries(['adminRoles'])
+          form.reset()
+          toast.success('Academic year created successfully!')
+        },
+        onError: (error) => {
+          const errorMessage = error?.response?.data?.title
+          toast.error(errorMessage)
+        }
+      })
+    } else {
+      toast.error('Please fill in all required fields correctly.')
+    }
   }
 
   return (
