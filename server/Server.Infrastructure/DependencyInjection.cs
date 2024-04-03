@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,7 +73,7 @@ public static class DependencyInjection
             {
                 services.Add(new ServiceDescriptor(directInterface, concreteService, ServiceLifetime.Scoped));
             }
-        }        
+        }
 
         return services;
     }
@@ -99,13 +100,20 @@ public static class DependencyInjection
                {
                    ValidateIssuer = true,
                    ValidateAudience = true,
-                   ValidateLifetime = false,
+                   //    ValidateLifetime = false,
+                   ClockSkew = TimeSpan.Zero,
                    ValidateIssuerSigningKey = true,
                    ValidIssuer = jwtSettings.Issuer,
                    ValidAudience = jwtSettings.Audience,
                    IssuerSigningKey = new SymmetricSecurityKey(
                        Encoding.UTF8.GetBytes(jwtSettings.Secret)
                    ),
+                   //    LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
+                   //                     TokenValidationParameters validationParameters) =>
+                   //     {
+                   //         return notBefore <= DateTime.UtcNow &&
+                   //                 expires > DateTime.UtcNow;
+                   //     }
                };
 
                options.Events = new JwtBearerEvents
@@ -120,7 +128,12 @@ public static class DependencyInjection
                        {
                            authenticationFailedContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
-                           result = JsonConvert.SerializeObject(new { message = "Token Invalid" });
+                           result = JsonConvert.SerializeObject(new
+                           {
+                               message = "Token is Expired.",
+                               statusCode = (int)HttpStatusCode.Unauthorized,
+                               status = "Unauthorized"
+                           });
                        }
                        else
                        {
