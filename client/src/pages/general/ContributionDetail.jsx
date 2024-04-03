@@ -11,7 +11,6 @@ import { useQuery } from '@tanstack/react-query'
 import { Contributions } from '@/services/client'
 import { formatDate } from '@/utils/helper'
 import Spinner from '@/components/Spinner'
-import Loading from '@/components/Loading'
 import DownloadAllButton from '@/components/DownloadAllButton'
 export default function ContributionDetail() {
   const { id } = useParams()
@@ -50,9 +49,7 @@ export default function ContributionDetail() {
               <Badge variant="destructive">{detailData?.facultyName}</Badge>
               <Button className="bg-transparent border border-black text-black-500 hover:bg-red-500 hover:text-white hover:border-white"><Heart></Heart></Button>
             </div>
-            <h2 className="mt-3 text-2xl font-semibold text-ellipsis line-clamp-4 medium:text-4xl">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cumque porro quam, reprehenderit nam aut minus sit cum sunt doloremque. Ipsa sequi temporibus incidunt officia. Iusto amet ipsam distinctio maxime pariatur.
-              Nesciunt, laboriosam libero. Magni, impedit vel harum saepe labore libero laudantium vero ad unde, alias excepturi autem quaerat ullam laboriosam modi accusantium ratione illum facere assumenda natus nihil aliquam eum.
-              Odit quasi similique quibusdam cupiditate illum mollitia ratione impedit architecto totam esse obcaecati maiores nobis porro, ad, ea, unde aspernatur perferendis est distinctio minus eius molestiae. Illum expedita beatae veniam.</h2>
+            <h2 className="mt-3 text-2xl font-semibold text-ellipsis line-clamp-4 medium:text-4xl">{detailData?.title} </h2>
             <div className="flex flex-wrap items-center justify-between my-6 text-xs font-semibold text-gray-600 md:text-sm medium:text-base">
               <div className='flex flex-wrap items-center gap-1'>
                 <p>{formatDate(detailData?.publicDate)}</p>

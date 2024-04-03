@@ -34,6 +34,7 @@ import { isUndefined, omitBy, omit } from 'lodash'
 import { useAcademicYear } from '@/query/useAcademicYear'
 import { Icon } from '@iconify/react'
 import Spinner from '@/components/Spinner'
+import PaginationCustom from '@/components/PaginationCustom'
 export default function ContributionList() {
   // State
   const [faculty, setFaculty] = useState("")
@@ -54,8 +55,7 @@ export default function ContributionList() {
       keyword: queryParams.keyword,
       name: queryParams.name,
       year: queryParams.year,
-      price_min: queryParams.price_min,
-      pagesize: queryParams.pagesize || '8',
+      pagesize: queryParams.pagesize || '4',
     },
     isUndefined
   )
@@ -72,9 +72,7 @@ export default function ContributionList() {
     if (queryParams["year"]) {
       setAcademic(queryParams["year"])
     }
-    // if (queryParams["keyword"]) {
-    //   setInputValue(queryParams["keyword"])
-    // }
+
   }, [queryParams])
 
 
@@ -101,7 +99,6 @@ export default function ContributionList() {
 
   const handleInputChange = debounce((value) => {
     if (!value) {
-      console.log(createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString())
       return navigate({
         pathname: "/contributions",
         search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
@@ -113,14 +110,15 @@ export default function ContributionList() {
       search: createSearchParams(omitBy({
         ...queryConfig,
         keyword: value
-      }, isUndefined)).toString()
-    })
+      }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
+    });
   }, 300);
 
   const listData = data && data?.data?.responseData?.results
   const listFaculties = falcultiesData && falcultiesData?.data?.responseData?.results
   const listAcademic = academicData && academicData?.data?.responseData?.results
-  console.log("input", inputValue)
+
+  console.log(data?.data?.responseData)
   return (
     <GeneralLayout>
       <div className="container">
@@ -174,32 +172,17 @@ export default function ContributionList() {
           </div>
         </div>
         {listData && listData.length > 0 && <>
-
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xl:gap-4">
             {listData.map((article) => (
               <Article article={article} key={article.id}></Article>
             ))}
           </div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <PaginationCustom path={"/contributions"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
         </>}
-        {!listData && <div className="flex justify-center min-h-screen mt-10">
+        {isLoading && <div className="flex justify-center min-h-screen mt-10">
           <Spinner></Spinner>
         </div>}
+        {!listData?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
       </div>
     </GeneralLayout>
   )

@@ -8,7 +8,7 @@ import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Controller, useForm } from 'react-hook-form'
 import { Icon } from '@iconify/react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { Auth } from '@/services/client'
 import { toast } from 'react-toastify'
 export default function ResetPassword() {
