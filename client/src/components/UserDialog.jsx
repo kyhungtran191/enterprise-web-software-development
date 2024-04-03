@@ -22,16 +22,29 @@ export function UserDialog({ isOpen, handleOpenChange, user }) {
         <div className='flex flex-col gap-3 py-4'>
           <div className='flex flex-col gap-4'>
             <Label htmlFor='name' className='text-left font-semibold'>
-              Display Name
+              First Name
             </Label>
-            <span>{user.displayName}</span>
+            <span>{user.firstName}</span>
           </div>
-          <div className='flex flex-col gap-3'>
+          <div className='flex flex-col gap-4'>
+            <Label htmlFor='name' className='text-left font-semibold'>
+              Last Name
+            </Label>
+            <span>{user.lastName}</span>
+          </div>
+          <div className='flex flex-col gap-4'>
+            <Label htmlFor='name' className='text-left font-semibold'>
+              Username
+            </Label>
+            <span>{user.userName}</span>
+          </div>
+
+          {/* <div className='flex flex-col gap-3'>
             <Label htmlFor='username' className='text-left font-semibold'>
               Gender
             </Label>
             <span>{user.gender}</span>
-          </div>
+          </div> */}
           <div className='flex flex-col gap-3'>
             <Label htmlFor='username' className='text-left font-semibold'>
               Date of Birth
@@ -44,17 +57,17 @@ export function UserDialog({ isOpen, handleOpenChange, user }) {
             </Label>
             <span>{user.email}</span>
           </div>
-          <div className='flex flex-col gap-3'>
-            <Label htmlFor='username' className='text-left font-semibold'>
-              Username
+          <div className='flex flex-col gap-4'>
+            <Label htmlFor='name' className='text-left font-semibold'>
+              Phone Number
             </Label>
-            <span>{user.username}</span>
+            <span>{user.phoneNumber}</span>
           </div>
           <div className='flex flex-col gap-3'>
             <Label htmlFor='username' className='text-left font-semibold'>
-              User Type
+              User Role
             </Label>
-            <span>{user.type}</span>
+            <span>{user.role}</span>
           </div>
           <div className='flex flex-col gap-3'>
             <Label htmlFor='username' className='text-left font-semibold'>
