@@ -43,7 +43,7 @@ public class TokenService : ITokenService
             ValidAudience = _jwtSettings.Audience,
             ValidIssuer = _jwtSettings.Issuer,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
-            ValidateLifetime = true //here we are saying that we don't care about the token's expiration date,
+            ValidateLifetime = false //here we are saying that we don't care about the token's expiration date,
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
