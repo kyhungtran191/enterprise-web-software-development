@@ -17,25 +17,26 @@ import ForgotPassword from './pages/general/ForgotPassword'
 import ResetPassword from './pages/general/ResetPassword'
 import ContributionList from './pages/general/ContributionList'
 import { ContributionTable } from './components/ContributionTable'
+import UpdateContribution from './pages/client/manage/contribution/UpdateContribution'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
   const location = useLocation()
+
   useEffect(() => {
-    setLoading(true) // Bắt đầu loading khi route thay đổi
+    setLoading(true)
     const timeoutId = setTimeout(() => {
-      setLoading(false) // Dừng loading sau một khoảng thời gian
+      setLoading(false)
     }, 1000)
     window.scrollTo(0, 0)
-    return () => clearTimeout(timeoutId) // Hủy bỏ timeout khi component unmount hoặc khi route thay đổi
+    return () => clearTimeout(timeoutId)
   }, [location.pathname])
-
   return (
     <>
       {/* {loading && (
         <div className='fixed inset-0 z-50 flex flex-col items-center justify-center h-screen text-white bg-blue-800'>
           <img
-            src='../greenwich-logo.png'
+            src='../../greenwich-logo.png'
             alt='logo'
             className='md:w-[500px] h-auto object-cover flex-shrink-0 p-4'
           />
@@ -93,6 +94,10 @@ function App() {
         <Route
           path='/manage/add-contribution'
           element={<AddContribution></AddContribution>}
+        ></Route>
+        <Route
+          path='/manage/edit-contribution/:id'
+          element={<UpdateContribution></UpdateContribution>}
         ></Route>
         <Route
           path='/contributions'

@@ -29,7 +29,7 @@ export default function Header() {
         <div className='flex items-center'>
           <Link to='/' className='flex items-center justify-center gap-4'>
             <img
-              src='../logo.png'
+              src='../../logo.png'
               alt='logo'
               className='flex-shrink-0 object-cover w-10 h-10 sm:h-16 sm:w-16'
             />
@@ -38,15 +38,12 @@ export default function Header() {
             </h1>
           </Link>
         </div>
-        {/* <div className='items-center hidden ml-8 lg:flex absolute left-[50%] -transition-x-1/2'>
-          {Array(5)
-            .fill(0)
-            .map((item, index) => (
-              <div className='mx-4' key={index}>
-                {index}
-              </div>
-            ))}
-        </div> */}
+        <div className='items-center hidden ml-8 lg:flex absolute left-[50%] -transition-x-1/2'>
+
+          <Link className='mx-4 font-semibold hover:text-blue-500' to="/contributions">
+            Contribution Lists
+          </Link>
+        </div>
         <div className='flex items-center gap-x-5'>
           <Switch />
           <Popover>

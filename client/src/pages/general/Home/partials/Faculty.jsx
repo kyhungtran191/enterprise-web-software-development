@@ -21,7 +21,7 @@ export default function Faculty() {
         <CarouselContent className="py-4">
           {data && data?.data?.responseData?.results.map((item, index) => (
             <CarouselItem className="basis-1/2 md:basis-1/3 medium:basis-1/4" key={item.id}>
-              <Link to={`/contributions?facultyName=${item.name}`} className="h-[180px] md:h-[234px] flex flex-col items-center justify-center gap-3 transition duration-300 ease-in-out rounded-md shadow-lg hover:-translate-y-2">
+              <Link to={`/contributions?facultyname=${item.name}`} className="h-[180px] md:h-[234px] flex flex-col items-center justify-center gap-3 transition duration-300 ease-in-out rounded-md shadow-lg hover:-translate-y-2">
                 <img src="./falcuty-icon.png" alt="" className='w-[32px] h-[32px] flex-shrink-0' />
                 <h3 className='font-semibold'>{item.name}</h3>
               </Link>

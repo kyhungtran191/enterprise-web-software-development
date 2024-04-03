@@ -14,7 +14,6 @@ export default function AddContribution() {
 
   const [currentFileThumbNail, setCurrentFileThumbNail] = useState({})
   const [currentThumbnail, setCurrentThumbnail] = useState()
-  console.log(files)
 
   const handleChangeImage = (e) => {
     const file = e.target.files[0]
@@ -30,7 +29,7 @@ export default function AddContribution() {
 
 
   return (
-    <AdminLayout>
+    <AdminLayout isAdmin={false}>
       <div>
         <DynamicBreadcrumb></DynamicBreadcrumb>
         <form className='py-4'>
@@ -44,7 +43,7 @@ export default function AddContribution() {
               {currentThumbnail ?
                 <img src={currentThumbnail ? currentThumbnail : " "} alt="" className='object-cover w-full h-full' />
                 : <div className='flex flex-col items-center justify-center h-full gap-4'>
-                  <img src={"../upload-icon.png"} alt="" className='w-20 h-20' />
+                  <img src={"../../upload-icon.png"} alt="" className='w-20 h-20' />
                   <p className='text-xl font-semibold text-center lg:text-3xl'>Add your article Thumbnail here</p>
                 </div>}
             </label>
@@ -76,9 +75,8 @@ export default function AddContribution() {
             <label className="text-2xl font-semibold">Attach Files</label>
             <Dropzone files={files} setFiles={setFiles}></Dropzone>
           </div>
-
           <div className="flex items-center w-full space-x-2">
-            <Checkbox id="terms" className="p-2" />
+            <input type="checkbox" id="terms" className="w-5 h-5 rounded-lg" defaultChecked={false} />
             <Label htmlFor="terms" className="text-lg font-bold">Accept terms and conditions</Label>
           </div>
         </form>

@@ -24,11 +24,8 @@ export default function UpdateContribution() {
   }
   const editorRef = useRef(null);
 
-
-
-
   return (
-    <AdminLayout>
+    <AdminLayout isAdmin={false}>
       <div>
         <DynamicBreadcrumb></DynamicBreadcrumb>
         <form className='py-4'>
@@ -42,7 +39,7 @@ export default function UpdateContribution() {
               {currentThumbnail ?
                 <img src={currentThumbnail ? currentThumbnail : " "} alt="" className='object-cover w-full h-full' />
                 : <div className='flex flex-col items-center justify-center h-full gap-4'>
-                  <img src={"../upload-icon.png"} alt="" className='w-20 h-20' />
+                  <img src={"../../upload-icon.png"} alt="" className='w-20 h-20' />
                   <p className='text-xl font-semibold text-center lg:text-3xl'>Add your article Thumbnail here</p>
                 </div>}
             </label>
@@ -74,11 +71,6 @@ export default function UpdateContribution() {
           <div className='py-4'>
             <label className="text-2xl font-semibold">Attach Files</label>
             <Dropzone files={files} setFiles={setFiles}></Dropzone>
-          </div>
-
-          <div className="flex items-center w-full space-x-2">
-            <Checkbox id="terms" className="p-2" />
-            <Label htmlFor="terms" className="text-lg font-bold">Accept terms and conditions</Label>
           </div>
         </form>
         <Button className="w-full text-lg bg-green-600 py-7 hover:bg-green-700">Upload</Button>

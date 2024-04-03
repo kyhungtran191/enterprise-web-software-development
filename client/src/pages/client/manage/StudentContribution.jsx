@@ -37,6 +37,7 @@ export default function StudentContribution() {
     queryFn: (params) => Contributions.getCurrentContribution(params)
   })
   const currentData = data && data?.data?.responseData;
+
   return (
     <AdminLayout isAdmin={false}>
       <div className='flex flex-wrap items-center gap-3 my-5'>

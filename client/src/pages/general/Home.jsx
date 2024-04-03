@@ -6,6 +6,7 @@ import TopContributors from './Home/partials/TopContributors'
 import FeaturedContribution from './Home/partials/FeaturedContribution'
 import LatestContribution from './Home/partials/LatestContribution'
 export default function Home() {
+
   return (<div>
     <div className="container">
       {/* Search  */}
