@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
@@ -8,6 +9,7 @@ using Server.Application.Wrappers;
 using Server.Contracts.Common;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
+using Server.Domain.Entity.Identity;
 
 namespace Server.Application.Features.ContributionApp.Commands.ApproveContributions
 {
@@ -15,10 +17,12 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
-        public ApproveContributionsCommandHandler(IUnitOfWork unitOfWork,IEmailService emailService)
+        private readonly UserManager<AppUser> _userManager;
+        public ApproveContributionsCommandHandler(IUnitOfWork unitOfWork,IEmailService emailService, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
+            _userManager = userManager;
         }
         public async Task<ErrorOr<IResponseWrapper>> Handle(ApproveContributionsCommand request, CancellationToken cancellationToken)
         {
@@ -51,8 +55,15 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
 
                
                 await _unitOfWork.ContributionRepository.Approve(contribution,request.UserId);
+                var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
+                _emailService.SendEmail(new MailRequest
+                {
+                    ToEmail = student.Email,
+                    Body = $"Coordinator accept your contribution",
+                    Subject = "APPROVED CONTRIBUTION"
+                });
             }
-
+           
             await _unitOfWork.CompleteAsync();
 
             return new ResponseWrapper
