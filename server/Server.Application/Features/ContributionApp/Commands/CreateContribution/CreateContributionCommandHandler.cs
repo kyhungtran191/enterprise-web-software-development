@@ -3,6 +3,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers;
@@ -19,19 +20,20 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
     public class CreateContributionCommandHandler : IRequestHandler<CreateContributionCommand, ErrorOr<IResponseWrapper>>
     {
         private readonly IUnitOfWork _unitOfWork;
-
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IEmailService _emailService;
         private readonly IMediaService _mediaService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<AppRole> _roleManager;
 
-        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, IEmailService emailService,IMediaService mediaService) 
+        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService,IMediaService mediaService) 
         {
             _unitOfWork = unitOfWork;
             _dateTimeProvider = dateTimeProvider;
             _emailService = emailService;
             _userManager = userManager;
             _mediaService = mediaService;
+            _roleManager = roleManager;
         }
 
         public async Task<ErrorOr<IResponseWrapper>> Handle(CreateContributionCommand request,
@@ -117,9 +119,10 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                     return Errors.User.CannotFound;
                 }
 
+                var coordinator = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
                 _emailService.SendEmail(new MailRequest
                 {
-                    ToEmail = "nguahoang2003@gmail.com",
+                    ToEmail = coordinator.Email,
                     Body = $"User with Id {user.Id} submit new contribution",
                     Subject = "NEW CONTRIBUTION"
                 });
