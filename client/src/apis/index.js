@@ -10,6 +10,8 @@ export const resetPasswordAPI = `${URL}${clientAPI}/Users/reset-password`
 export const recentContributionAPI = `${URL}${clientAPI}/Users/recent-contribution`
 export const profileAPI = `${URL}${clientAPI}/Users/my-profile`
 export const editProfileAPI = `${URL}${clientAPI}/Users/edit-profile`
+export const ContributionAPI = `${URL}${clientAPI}/Contributions`
+export const editContributionsInfo = `${URL}${clientAPI}/Users/contribution`
 // Like
 export const favoriteAPI = `${URL}${clientAPI}/Users/my-favorite`
 export const toggleFavoriteAPI = `${URL}${clientAPI}/PublicContribution/toggle-like`

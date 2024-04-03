@@ -3,89 +3,19 @@ import Header from '@/layouts/partials/Header.jsx'
 import Footer from '@/layouts/partials/Footer.jsx'
 import { Sidebar } from '@/layouts/partials/Sidebar.jsx'
 import { Separator } from '@/components/ui/separator'
-import {
-  CircleGauge,
-  BookText,
-  UserCog,
-  Settings,
-  CalendarDays,
-  Heart,
-  User,
-  MoreHorizontal,
-  ArrowUpDown,
-  Clock
-} from 'lucide-react'
+
 
 import DynamicBreadcrumb from '@/components/DynamicBreadcrumbs'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { CustomTable } from '@/components/CustomTable.jsx'
 import { AuthorizeDialog } from '@/components/AuthorizeDialog'
+import { ADMIN_OPTIONS } from '@/constant/menuSidebar'
 
-const AdminLayout = ({ children, isAdmin = true }) => {
+const AdminLayout = ({ children, isAdmin = true, links = ADMIN_OPTIONS }) => {
   // TODO: This links array should be defined by fetching user roles
   // Mock Admin Sidebar options
 
-  const links = isAdmin
-    ? [
-        {
-          title: 'Dashboard',
-          icon: CircleGauge,
-          href: '/admin/dashboard'
-        },
-        {
-          title: 'Contributions',
-          icon: BookText,
-          href: '/admin/contributions'
-        },
-        {
-          title: 'Academic Years',
-          icon: CalendarDays,
-          href: '/admin/academic-years'
-        },
-        {
-          title: 'Users',
-          icon: User,
-          href: '/admin/users'
-        },
-        {
-          title: 'Roles & Permissions',
-          icon: UserCog,
-          href: '/admin/roles'
-        },
-        {
-          title: 'Settings',
-          icon: Settings,
-          href: '/admin/settings'
-        }
-      ]
-    : [
-        {
-          title: 'Recents Posts',
-          icon: CircleGauge,
-          href: '/student-manage/recent'
-        },
-        {
-          title: 'Profile',
-          icon: UserCog,
-          href: '/student-manage/profile'
-        },
-        {
-          title: 'Read Later',
-          icon: Clock,
-          href: '/student-manage/read-later'
-        },
-        {
-          title: 'Favorites',
-          icon: Heart,
-          href: '/student-manage/academic-years'
-        },
-        {
-          title: 'Settings',
-          icon: Settings,
-          href: '/student-manage/settings'
-        }
-      ]
 
   const columns = [
     {

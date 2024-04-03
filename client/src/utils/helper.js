@@ -13,3 +13,18 @@ export function formatDate(inputDate) {
 
   return result;
 }
+
+export async function convertFilesToBlob(filesArray) {
+  const filesPromises = filesArray.map(async fileObj => {
+    try {
+      const response = await fetch(fileObj.path);
+      const blob = await response.blob();
+      return new File([blob], fileObj.name, { type: blob.type });
+    } catch (error) {
+      console.error(`Failed to create File for ${fileObj.name}:`, error);
+      return null;
+    }
+  });
+
+  return Promise.all(filesPromises);
+}
