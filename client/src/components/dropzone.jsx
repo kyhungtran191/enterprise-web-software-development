@@ -36,7 +36,7 @@ function Dropzone({ open, className, files, setFiles }) {
     if (filePath === "docx" || filePath === "doc") {
       return "../../word.png"
     } else if (filePath === "pdf") {
-      return "../pdf.png"
+      return "../../pdf.png"
     }
   }
 
@@ -75,7 +75,6 @@ function Dropzone({ open, className, files, setFiles }) {
         console.error('Error downloading file:', error);
       });
   };
-  console.log(errorMessage)
   return (
     <div className="my-4">
       {errorMessage && <div className="my-4 font-semibold text-center text-red-500">{errorMessage}</div>}
@@ -91,13 +90,13 @@ function Dropzone({ open, className, files, setFiles }) {
                 </div>
                 <div className="text-2xl text-blue-600">Drop you files in here </div>
               </div> :
-              !files.length && <p className="w-full py-4 text-xl font-semibold text-center lg:text-2xl">Drag 'n' drop some files here, or click to select files</p>
+              !files?.length && <p className="w-full py-4 text-xl font-semibold text-center lg:text-2xl">Drag 'n' drop some files here, or click to select files</p>
           }
         </div>
         <div className="grid grid-cols-1 gap-6 p-10 md:grid-cols-5">
-          {files && files.length > 0 && files.map((item, index) => (
-            <div className="z-50 flex flex-col items-center justify-center p-4 rounded-lg hover:bg-slate-100" key={index}>
-              <img src={handleRenderImage(item.path.split('.')[1])} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
+          {files && files?.length > 0 && files.map((item, index) => (
+            <div className="z-40 flex flex-col items-center justify-center p-4 rounded-lg hover:bg-slate-100" key={index}>
+              <img src={handleRenderImage(item.path.split('.')[Number(item.path.split('.')?.length - 1)])} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
               <div className="text-center">{item.name}</div>
               <div className="flex items-center justify-center gap-2">
                 <div className="flex items-center justify-center w-10 h-10 text-white bg-blue-500 rounded-lg">
@@ -105,7 +104,7 @@ function Dropzone({ open, className, files, setFiles }) {
                 </div>
                 <div
                   onClick={(e) => handleDeleteFile(e, index)}
-                  className="z-50 flex items-center justify-center w-10 h-10 text-lg font-bold text-white bg-red-500 rounded-lg cursor-pointer">
+                  className="z-40 flex items-center justify-center w-10 h-10 text-lg font-bold text-white bg-red-500 rounded-lg cursor-pointer">
                   X
                 </div>
               </div>

@@ -6,31 +6,22 @@ import React, { useEffect, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious
-} from '@/components/ui/pagination'
-import Contributor from '@/components/contributor'
+
 import Article from '@/components/article'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { QueryClient, useQuery } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import { Contributions } from '@/services/client'
 import { isUndefined, omitBy, omit, debounce } from 'lodash'
 import { Icon } from '@iconify/react'
 import PaginationCustom from '@/components/PaginationCustom'
 import Spinner from '@/components/Spinner'
+import { STUDENT_OPTIONS } from '@/constant/menuSidebar'
 export default function StudentContribution() {
   const [position, setPosition] = React.useState('')
   const navigate = useNavigate()
@@ -71,6 +62,12 @@ export default function StudentContribution() {
 
   }, [position])
 
+  useEffect(() => {
+    if (queryParams["status"]) {
+      setPosition(queryParams["status"])
+    }
+  }, queryParams)
+
   const handleInputChange = debounce((value) => {
     if (!value) {
       return navigate({
@@ -90,9 +87,9 @@ export default function StudentContribution() {
 
   const currentData = data && data?.data?.responseData;
   return (
-    <AdminLayout isAdmin={false}>
+    <AdminLayout links={STUDENT_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
-        <div className={`flex items-center w-full px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}>
+        <div className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}>
           <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
           <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
             // onChange={handleChange}
@@ -155,7 +152,7 @@ export default function StudentContribution() {
       {isLoading && <div className="flex justify-center min-h-screen mt-10">
         <Spinner></Spinner>
       </div>}
-      {!currentData?.results?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
+      {!isLoading && !currentData?.results?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
     </AdminLayout>
   )
 }

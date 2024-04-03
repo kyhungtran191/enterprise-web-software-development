@@ -1,4 +1,4 @@
-import { allAcademicYear, allFacultiesAPI, featuredContribution, forgotPasswordAPI, latestContribution, loginAPI, publicContributionAPI, recentContributionAPI, resetPasswordAPI, topContributors, validateResetPasswordAPI } from "@/apis"
+import { ContributionAPI, allAcademicYear, allFacultiesAPI, editContributionsInfo, featuredContribution, forgotPasswordAPI, latestContribution, loginAPI, publicContributionAPI, recentContributionAPI, resetPasswordAPI, topContributors, validateResetPasswordAPI } from "@/apis"
 import instanceAxios from "@/utils/axiosInstance"
 import axios from "axios"
 
@@ -15,7 +15,12 @@ export const Contributions = {
   getCurrentContribution: async (queryParams) =>
     await instanceAxios.get(recentContributionAPI, {
       params: queryParams
-    })
+    }),
+  addContribution: async (body) => {
+    await instanceAxios.post(ContributionAPI, body)
+  },
+  getContributionEdit: async (slug) => await instanceAxios.get(`${editContributionsInfo}/${slug}`),
+  updateContribution: async (body) => { await instanceAxios.put(ContributionAPI, body) }
 }
 
 export const Auth = {
