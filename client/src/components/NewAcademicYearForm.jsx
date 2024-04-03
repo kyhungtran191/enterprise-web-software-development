@@ -52,7 +52,7 @@ export function NewAcademicYearForm() {
   }
 
   const formSchema = z.object({
-    name: z.string(),
+    academicYearName: z.string(),
     startClosureDate: z.date().refine(
       (startDate) => {
         return isDateWithinAcademicYear(startDate, academicYear)
@@ -103,7 +103,7 @@ export function NewAcademicYearForm() {
     reValidateMode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
+      academicYearName: '',
       startClosureDate: '',
       endClosureDate: '',
       finalClosureDate: ''
@@ -112,10 +112,9 @@ export function NewAcademicYearForm() {
 
   function onSubmit(academicYearData) {
     if (!Object.keys(form.formState.errors).length > 0) {
-      console.log(academicYearData)
       mutate(academicYearData, {
         onSuccess: () => {
-          queryClient.invalidateQueries(['academicYears'])
+          queryClient.invalidateQueries(['adminAcademicYears'])
           form.reset()
           setStartClosureDate(null)
           setEndClosureDate(null)
@@ -136,7 +135,7 @@ export function NewAcademicYearForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
         <FormField
           control={form.control}
-          name='name'
+          name='academicYearName'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Select Academic Year</FormLabel>
