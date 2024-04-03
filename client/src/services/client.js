@@ -12,9 +12,9 @@ export const Contributions = {
   getAllPublicContribution: async (queryParams) => await axios.get(`${publicContributionAPI}/paging`, {
     params: queryParams
   }),
-  getCurrentContribution: async (params) =>
+  getCurrentContribution: async (queryParams) =>
     await instanceAxios.get(recentContributionAPI, {
-      params: params
+      params: queryParams
     })
 }
 
