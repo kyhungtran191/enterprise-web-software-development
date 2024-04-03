@@ -9,6 +9,8 @@ using Server.Application.Features.ContributionApp.Commands.RejectContribution;
 using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
 using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
+using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
+using Server.Application.Features.ContributionApp.Queries.GetCoordinatorContribution;
 using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
@@ -68,6 +70,17 @@ namespace Server.Api.Controllers.CoordinatorApi
         public async Task<IActionResult> GetActivityLogs([FromRoute] GetActivityLogRequest request)
         {
             var query = _mapper.Map<GetActivityLogQuery>(request);
+            var result = await _mediatorSender.Send(query);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+
+        }
+        [HttpGet]
+        [Route("contribution/{Slug}")]
+        [Authorize(Permissions.Contributions.View)]
+        public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
+        {
+            var query = _mapper.Map<GetCoordinatorContributionQuery>(getContributionBySlugRequest);
+            query.FacultyName = User.GetFacultyName();
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
 

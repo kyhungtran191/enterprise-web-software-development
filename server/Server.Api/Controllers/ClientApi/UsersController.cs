@@ -103,7 +103,7 @@ namespace Server.Api.Controllers.ClientApi
         }
 
         [HttpGet]
-        [Route("{Slug}")]
+        [Route("contribution/{Slug}")]
         [Authorize(Permissions.Contributions.Edit)]
         public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
         {

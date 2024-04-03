@@ -11,6 +11,7 @@ namespace Server.Application.Common.Interfaces.Persistence
         bool IsConfirmed(Guid contributionId);
         Task<ContributionDto> GetContributionBySlug(string slug);
         Task<ContributionDto> GetContributionOfUser(string slug, Guid userId);
+        Task<ContributionDto> GetContributionOfFaculty(string slug, string facultyName);
 
         Task<List<TagDto>> GetAllTags(Guid contributionId);
         
