@@ -31,5 +31,8 @@ public static partial class Errors
             description: "Error occurs while reset password");
 
         public static Error NoAvatarFound => Error.Validation(code: "User.NoAvatarFound", description: "No Avatar Found");
+
+        public static Error NotBelongContribution => Error.Conflict(code: "User.NotBelongContribution",
+            description: "This is not your contribution");
     }
 }

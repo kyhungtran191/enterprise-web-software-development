@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
+using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
+using Server.Application.Features.ContributionApp.Queries.GetUserContribution;
 using Server.Application.Features.Identity.Users.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Users.Commands.ResetPassword;
 using Server.Application.Features.Identity.Users.Commands.UpdateProfile;
@@ -99,6 +101,18 @@ namespace Server.Api.Controllers.ClientApi
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
+
+        [HttpGet]
+        [Route("{Slug}")]
+        [Authorize(Permissions.Contributions.Edit)]
+        public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
+        {
+            var query = _mapper.Map<GetUserContributionQuery>(getContributionBySlugRequest);
+            query.UserId = User.GetUserId();
+            var result = await _mediatorSender.Send(query);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+
+        }   
         //[HttpGet("my-favorite")]
         //[Authorize]
         //public async Task<IActionResult> GetFavorite()

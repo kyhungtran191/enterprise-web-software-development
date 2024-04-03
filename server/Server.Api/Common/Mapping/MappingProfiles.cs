@@ -23,6 +23,7 @@ using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
 using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
+using Server.Application.Features.ContributionApp.Queries.GetUserContribution;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
 using Server.Application.Features.FacultyApp.Commands.DeleteFaculty;
 using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
@@ -151,6 +152,7 @@ public class MappingProfiles : Profile
         CreateMap<RejectContributionRequest, RejectContributionCommand>();
         CreateMap<GetRejectReasonRequest, GetRejectReasonQuery>();
         CreateMap<DownloadFileRequest, DownloadFileQuery>();
+        CreateMap<GetContributionBySlugRequest, GetUserContributionQuery>();
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
         CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
