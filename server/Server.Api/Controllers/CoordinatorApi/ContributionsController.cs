@@ -72,17 +72,16 @@ namespace Server.Api.Controllers.CoordinatorApi
             return result.Match(result => Ok(result), errors => Problem(errors));
 
         }
-        //[HttpPut]
-        //[FileValidationFilter(5 * 1024 * 1024)]
-        //[Authorize(Permissions.Contributions.Edit)]
-        //public async Task<IActionResult> UpdateContribution([FromForm] UpdateContributionRequest updateContributionRequest)
-        //{
-        //    var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
-        //    command.UserId = User.GetUserId();
-        //    command.FacultyId = User.GetFacultyId();
-        //    command.Slug = updateContributionRequest.Title.Slugify();
-        //    var result = await _mediatorSender.Send(command);
-        //    return result.Match(result => Ok(result), errors => Problem(errors));
-        //}
+        [HttpPut]
+        [FileValidationFilter(5 * 1024 * 1024)]
+        [Authorize(Permissions.Contributions.Edit)]
+        public async Task<IActionResult> UpdateContribution([FromForm] UpdateContributionRequest updateContributionRequest)
+        {
+            var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
+            command.FacultyId = User.GetFacultyId();
+            command.Slug = updateContributionRequest.Title.Slugify();
+            var result = await _mediatorSender.Send(command);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+        }
     }
 }
