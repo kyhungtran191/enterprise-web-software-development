@@ -10,6 +10,7 @@ using Server.Contracts.Common;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+using static Server.Domain.Common.Errors.Errors;
 
 namespace Server.Application.Features.ContributionApp.Commands.ApproveContributions
 {
@@ -56,10 +57,17 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
                
                 await _unitOfWork.ContributionRepository.Approve(contribution,request.UserId);
                 var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
+                var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)student?.FacultyId!);
                 _emailService.SendEmail(new MailRequest
                 {
                     ToEmail = student.Email,
-                    Body = $"Coordinator accept your contribution",
+                    Body = $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
+                           $" <h2>Your contribution is approved</h2>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
+                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {student.UserName}</p>\r\n " +
+                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
                     Subject = "APPROVED CONTRIBUTION"
                 });
             }
