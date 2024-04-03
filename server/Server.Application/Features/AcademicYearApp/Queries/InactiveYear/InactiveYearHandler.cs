@@ -22,6 +22,11 @@ namespace Server.Application.Features.AcademicYearApp.Queries.InactiveYear
             {
                 return Errors.AcademicYear.NotFound;
             }
+
+            if (!item.IsActive)
+            {
+                return Errors.AcademicYear.AlreadyInactive;
+            }
             item.IsActive = false;
             await _unitOfWork.CompleteAsync();
             return new ResponseWrapper

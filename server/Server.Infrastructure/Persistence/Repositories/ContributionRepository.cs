@@ -105,9 +105,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Slug = x.c.Slug,
                 Status = x.c.Status.ToStringValue(),
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 Files = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 ShortDescription = x.c.ShortDescription
             }).ToList();
 
@@ -168,9 +168,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 PublicDate = contributionDetail.c.PublicDate,
                 DateEdited = contributionDetail.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 ShortDescription = contributionDetail.c.ShortDescription
             };
 
@@ -213,9 +213,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 PublicDate = contributionDetail.c.PublicDate,
                 DateEdited = contributionDetail.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
                 Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
                 ShortDescription = contributionDetail.c.ShortDescription,
                 Content = contributionDetail.c.Content,
             };
@@ -256,9 +256,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 PublicDate = contributionDetail.c.PublicDate,
                 DateEdited = contributionDetail.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 ShortDescription = contributionDetail.c.ShortDescription,
                 Content = contributionDetail.c.Content,
             };

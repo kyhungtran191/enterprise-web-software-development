@@ -75,7 +75,7 @@ namespace Server.Api.Controllers.CoordinatorApi
 
         }
         [HttpGet]
-        [Route("contribution/{Slug}")]
+        [Route("{Slug}")]
         [Authorize(Permissions.Contributions.View)]
         public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
         {
