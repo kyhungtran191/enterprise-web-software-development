@@ -15,6 +15,7 @@ namespace Server.Application.Common.Dtos.Contributions
         public string AcademicYear { get; set; }
         public DateTime? SubmissionDate { get; set; }
         public DateTime? PublicDate { get; set; }
+        public string? ShortDescription { get; set; }
 
     }
 }

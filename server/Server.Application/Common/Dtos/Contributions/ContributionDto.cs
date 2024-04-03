@@ -3,5 +3,6 @@
     public class ContributionDto : ContributionInListDto
     {
         public DateTime? DateEdited { get; set; }
+        public string? Content { get; set; }
     }
 }
