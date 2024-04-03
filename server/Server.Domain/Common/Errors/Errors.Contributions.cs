@@ -35,6 +35,11 @@ namespace Server.Domain.Common.Errors
 
             public static Error NotFoundPublic => Error.NotFound(code: "ContributionPublic.NotFound",
                 description: "This contribution not found or not public");
+
+            public static Error CannotSubmit =>
+                Error.Conflict(code: "Contribution.CannotSubmit", description: "Out of submission date");
+            public static Error CannotEdit =>
+                Error.Conflict(code: "Contribution.CannotEdit", description: "Out of edit date");
         }
     }
 }

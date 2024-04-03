@@ -6,7 +6,7 @@ namespace Server.Application.Features.AcademicYearApp.Commands.CreateAcademicYea
     {
         public CreateAcademicYearCommandValidator()
         {
-            RuleFor(request => request.Name)
+            RuleFor(request => request.AcademicYearName)
                 .NotEmpty()
                 .WithMessage("Academic year name is required.")
                 .Matches(@"^\d{4}-\d{4}$")
@@ -14,19 +14,19 @@ namespace Server.Application.Features.AcademicYearApp.Commands.CreateAcademicYea
                 .Must(BeConsecutiveYears)
                 .WithMessage("The years must be consecutive.");
             RuleFor(request => request.StartClosureDate)
-                .Must((request, date) => IsWithinAcademicYear(date, request.Name))
+                .Must((request, date) => IsWithinAcademicYear(date, request.AcademicYearName))
                 .WithMessage("StartClosureDate must be within the academic year.");
 
             RuleFor(request => request.EndClosureDate)
                 .GreaterThan(request => request.StartClosureDate)
                 .WithMessage("EndClosureDate must be after StartClosureDate")
-                .Must((request, date) => IsWithinOrAtEndOfAcademicYear(date, request.Name))
+                .Must((request, date) => IsWithinOrAtEndOfAcademicYear(date, request.AcademicYearName))
                 .WithMessage("EndClosureDate must be within the academic year or exactly at its end.");
 
             RuleFor(request => request.FinalClosureDate)
                 .GreaterThan(request => request.EndClosureDate)
                 .WithMessage("FinalClosureDate must be after EndClosureDate")
-                .Must((request, date) => IsWithinOrAtEndOfAcademicYear(date, request.Name))
+                .Must((request, date) => IsWithinOrAtEndOfAcademicYear(date, request.AcademicYearName))
                 .WithMessage("FinalClosureDate must be within the academic year or exactly at its end.");
         }
         private bool BeConsecutiveYears(string name)

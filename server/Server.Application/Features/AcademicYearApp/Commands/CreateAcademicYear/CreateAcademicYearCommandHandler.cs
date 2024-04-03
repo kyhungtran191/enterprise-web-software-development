@@ -27,7 +27,7 @@ namespace Server.Application.Features.AcademicYearApp.Commands.CreateAcademicYea
 
         public async Task<ErrorOr<IResponseWrapper>> Handle(CreateAcademicYearCommand request, CancellationToken cancellationToken)
         {
-            if (await _unitOfWork.AcademicYearRepository.GetAcademicYearByName(request.Name) is not null)
+            if (await _unitOfWork.AcademicYearRepository.GetAcademicYearByName(request.AcademicYearName) is not null)
             {
                 return Errors.AcademicYear.AlreadyExist;
             }
@@ -37,7 +37,15 @@ namespace Server.Application.Features.AcademicYearApp.Commands.CreateAcademicYea
                 return Errors.User.CannotFound;
             }
 
-            var newYear = _mapper.Map<AcademicYear>(request);
+            var newYear = new AcademicYear
+            {
+                Id = Guid.NewGuid(),
+                Name = request.AcademicYearName,
+                StartClosureDate = request.StartClosureDate,
+                EndClosureDate = request.EndClosureDate,
+                FinalClosureDate = request.FinalClosureDate,
+                UserNameCreated = request.UserNameCreated,
+            };
             _unitOfWork.AcademicYearRepository.Add(newYear);
             await _unitOfWork.CompleteAsync();
             return new ResponseWrapper

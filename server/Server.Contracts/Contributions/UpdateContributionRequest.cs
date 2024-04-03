@@ -7,7 +7,6 @@ namespace Server.Contracts.Contributions
     {
         public Guid ContributionId { get; set; }
         public string? Title { get; set; }
-        public Guid? AcademicYearId { get; set; }
         public IFormFile? Thumbnail { get; set; }
         public List<IFormFile>? Files { get; set; }
         public bool IsConfirmed { get; set; }

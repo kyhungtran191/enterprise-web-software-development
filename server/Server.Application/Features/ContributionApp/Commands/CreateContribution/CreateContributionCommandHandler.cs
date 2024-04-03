@@ -50,15 +50,19 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 return Errors.Contribution.AlreadyExist;
             }
 
-            if (await _unitOfWork.AcademicYearRepository.GetByIdAsync(request.AcademicYearId) is null)
+            if (!(await _unitOfWork.AcademicYearRepository.CanSubmitAsync(_dateTimeProvider.UtcNow)))
+            {
+                return Errors.Contribution.CannotSubmit;
+            }
+            var academicYear = await _unitOfWork.AcademicYearRepository.GetAcademicYearByDateAsync(_dateTimeProvider.UtcNow);
+            if (academicYear is null)
             {
                 return Errors.Contribution.AcademicYearNotFound;
             }
-
             var contributon = new Contribution
             {
                 Id = Guid.NewGuid(),
-                AcademicYearId = request.AcademicYearId,
+                AcademicYearId = academicYear.Id,
                 Title = request.Title,
                 Slug = request.Slug,
                 FacultyId = request.FacultyId,
