@@ -12,12 +12,12 @@ import { Contributions } from '@/services/client'
 import { formatDate } from '@/utils/helper'
 import Spinner from '@/components/Spinner'
 import DownloadAllButton from '@/components/DownloadAllButton'
+import { useQueryContributionDetail } from '@/query/useQueryContributionDetail'
 export default function ContributionDetail() {
   const { id } = useParams()
-  const { data, isLoading } = useQuery({ queryKey: ['featured-contributions'], queryFn: (_) => Contributions.getDetailPublicContribution(id) })
+  const { data, isLoading } = useQueryContributionDetail(id)
   const detailData = data && data?.data?.responseData
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
-
   const handleDownloadFile = (file) => {
     fetch(file?.path)
       .then(response => response.blob())

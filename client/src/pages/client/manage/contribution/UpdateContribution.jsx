@@ -3,17 +3,18 @@ import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import AdminLayout from '@/layouts/AdminLayout'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Editor } from '@tinymce/tinymce-react';
 import Dropzone from '@/components/dropzone'
-import { useDropzone } from 'react-dropzone'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { useParams } from 'react-router-dom'
+import { useQueryContributionDetail } from '@/query/useQueryContributionDetail'
 export default function UpdateContribution() {
+  const { id } = useParams()
+  const { data, isLoading } = useQueryContributionDetail(id)
   const [files, setFiles] = useState([])
   const [currentFileThumbNail, setCurrentFileThumbNail] = useState({})
   const [currentThumbnail, setCurrentThumbnail] = useState()
-
   const handleChangeImage = (e) => {
     const file = e.target.files[0]
     if (file) {

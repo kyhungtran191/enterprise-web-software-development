@@ -2,19 +2,8 @@ import Article from '@/components/article'
 import GeneralLayout from '@/layouts'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
-
-import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -25,12 +14,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import DynamicBreadcrumb from '@/components/DynamicBreadcrumbs'
 import { Contributions } from '@/services/client'
-import { debounce } from 'lodash';
 import { useFaculty } from '@/query/useFaculty'
 import { Button } from '@/components/ui/button'
 import { ArrowDown } from 'lucide-react'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { isUndefined, omitBy, omit } from 'lodash'
+import { isUndefined, omitBy, omit, debounce } from 'lodash'
 import { useAcademicYear } from '@/query/useAcademicYear'
 import { Icon } from '@iconify/react'
 import Spinner from '@/components/Spinner'
@@ -118,7 +106,6 @@ export default function ContributionList() {
   const listFaculties = falcultiesData && falcultiesData?.data?.responseData?.results
   const listAcademic = academicData && academicData?.data?.responseData?.results
 
-  console.log(data?.data?.responseData)
   return (
     <GeneralLayout>
       <div className="container">

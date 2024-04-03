@@ -44,8 +44,6 @@ export default function Login() {
         let accessToken = data && data?.data?.accessToken;
         let refreshToken = data && data?.data?.refreshToken
         const dataDetail = jwtDecode(accessToken);
-        console.log(accessToken)
-        console.log(refreshToken)
         let { email, facultyId, facultyName, family_name, given_name, id, permissions, roles } = dataDetail
         setProfile({
           email, facultyId, facultyName, family_name, given_name, id, permissions, roles
