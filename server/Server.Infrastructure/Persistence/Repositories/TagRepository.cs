@@ -29,7 +29,7 @@ public class TagRepository : RepositoryBase<Tag, Guid>, ITagRepository
 
         var totalCount = await query.CountAsync();
 
-        var skipPage = (pageIndex - 1) * pageSize;
+        var skipPage = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageSize; 
 
         query =
              query
