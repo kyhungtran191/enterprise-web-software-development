@@ -55,7 +55,7 @@ export default function ContributionList() {
       keyword: queryParams.keyword,
       name: queryParams.name,
       year: queryParams.year,
-      pagesize: queryParams.pagesize || '1',
+      pagesize: queryParams.pagesize || '4',
     },
     isUndefined
   )
@@ -172,7 +172,6 @@ export default function ContributionList() {
           </div>
         </div>
         {listData && listData.length > 0 && <>
-
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xl:gap-4">
             {listData.map((article) => (
               <Article article={article} key={article.id}></Article>
@@ -180,9 +179,10 @@ export default function ContributionList() {
           </div>
           <PaginationCustom path={"/contributions"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
         </>}
-        {!listData && <div className="flex justify-center min-h-screen mt-10">
+        {isLoading && <div className="flex justify-center min-h-screen mt-10">
           <Spinner></Spinner>
         </div>}
+        {!listData?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
       </div>
     </GeneralLayout>
   )
