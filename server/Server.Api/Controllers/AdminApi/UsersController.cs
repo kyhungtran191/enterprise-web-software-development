@@ -78,7 +78,7 @@ public class UsersController : AdminApiController
     }
 
     [HttpDelete]
-    [Route("{id}")]
+    [Route("{Id}")]
     [Authorize(Permissions.Users.Delete)]
     public async Task<IActionResult> DeleteUserById([FromRoute] DeleteUserByIdRequest deleteUserByIdRequest)
     {
