@@ -14,7 +14,7 @@ import {
 
 import Article from '@/components/article'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import { isUndefined, omitBy, omit, debounce } from 'lodash'
 import { Icon } from '@iconify/react'
@@ -43,6 +43,7 @@ export default function ManageContribution() {
     queryKey: ['mc-contributions', queryConfig],
     queryFn: (_) => Contributions.MCContribution(queryConfig)
   })
+
   const handleNavigateStatus = (status) => {
     setPosition(status);
     if (status !== undefined) {

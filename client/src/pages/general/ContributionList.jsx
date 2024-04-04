@@ -108,7 +108,7 @@ export default function ContributionList() {
 
   return (
     <GeneralLayout>
-      <div className="container">
+      <div className="container py-5">
         <DynamicBreadcrumb></DynamicBreadcrumb>
         <div className="flex flex-wrap items-center justify-between md:gap-5">
           <div className={`flex items-center w-full px-5 py-4 border rounded-lg gap-x-2 w-1/2`}>
@@ -161,7 +161,7 @@ export default function ContributionList() {
         {listData && listData.length > 0 && <>
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xl:gap-4">
             {listData.map((article) => (
-              <Article article={article} key={article.id}></Article>
+              <Article article={article} key={article.id} classImageCustom="!h-[300px]"></Article>
             ))}
           </div>
           <PaginationCustom path={"/contributions"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>

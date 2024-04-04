@@ -104,7 +104,7 @@ export default function UpdateContribution() {
     updateContributionMutation.mutate(formData, {
       onSuccess(data) {
         toast.success("Update successfully!")
-        navigate('/manage/recent?status=PENDING')
+        navigate('/student-manage/recent?status=PENDING')
       },
       onError(data) {
         toast.error(data && data?.messages[0])

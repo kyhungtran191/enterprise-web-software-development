@@ -71,9 +71,9 @@ export function NewUserForm() {
     username: z.string().min(2, {
       message: 'Username must be at least 6 characters.'
     }),
-    password: z
-      .string()
-      .min(6, { message: 'Password must be at least 6 characters.' }),
+    // password: z
+    //   .string()
+    //   .min(6, { message: 'Password must be at least 6 characters.' }),
     gender: z.enum(['male', 'female'], { message: 'Gender must be chosen' }),
     email: z.string().email(),
     dob: z.date({
@@ -101,7 +101,7 @@ export function NewUserForm() {
       lastName: '',
       phoneNumber: '',
       username: '',
-      password: '',
+      // password: '',
       role: '',
       gender: '',
       email: '',
@@ -148,7 +148,7 @@ export function NewUserForm() {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full space-y-4'>
         <FormField
           control={form.control}
           name='firstName'
@@ -188,7 +188,7 @@ export function NewUserForm() {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name='password'
           render={({ field }) => (
@@ -204,7 +204,7 @@ export function NewUserForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
@@ -283,7 +283,7 @@ export function NewUserForm() {
                       ) : (
                         <span>Pick a date</span>
                       )}
-                      <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                      <CalendarIcon className='w-4 h-4 ml-auto opacity-50' />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
