@@ -8,7 +8,7 @@ export default function Search({ className }) {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       // Nếu phím gõ là "Enter", thực hiện chuyển hướng đến trang `/contributions?search=`
-      navigate(`/contributions?search=${searchQuery}`)
+      navigate(`/contributions?keyword=${searchQuery}`)
     }
   };
   const handleChange = (e) => {

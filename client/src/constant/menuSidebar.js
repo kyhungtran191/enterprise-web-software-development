@@ -53,7 +53,7 @@ export const STUDENT_OPTIONS = [
   {
     title: 'Profile',
     icon: UserCog,
-    href: '/student-manage/profile'
+    href: '/profile'
   },
   {
     title: 'Read Later',
@@ -63,11 +63,30 @@ export const STUDENT_OPTIONS = [
   {
     title: 'Favorites',
     icon: Heart,
-    href: '/student-manage/academic-years'
+    href: '/student-manage/favorites'
   },
   {
     title: 'Settings',
     icon: Settings,
     href: '/student-manage/settings'
   }
+]
+
+export const MC_OPTIONS = [
+  {
+    title: 'Faculty Contributions',
+    icon: CircleGauge,
+    href: '/coodinator-manage/contributions'
+  },
+  {
+    title: 'Profile',
+    icon: UserCog,
+    href: '/profile'
+  },
+  {
+    title: 'Activities',
+    icon: Clock,
+    href: '/coodinator-manage/artivities-log'
+  },
+
 ]

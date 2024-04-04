@@ -65,8 +65,11 @@ export default function Header() {
                   <p className='text-sm text-muted-foreground'>{profile && profile?.roles}({(profile?.facultyName)})</p>
                 </div>
                 <div className='gap-2 text-slate-700'>
-                  <Link to="/manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                  <Link to="/student-manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                     <Icon icon='mage:user-fill'></Icon>Recent Post
+                  </Link>
+                  <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                    <Icon icon='mage:user-fill'></Icon>Admin
                   </Link>
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                     <Icon icon='iconoir:post-solid'></Icon>Contribution
@@ -74,8 +77,8 @@ export default function Header() {
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                     <Icon icon='icon-park-solid:like'></Icon>Liked Contribution
                   </div>
-                  <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='mage:user-fill'></Icon>Admin
+                  <Link to="/coodinator-manage/contributions" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                    <Icon icon='mage:user-fill'></Icon>Coodinator Manage
                   </Link>
 
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3' onClick={handleLogout}>

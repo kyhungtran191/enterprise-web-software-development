@@ -93,7 +93,7 @@ export default function AddContribution() {
       onSuccess(data) {
         toast.success("Add new successfully!")
         queryClient.invalidateQueries({ queryKey: ['recent'], exact: true })
-        navigate('/manage/recent?status=PENDING')
+        navigate('/student-manage/recent?status=PENDING')
       },
       onError(data) {
         toast.error(data && data?.messages[0])
