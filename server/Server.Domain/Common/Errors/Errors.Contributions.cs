@@ -29,6 +29,8 @@ namespace Server.Domain.Common.Errors
 
             public static Error NotRejected => Error.Conflict(code: "Contribution.NotRejected",
                 description: "This contribution is not rejected");
+            public static Error NotApproved => Error.Conflict(code: "Contribution.NotApproved",
+                description: "This contribution is not approved");
 
             public static Error NoFilesFound => Error.NotFound(code: "Contribution.NoFilesFound",
                 description: "Contribution do not have any files");

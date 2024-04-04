@@ -8,5 +8,6 @@ namespace Server.Contracts.PublicContributions
         [FromQuery(Name = "year")] public string? Year { get; set; }
         [FromQuery(Name = "facultyname")] public string? FacultyName { get; set; }
         [FromQuery(Name = "status")] public string? Status { get; set; }
+        [FromQuery(Name = "guest_allowed")] public bool? GuestAllowed { get; set; }
     }
 }

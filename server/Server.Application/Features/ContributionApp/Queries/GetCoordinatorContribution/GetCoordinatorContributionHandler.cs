@@ -23,7 +23,7 @@ namespace Server.Application.Features.ContributionApp.Queries.GetCoordinatorCont
         public async Task<ErrorOr<IResponseWrapper<ContributionDto>>> Handle(GetCoordinatorContributionQuery request, CancellationToken cancellationToken)
         {
            
-            var result = await _unitOfWork.ContributionRepository.GetContributionOfFaculty(request.Slug, request.FacultyName);
+            var result = await _unitOfWork.ContributionRepository.GetContributionOfFaculty(request.Slug,request.FacultyName);
             if(result is null)
             {
                 return Errors.Contribution.NotFound;

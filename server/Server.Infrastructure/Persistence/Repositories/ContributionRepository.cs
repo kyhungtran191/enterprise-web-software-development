@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.InteropServices;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Contributions;
@@ -12,7 +13,7 @@ using Server.Domain.Entity.Content;
 
 namespace Server.Infrastructure.Persistence.Repositories
 {
-    internal class ContributionRepository : RepositoryBase<Contribution, Guid>, IContributionRepository
+    public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContributionRepository
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -102,6 +103,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 FacultyName = x.f.Name,
                 AcademicYear = x.a.Name,
                 SubmissionDate = x.c.SubmissionDate,
+                PublicDate = x.c.PublicDate,
                 Slug = x.c.Slug,
                 Status = x.c.Status.ToStringValue(),
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
@@ -134,21 +136,28 @@ namespace Server.Infrastructure.Persistence.Repositories
         }
         public async Task<ContributionDto> GetContributionOfFaculty(string slug, string facultyName)
         {
-            var contributionDetail = await (from c in _dbContext.Contributions
-                                            where c.Slug == slug && c.DateDeleted == null
-                                            join u in _dbContext.Users on c.UserId equals u.Id
-                                            join f in _dbContext.Faculties on c.FacultyId equals f.Id
-                                            join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
-                                            where f.Name == facultyName 
-                                            select new
-                                            {
-                                                c,
-                                                u,
-                                                f,
-                                                a
-                                            }).FirstOrDefaultAsync();
+            var query = from c in _dbContext.Contributions
+                where c.Slug == slug && c.DateDeleted == null
+                join u in _dbContext.Users on c.UserId equals u.Id
+                join f in _dbContext.Faculties on c.FacultyId equals f.Id
+                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                where f.Name == facultyName
+                select new
+                {
+                    c,
+                    u,
+                    f,
+                    a
+                };
 
+          
 
+            if (!string.IsNullOrEmpty(facultyName))
+            {
+                query = query.Where(x => x.f.Name == facultyName);
+            }
+
+            var contributionDetail = await query.FirstOrDefaultAsync();
             if (contributionDetail == null)
             {
                 return null;
