@@ -35,9 +35,9 @@ export const refreshTokenAPI = `${URL}/Tokens/Refresh`
 // Validate reset password
 export const validateResetPasswordAPI = `${URL}${clientAPI}/Users/validate-forgot-token`
 // Coodinator
-export const MCContributionsAPI = `${URL}/coodinator/Contributions/paging`
-export const MCContributionsApprove = `${URL}/coodinator/Contributions/approve`
-export const MCContributionsReject = `${URL}/coodinator/Contributions/reject`
+export const MCContributionsAPI = `${URL}/coordinator/Contributions/paging`
+export const MCContributionsApprove = `${URL}/coordinator/Contributions/approve`
+export const MCContributionsReject = `${URL}/coordinator/Contributions/reject`
 // ADMIN
 // Academic Year
 export const getAllAcademicYearsAPI = `${URL}${adminAPI}/AcademicYear/paging`

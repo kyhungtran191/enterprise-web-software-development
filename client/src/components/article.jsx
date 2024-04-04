@@ -3,6 +3,7 @@ import { Badge } from './ui/badge'
 import { formatDate } from '@/utils/helper'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from './ui/button'
+import { useAppContext } from '@/hooks/useAppContext'
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
   const navigate = useNavigate()
@@ -10,9 +11,10 @@ export default function Article({ isRevert = false, className, status, classImag
     if (article.publicDate || article.status === "APPROVED") {
       navigate(`/contributions/${article.slug}`)
     } else {
-      navigate(`/manage/edit-contribution/${article.slug}`)
+      navigate(`/student-manage/edit-contribution/${article.slug}`)
     }
   }
+  const { profile } = useAppContext()
   return (
     <div onClick={handleOnClickNavigate}>
       <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg`}>
@@ -31,9 +33,10 @@ export default function Article({ isRevert = false, className, status, classImag
           <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">{article?.title}</h2>
           <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base'>{article.shortDescription}</p>
           <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
-          <div className="my-20">
-            {/* <Button className="w-[150px]">Edit</Button> */}
-          </div>
+          {profile && profile?.roles == "Coordinator" && status && status == "PENDING" && <div className="flex items-center gap-10 my-10">
+            <Button className="w-[150px] bg-green-600 shadow-lg">Approve this</Button>
+            <Button className="w-[150px] bg-red-600">Reject this</Button>
+          </div>}
         </div>
       </div>
     </div>
