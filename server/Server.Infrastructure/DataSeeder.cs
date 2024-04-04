@@ -168,6 +168,7 @@ public static class DataSeeder
         var adminId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
         var coordinatorRoleId = Guid.NewGuid();
+        var guestRoleId = Guid.NewGuid();
         AppRole? role = new AppRole
         {
             Id = rootAdminRoleId,
@@ -189,12 +190,20 @@ public static class DataSeeder
             NormalizedName = Roles.Coordinator.ToUpperInvariant(),
             DisplayName = "Marketing Coordinator",
         };
+        AppRole? guestRole = new AppRole
+        {
+            Id = guestRoleId,
+            Name = Roles.Guest,
+            NormalizedName = Roles.Guest.ToUpperInvariant(),
+            DisplayName = "Guest",
+        };
 
         if (!context.Roles.Any())
         {
             await context.Roles.AddAsync(role);
             await context.Roles.AddAsync(studentRole);
             await context.Roles.AddAsync(coordinatorRole);
+            await context.Roles.AddAsync(guestRole);
             await context.SaveChangesAsync();
         }
         var studentList = new List<AppUser>
@@ -299,6 +308,57 @@ public static class DataSeeder
 
             },
         };
+        var guestList = new List<AppUser>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "An", LastName = "Minh", Email = "guest@gmail.com",
+                NormalizedEmail = "guest@gmail.com".ToUpperInvariant(), UserName = "guest",
+                NormalizedUserName = "guest".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[0].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Vu", LastName = "Nguyen", Email = "guest1@gmail.com",
+                NormalizedEmail = "guest1@gmail.com".ToUpperInvariant(), UserName = "guest1",
+                NormalizedUserName = "guest1".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[1].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "guest2@gmail.com",
+                NormalizedEmail = "guest2@gmail.com".ToUpperInvariant(), UserName = "guest2",
+                NormalizedUserName = "guest2".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[2].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Khang", LastName = "Nguyen", Email = "guest3@gmail.com",
+                NormalizedEmail = "guest3@gmail.com".ToUpperInvariant(), UserName = "guest3",
+                NormalizedUserName = "guest3".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[3].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+
+            },
+        };
         foreach (var user in studentList)
         {
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
@@ -308,6 +368,10 @@ public static class DataSeeder
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
         }
 
+        foreach (var user in guestList)
+        {
+            user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
+        }
 
         if (!context.Users.Any())
         {
@@ -358,6 +422,16 @@ public static class DataSeeder
                 await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
                 {
                     RoleId = coordinatorRoleId,
+                    UserId = item.Id,
+                });
+            }
+            //guest
+            foreach (var item in guestList)
+            {
+                await context.Users.AddAsync(item);
+                await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+                {
+                    RoleId = guestRoleId,
                     UserId = item.Id,
                 });
             }
@@ -442,6 +516,28 @@ public static class DataSeeder
                 foreach (var permission in coordinatorPermissionList)
                 {
                     await roleManager.AddClaimAsync(coordinatorRole, new Claim("permissions", permission.Value!));
+                }
+            }
+            // seed guest permission
+            var guestPermissions = await roleManager.GetClaimsAsync(guestRole);
+            if (guestPermissions.Any() == false)
+            {
+                var guestPermissionList = new List<RoleClaimsDto>
+                {
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Dashboard.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.View"
+                    },
+                };
+                foreach (var permission in guestPermissionList)
+                {
+                    await roleManager.AddClaimAsync(guestRole, new Claim("permissions", permission.Value!));
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,9 @@ using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPag
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
 using Server.Application.Features.ContributionApp.Queries.GetCoordinatorContribution;
 using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
+using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Contracts.Contributions;
+using Server.Contracts.PublicContributions;
 using Server.Domain.Common.Constants;
 
 namespace Server.Api.Controllers.CoordinatorApi
@@ -75,7 +78,7 @@ namespace Server.Api.Controllers.CoordinatorApi
 
         }
         [HttpGet]
-        [Route("{Slug}")]
+        [Route("preview-contribution/{Slug}")]
         [Authorize(Permissions.Contributions.View)]
         public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
         {
@@ -85,15 +88,12 @@ namespace Server.Api.Controllers.CoordinatorApi
             return result.Match(result => Ok(result), errors => Problem(errors));
 
         }
-        [HttpPut]
-        [FileValidationFilter(5 * 1024 * 1024)]
-        [Authorize(Permissions.Contributions.Edit)]
-        public async Task<IActionResult> UpdateContribution([FromForm] UpdateContributionRequest updateContributionRequest)
+
+        [HttpPost]
+        [Route("allow-guest")]
+        public async Task<IActionResult> AllowGuest(AllowGuestRequest request)
         {
-            var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
-            command.UserId = User.GetUserId();
-            command.FacultyId = User.GetFacultyId();
-            command.Slug = updateContributionRequest.Title.Slugify();
+            var command = _mapper.Map<AllowGuestCommand>(request);
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }

@@ -10,8 +10,8 @@ namespace Server.Application.Common.Interfaces.Persistence
         Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10);
         bool IsConfirmed(Guid contributionId);
         Task<ContributionDto> GetContributionBySlug(string slug);
-        Task<ContributionDto> GetContributionOfUser(string slug, Guid userId);
         Task<ContributionDto> GetContributionOfFaculty(string slug, string facultyName);
+        Task<ContributionDto> GetContributionOfUser(string slug, Guid userId);
 
         Task<List<TagDto>> GetAllTags(Guid contributionId);
         

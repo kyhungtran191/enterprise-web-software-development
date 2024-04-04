@@ -129,7 +129,7 @@ namespace Server.Infrastructure.Persistence.Repositories
         }
 
 
-        public async Task<PagedResult<PublicContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, string? status, int pageIndex = 1, int pageSize = 10)
+        public async Task<PagedResult<PublicContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, string? status, int pageIndex = 1, int pageSize = 10, bool? GuestAllowed = false)
         {
             var query = from c in _dbContext.ContributionPublics
                 where c.DateDeleted == null
@@ -165,6 +165,11 @@ namespace Server.Infrastructure.Persistence.Repositories
                 }
 
 
+            }
+
+            if (GuestAllowed is true)
+            {
+                query = query.Where(x => x.c.AllowedGuest == true);
             }
             var totalRow = await query.CountAsync();
 

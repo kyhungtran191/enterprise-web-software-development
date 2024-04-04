@@ -41,6 +41,7 @@ using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
 using Server.Application.Features.Identity.Users.Queries.ValidateForgotToken;
+using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
@@ -155,6 +156,7 @@ public class MappingProfiles : Profile
         CreateMap<DownloadFileRequest, DownloadFileQuery>();
         CreateMap<GetContributionBySlugRequest, GetUserContributionQuery>();
         CreateMap<GetContributionBySlugRequest, GetCoordinatorContributionQuery>();
+        CreateMap<AllowGuestRequest, AllowGuestCommand>();
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
         CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();

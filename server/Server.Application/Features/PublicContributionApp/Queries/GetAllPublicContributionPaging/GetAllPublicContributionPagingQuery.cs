@@ -12,5 +12,6 @@ namespace Server.Application.Features.PublicContributionApp.Queries.GetAllPublic
         public string? Year { get; set; }
         public string? FacultyName { get; set; }
         public string? Status { get; set; }
+        public bool? GuestAllowed { get; set; }
     }
 }
