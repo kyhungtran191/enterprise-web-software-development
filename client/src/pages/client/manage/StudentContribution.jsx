@@ -43,7 +43,7 @@ export default function StudentContribution() {
     queryKey: ['recent', queryConfig],
     queryFn: (_) => Contributions.getCurrentContribution(queryConfig)
   })
-
+  console.log(data)
   const handleNavigateStatus = (status) => {
     setPosition(status)
     if (!status != undefined) {

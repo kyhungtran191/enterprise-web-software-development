@@ -20,6 +20,7 @@ import { ContributionTable } from './components/ContributionTable'
 import UpdateContribution from './pages/client/manage/contribution/UpdateContribution'
 import ManageContributions from './pages/coodinator/ManageContributions'
 import { AppContext } from './contexts/app.context'
+import PreviewContribution from './pages/general/PreviewContribution'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -43,6 +44,7 @@ function App() {
     return !isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
   }
   return (
+
     <>
       {loading && (
         <div className='fixed inset-0 z-50 flex flex-col items-center justify-center h-screen text-white bg-blue-800'>
@@ -122,6 +124,7 @@ function App() {
             path='/contributions/:id'
             element={<ContributionDetail></ContributionDetail>}
           ></Route>
+          <Route path="/preview/:slug" element={<PreviewContribution></PreviewContribution>}></Route>
           <Route path='/profile' element={<Profile></Profile>}></Route>
         </Route>
         <Route path="" element={<RejectedRoute></RejectedRoute>}>

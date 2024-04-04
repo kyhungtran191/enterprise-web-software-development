@@ -1,3 +1,4 @@
+import { AbilityContext, Can } from '@/components/casl/Can'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,15 +9,18 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
+import { PERMISSIONS } from '@/constant/permissions'
 import { useAppContext } from '@/hooks/useAppContext'
 import { clearLS } from '@/utils/auth'
 import { Icon } from '@iconify/react'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 export default function Header() {
   const { isAuthenticated, profile, setProfile, setIsAuthenticated } = useAppContext()
+  const ability = useContext(AbilityContext)
+  console.log(ability)
   let navigate = useNavigate()
   const handleLogout = () => {
     clearLS()
@@ -45,6 +49,10 @@ export default function Header() {
           <Link className='mx-4 font-semibold hover:text-blue-500' to="/contributions">
             Contribution Lists
           </Link>
+          <Can I={PERMISSIONS.View.Dashboard.index} a={PERMISSIONS.View.Dashboard.value}>
+            <button>Add</button>
+          </Can>
+
         </div>
         <div className='flex items-center gap-x-5'>
           <Switch />

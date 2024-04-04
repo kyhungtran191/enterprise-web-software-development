@@ -28,3 +28,44 @@ export async function convertFilesToBlob(filesArray) {
 
   return Promise.all(filesPromises);
 }
+
+
+export const convertPermissionsToObject = (permissions) => {
+  const result = {};
+
+  permissions.forEach(permission => {
+    const [resource, action] = permission.split('.').reverse();
+    if (!result[resource]) {
+      result[resource] = [];
+    }
+    result[resource].push(action);
+  });
+
+  return result;
+};
+
+const updateAbilityFromPermissions = (ability, permissions) => {
+  permissions.forEach(permission => {
+    const { action, subject } = permission;
+    switch (action.toUpperCase()) {
+      case 'CREATE':
+        ability.update([{ action: 'create', subject }]);
+        break;
+      case 'READ':
+        ability.update([{ action: 'read', subject }]);
+        break;
+      case 'UPDATE':
+        ability.update([{ action: 'update', subject }]);
+        break;
+      case 'DELETE':
+        ability.update([{ action: 'delete', subject }]);
+        break;
+      case 'APPROVE':
+        ability.update([{ action: 'approve', subject }]);
+        break;
+      default:
+        console.error('Invalid action:', action);
+        break;
+    }
+  });
+};

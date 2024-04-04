@@ -6,9 +6,7 @@ export const Contributions = {
     params: queryParams
   }),
   MCContributionDetail: async (slug) => await instanceAxios.get(`${MCContributionsAPI}/${slug}`),
-  MCApprove: async (ids) => await instanceAxios.post(`${MCContributionsApprove}`, {
-    ids
-  }),
+  MCApprove: async (body) => await instanceAxios.post(`${MCContributionsApprove}`, body),
   MCReject: async (body) => await instanceAxios.post(`${MCContributionsReject}`, {
     body
   })
