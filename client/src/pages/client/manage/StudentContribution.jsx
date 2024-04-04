@@ -44,40 +44,39 @@ export default function StudentContribution() {
     queryFn: (_) => Contributions.getCurrentContribution(queryConfig)
   })
 
-  useEffect(() => {
-    if (position != "") {
+  const handleNavigateStatus = (status) => {
+    setPosition(status)
+    if (!status != undefined) {
       navigate({
-        pathname: "/manage/recent",
+        pathname: "/student-manage/recent",
         search: createSearchParams(omitBy({
           ...queryConfig,
-          status: position
+          status: status
         }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
       });
     } else {
       return navigate({
-        pathname: "/manage/recent",
+        pathname: "/student-manage/recent",
         search: createSearchParams(omit({ ...queryConfig }, ['status'])).toString()
       });
     }
-
-  }, [position])
+  }
 
   useEffect(() => {
-    if (queryParams["status"]) {
-      setPosition(queryParams["status"])
+    if (queryParams['status']) {
+      setPosition(queryParams['status'])
     }
-  }, queryParams)
-
+  }, [queryParams])
   const handleInputChange = debounce((value) => {
     if (!value) {
       return navigate({
-        pathname: "/manage/recent",
+        pathname: "/student-manage/recent",
         search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
       });
     }
 
     navigate({
-      pathname: "/manage/recent",
+      pathname: "/student-manage/recent",
       search: createSearchParams(omitBy({
         ...queryConfig,
         keyword: value
@@ -86,6 +85,7 @@ export default function StudentContribution() {
   }, 300);
 
   const currentData = data && data?.data?.responseData;
+  console.log(position)
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
@@ -102,7 +102,7 @@ export default function StudentContribution() {
           />
         </div>
         <div className='flex flex-wrap items-center gap-2'>
-          <Button className='flex-1 py-7' onClick={() => navigate("/manage/add-contribution")}>
+          <Button className='flex-1 py-7' onClick={() => navigate("/student-manage/add-contribution")}>
             <Plus></Plus>
             Add new Article
           </Button>
@@ -119,20 +119,19 @@ export default function StudentContribution() {
               <DropdownMenuContent className='w-56'>
                 <DropdownMenuRadioGroup
                   value={position}
-                  onValueChange={setPosition}
                 >
-                  {position != "" && <DropdownMenuRadioItem value=''>
+                  {position != "" && <DropdownMenuRadioItem value='' onClick={() => handleNavigateStatus(undefined)}>
                     All
                   </DropdownMenuRadioItem>}
-                  <DropdownMenuRadioItem value='PENDING'>
+                  <DropdownMenuRadioItem value='PENDING' onClick={() => handleNavigateStatus("PENDING")}>
                     Pending
                   </DropdownMenuRadioItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuRadioItem value='APPROVE'>
+                  <DropdownMenuRadioItem value='APPROVE' onClick={() => handleNavigateStatus("APPROVE")} >
                     Approve
                   </DropdownMenuRadioItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuRadioItem value='REJECT'>
+                  <DropdownMenuRadioItem value='REJECT' onClick={() => handleNavigateStatus("REJECT")}>
                     Reject
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
@@ -147,7 +146,7 @@ export default function StudentContribution() {
             <Article key={index} isRevert={true} status={article?.status} className={'my-4'}
               article={article}></Article>
           ))}
-        <PaginationCustom path={"/manage/recent"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
+        <PaginationCustom path={"/student-manage/recent"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
       </>}
       {isLoading && <div className="flex justify-center min-h-screen mt-10">
         <Spinner></Spinner>
