@@ -16,12 +16,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 export default function Header() {
-  const { isAuthenticated, profile } = useAppContext()
+  const { isAuthenticated, profile, setProfile, setIsAuthenticated } = useAppContext()
   let navigate = useNavigate()
   const handleLogout = () => {
     clearLS()
-    navigate('/login')
     toast.success("Logout successfully!")
+    setProfile({})
+    setIsAuthenticated(false)
+    navigate('/login')
   }
   return (
     <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black'>
@@ -65,21 +67,28 @@ export default function Header() {
                   <p className='text-sm text-muted-foreground'>{profile && profile?.roles}({(profile?.facultyName)})</p>
                 </div>
                 <div className='gap-2 text-slate-700'>
-                  <Link to="/student-manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='mage:user-fill'></Icon>Recent Post
-                  </Link>
-                  <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='mage:user-fill'></Icon>Admin
-                  </Link>
-                  <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='iconoir:post-solid'></Icon>Contribution
-                  </div>
-                  <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='icon-park-solid:like'></Icon>Liked Contribution
-                  </div>
-                  <Link to="/coodinator-manage/contributions" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='mage:user-fill'></Icon>Coodinator Manage
-                  </Link>
+                  {profile && profile.roles === "Student" && <>
+                    <Link to="/student-manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                      <Icon icon='mage:user-fill'></Icon>Recent Post
+                    </Link>
+                    <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                      <Icon icon='icon-park-solid:like'></Icon>Liked Contribution
+                    </div>
+                  </>}
+
+                  {profile && profile.roles === "Admin" && <>
+                    <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                      <Icon icon='mage:user-fill'></Icon>Admin
+                    </Link>
+
+
+                  </>}
+                  {profile && profile.roles === "Coordinator" &&
+                    <Link to="/coodinator-manage/contributions" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                      <Icon icon='mage:user-fill'></Icon>Coodinator Manage
+                    </Link>
+                  }
+
 
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3' onClick={handleLogout}>
                     <Icon icon='solar:logout-2-bold'></Icon>Logout

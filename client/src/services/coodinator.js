@@ -2,10 +2,9 @@ import { MCContributionsAPI, MCContributionsApprove, MCContributionsReject } fro
 import instanceAxios from "@/utils/axiosInstance";
 
 export const Contributions = {
-  MCContribution: async (queryParams) =>
-    await instanceAxios.get(MCContributionsAPI, {
-      params: queryParams
-    }),
+  MCContribution: async (queryParams) => await instanceAxios.get(MCContributionsAPI, {
+    params: queryParams
+  }),
   MCContributionDetail: async (slug) => await instanceAxios.get(`${MCContributionsAPI}/${slug}`),
   MCApprove: async (ids) => await instanceAxios.post(`${MCContributionsApprove}`, {
     ids

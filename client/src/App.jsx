@@ -44,7 +44,7 @@ function App() {
   }
   return (
     <>
-      {/* {loading && (
+      {loading && (
         <div className='fixed inset-0 z-50 flex flex-col items-center justify-center h-screen text-white bg-blue-800'>
           <img
             src='../../greenwich-logo.png'
@@ -53,7 +53,7 @@ function App() {
           />
           <Loading></Loading>
         </div>
-      )} */}
+      )}
       { }
       <Routes>
         <Route path="" element={<ProtectedRoute></ProtectedRoute>}>
