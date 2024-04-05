@@ -35,22 +35,22 @@ import { Faculties, Roles, Users } from '@/services/admin'
 import { toast } from 'react-toastify'
 import useParamsVariables from '@/hooks/useParams'
 
-export function NewUserForm() {
+export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
   const [userType, setUserType] = useState('')
   const queryClient = useQueryClient()
   const { isLoading, mutate } = useMutation({
     mutationFn: (data) => Users.createUser(data)
   })
   const queryParams = useParamsVariables()
-  const { data: facultiesData } = useQuery({
+  const { data: facultiesData, isLoading: isFacultiesLoading } = useQuery({
     queryKey: ['adminFaculties', queryParams],
-    queryFn: (_) => Faculties.getAllFaculties(queryParams),
+    queryFn: (_) => Faculties.getAllFacultiesPaging(queryParams),
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000
   })
-  const { data: rolesData } = useQuery({
+  const { data: rolesData, isLoading: isRolesLoading } = useQuery({
     queryKey: ['adminRoles', queryParams],
-    queryFn: (_) => Roles.getAllRoles(queryParams),
+    queryFn: (_) => Roles.getAllRoles(),
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000
   })
@@ -71,9 +71,6 @@ export function NewUserForm() {
     username: z.string().min(2, {
       message: 'Username must be at least 6 characters.'
     }),
-    // password: z
-    //   .string()
-    //   .min(6, { message: 'Password must be at least 6 characters.' }),
     gender: z.enum(['male', 'female'], { message: 'Gender must be chosen' }),
     email: z.string().email(),
     dob: z.date({
@@ -123,6 +120,7 @@ export function NewUserForm() {
     })
   }
   async function onSubmit(formData) {
+    setIsSubmitting(true)
     try {
       const avatarBinaryString = await getImageAsBinaryString()
       const payload = {
@@ -132,16 +130,17 @@ export function NewUserForm() {
       }
       mutate(payload, {
         onSuccess: () => {
-          queryClient.invalidateQueries(['adminUsers'])
-          form.reset()
+          queryClient.invalidateQueries({ queryKey: ['adminUsers'] })
+          setIsSubmitting(false)
           toast.success('User created successfully!')
+          form.reset()
+          closeDialog()
         },
         onError: (error) => {
           const errorMessage = error?.response?.data?.title
           toast.error(errorMessage)
         }
       })
-      console.log(payload)
     } catch (error) {
       console.log(error)
     }
@@ -354,14 +353,14 @@ export function NewUserForm() {
           />
         )}
         <DialogFooter>
-          <DialogClose disabled={Object.keys(form.formState.errors).length > 0}>
-            <Button
-              type='submit'
-              disabled={Object.keys(form.formState.errors).length > 0}
-            >
-              Submit
-            </Button>
-          </DialogClose>
+          <Button
+            type='submit'
+            disabled={
+              Object.keys(form.formState.errors).length > 0 || isSubmitting
+            }
+          >
+            Submit
+          </Button>
         </DialogFooter>
       </form>
     </Form>

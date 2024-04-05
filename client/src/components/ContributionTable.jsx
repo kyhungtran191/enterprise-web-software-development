@@ -12,13 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { UserDialog } from './UserDialog'
-import { useState } from 'react'
 import useParamsVariables from '@/hooks/useParams'
 import { useQuery } from '@tanstack/react-query'
 import { Contributions } from '@/services/admin'
 import { format } from 'date-fns'
 import Spinner from './Spinner'
+import { isUndefined, omitBy } from 'lodash'
 export function ContributionTable() {
   const columns = [
     {
@@ -165,9 +164,16 @@ export function ContributionTable() {
     }
   ]
   const queryParams = useParamsVariables()
+  const queryConfig = omitBy(
+    {
+      pageindex: queryParams.pageindex || '1',
+      pagesize: queryParams.pagesize || '10'
+    },
+    isUndefined
+  )
   const { data, isLoading } = useQuery({
     queryKey: ['adminContributions', queryParams],
-    queryFn: (_) => Contributions.getAllContributions(queryParams),
+    queryFn: (_) => Contributions.getAllContributionsPaging(queryParams),
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000
   })
@@ -195,7 +201,13 @@ export function ContributionTable() {
       )}
       {!isLoading && (
         <div className='h-full px-4 py-6 lg:px-8'>
-          <CustomTable columns={columns} data={contributions} />
+          <CustomTable
+            columns={columns}
+            data={contributions}
+            path={'/admin/contributions'}
+            queryConfig={queryConfig}
+            pageCount={data?.data?.responseData.pageCount || 1}
+          />
         </div>
       )}
     </div>

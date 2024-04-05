@@ -9,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import { Roles } from '@/services/admin'
 import Spinner from './Spinner'
+import { isUndefined, omitBy } from 'lodash'
 export function RolesTable() {
   const queryClient = useQueryClient()
   const columns = [
@@ -71,14 +72,20 @@ export function RolesTable() {
     }
   ]
   const queryParams = useParamsVariables()
+  const queryConfig = omitBy(
+    {
+      pageindex: queryParams.pageindex || '1',
+      pagesize: queryParams.pagesize || '5'
+    },
+    isUndefined
+  )
   let { data, isLoadingRoles } = useQuery({
-    queryKey: ['adminRoles', queryParams],
-    queryFn: (_) => Roles.getAllRoles(queryParams),
+    queryKey: ['adminRoles', queryConfig],
+    queryFn: (_) => Roles.getAllRolesPaging(queryConfig),
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000
   })
-  const rolesData = data ? data?.data?.responseData : []
-  console.log(rolesData)
+  const rolesData = data ? data?.data?.responseData.results : []
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
@@ -92,7 +99,13 @@ export function RolesTable() {
       )}
       {!isLoadingRoles && (
         <div className='h-full px-4 py-6 lg:px-8'>
-          <CustomTable columns={columns} data={rolesData} />
+          <CustomTable
+            columns={columns}
+            data={rolesData}
+            path={'/admin/roles'}
+            queryConfig={queryConfig}
+            pageCount={data?.data?.responseData.pageCount || 1}
+          />
         </div>
       )}
     </div>
