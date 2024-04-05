@@ -86,6 +86,7 @@ namespace Server.Api.Controllers.CoordinatorApi
         {
             var query = _mapper.Map<GetCoordinatorContributionQuery>(getContributionBySlugRequest);
             query.FacultyName = User.GetFacultyName();
+            query.UserId = User.GetUserId();
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
 

@@ -9,5 +9,6 @@ namespace Server.Application.Features.ContributionApp.Queries.GetCoordinatorCont
     {
         public string Slug { get; set; }
         public string FacultyName { get; set; }
+        public Guid UserId { get; set; }
     }
 }
