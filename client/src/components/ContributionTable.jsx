@@ -14,14 +14,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { UserDialog } from './UserDialog'
 import { useState } from 'react'
-
+import useParamsVariables from '@/hooks/useParams'
+import { useQuery } from '@tanstack/react-query'
+import { Contributions } from '@/services/admin'
+import { format } from 'date-fns'
+import Spinner from './Spinner'
 export function ContributionTable() {
-  const [isOpenViewUser, setIsOpenViewUser] = useState(false)
-  const [viewUser, setViewUser] = useState({})
-  const handleViewUser = (user) => {
-    setIsOpenViewUser(true)
-    setViewUser(user)
-  }
   const columns = [
     {
       id: 'select',
@@ -60,22 +58,9 @@ export function ContributionTable() {
         )
       }
     },
+
     {
-      accessorKey: 'submissionDate',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant='ghost'
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Submission Date
-            <ArrowUpDown className='w-4 h-4 ml-2' />
-          </Button>
-        )
-      }
-    },
-    {
-      accessorKey: 'studentName',
+      accessorKey: 'userName',
       header: ({ column }) => {
         return (
           <Button
@@ -131,6 +116,34 @@ export function ContributionTable() {
       }
     },
     {
+      accessorKey: 'submissionDate',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Submission Date
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'publishDate',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Publish Date
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
       id: 'actions',
       cell: ({ row }) => {
         return (
@@ -140,21 +153,9 @@ export function ContributionTable() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
               <DropdownMenuGroup>
-                <DropdownMenuItem onSelect={() => handleViewUser(row.original)}>
-                  <User className='w-4 h-4 mr-2' />
-                  <span>View detail</span>
-                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Pencil className='w-4 h-4 mr-2' />
-                  <span>Edit academic year</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <UserRoundX className='w-4 h-4 mr-2' />
-                  <span>Activate year</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <UserRoundX className='w-4 h-4 mr-2' />
-                  <span>Deactivate year</span>
+                  <span>No action yet</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -163,32 +164,40 @@ export function ContributionTable() {
       }
     }
   ]
-  const data = [
-    {
-      id: '728ed52f',
-      title: 'First Contribution',
-      submissionDate: '22/03/2023',
-      studentName: 'John Doe',
-      academicYear: '2023-2024',
-      facultyName: 'IT',
-      status: 'Active'
-    }
-  ]
+  const queryParams = useParamsVariables()
+  const { data, isLoading } = useQuery({
+    queryKey: ['adminContributions', queryParams],
+    queryFn: (_) => Contributions.getAllContributions(queryParams),
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000
+  })
+  const contributions = data
+    ? data?.data?.responseData?.results.map((contribution) => ({
+        ...contribution,
+        submissionDate: contribution.submissionDate
+          ? format(new Date(contribution.publicDate), 'MM-dd-yyyy')
+          : 'Not published',
+        publishDate: contribution.publishDate
+          ? format(new Date(contribution.publishDate), 'MM-dd-yyyy')
+          : 'Not published'
+      }))
+    : []
 
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
-        <NewUserDialog />
       </div>
-      <div className='h-full px-4 py-6 lg:px-8'>
-        <CustomTable columns={columns} data={data} />
-      </div>
-      <UserDialog
-        isOpen={isOpenViewUser}
-        handleOpenChange={setIsOpenViewUser}
-        user={viewUser}
-      />
+      {isLoading && (
+        <div className='container flex items-center justify-center min-h-screen'>
+          <Spinner className={'border-blue-500'}></Spinner>
+        </div>
+      )}
+      {!isLoading && (
+        <div className='h-full px-4 py-6 lg:px-8'>
+          <CustomTable columns={columns} data={contributions} />
+        </div>
+      )}
     </div>
   )
 }

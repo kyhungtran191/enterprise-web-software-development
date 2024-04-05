@@ -30,7 +30,7 @@ export const allFacultiesAPI = `${URL}${clientAPI}/Faculties`
 export const allAcademicYear = `${URL}${clientAPI}/AcademicYear`
 // Contributor
 export const topContributors = `${URL}${clientAPI}/PublicContribution/top-contributors`
-// Refresh Token 
+// Refresh Token
 export const refreshTokenAPI = `${URL}/Tokens/Refresh`
 // Validate reset password
 export const validateResetPasswordAPI = `${URL}${clientAPI}/Users/validate-forgot-token`
@@ -69,3 +69,6 @@ export const getAllFacultiesAPI = `${URL}${adminAPI}/Faculties`
 export const getFacultyByIdAPI = `${URL}${adminAPI}/Faculties`
 export const updateFacultyAPI = `${URL}${adminAPI}/Faculties`
 export const deleteFacultyAPI = `${URL}${adminAPI}/Faculties`
+
+// Contribution
+export const getAllContributionsAPI = `${URL}${adminAPI}/Contributions`
