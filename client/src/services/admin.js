@@ -10,6 +10,7 @@ import {
   deleteRoleAPI,
   getAcademicYearByIdAPI,
   getAllAcademicYearsAPI,
+  getAllContributionsAPI,
   getAllFacultiesAPI,
   getAllRolesAPI,
   getAllUsersAPI,
@@ -78,4 +79,9 @@ export const Faculties = {
     await instanceAxios.put(updateFacultyAPI, data),
   deleteFaculty: async (id) =>
     await instanceAxios.delete(`${deleteFacultyAPI}/${id}`)
+}
+
+export const Contributions = {
+  getAllContributions: async () =>
+    await instanceAxios.get(`${getAllContributionsAPI}/paging`)
 }
