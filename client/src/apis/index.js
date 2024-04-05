@@ -40,7 +40,7 @@ export const MCContributionsApprove = `${URL}/coordinator/Contributions/approve`
 export const MCContributionsReject = `${URL}/coordinator/Contributions/reject`
 // ADMIN
 // Academic Year
-export const getAllAcademicYearsAPI = `${URL}${adminAPI}/AcademicYear/paging`
+export const getAllAcademicYearsPagingAPI = `${URL}${adminAPI}/AcademicYear/paging`
 export const createAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`
 export const getAcademicYearByIdAPI = `${URL}${adminAPI}/AcademicYear`
 export const updateAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`
@@ -48,6 +48,7 @@ export const deleteAcademicYearAPI = `${URL}${adminAPI}/AcademicYear`
 export const activateAcademicYearAPI = `${URL}${adminAPI}/AcademicYear/activate`
 export const deactivateAcademicYearAPI = `${URL}${adminAPI}/AcademicYear/inactivate`
 // Roles
+export const getAllRolesPagingAPI = `${URL}${adminAPI}/Roles/paging`
 export const getAllRolesAPI = `${URL}${adminAPI}/Roles`
 export const getRoleByIdAPI = `${URL}${adminAPI}/Roles`
 export const createRoleAPI = `${URL}${adminAPI}/Roles`
@@ -66,9 +67,10 @@ export const deleteUserAPI = `${URL}${adminAPI}/Users`
 // Faculty
 export const createFacultyAPI = `${URL}${adminAPI}/Faculties`
 export const getAllFacultiesAPI = `${URL}${adminAPI}/Faculties`
+export const getAllFacultiesPagingAPI = `${URL}${adminAPI}/Faculties/paging`
 export const getFacultyByIdAPI = `${URL}${adminAPI}/Faculties`
 export const updateFacultyAPI = `${URL}${adminAPI}/Faculties`
 export const deleteFacultyAPI = `${URL}${adminAPI}/Faculties`
 
 // Contribution
-export const getAllContributionsAPI = `${URL}${adminAPI}/Contributions`
+export const getAllContributionsPagingAPI = `${URL}${adminAPI}/Contributions/paging`

@@ -20,6 +20,7 @@ import { AcademicYears } from '@/services/admin'
 import { toast } from 'react-toastify'
 import Spinner from './Spinner'
 import { AcademicYearEditDialog } from './AcademicYearEditDialog'
+import { isUndefined, omitBy } from 'lodash'
 export function AcademicYearTable() {
   const [isOpenEditAcademicYear, setIsOpenEditAcademicYear] = useState(false)
   const [academicYear, setAcademicYear] = useState({})
@@ -189,9 +190,16 @@ export function AcademicYearTable() {
     }
   ]
   const queryParams = useParamsVariables()
+  const queryConfig = omitBy(
+    {
+      pageindex: queryParams.pageindex || '1',
+      pagesize: queryParams.pagesize || '5'
+    },
+    isUndefined
+  )
   const { data, isLoading } = useQuery({
-    queryKey: ['adminAcademicYears', queryParams],
-    queryFn: (_) => AcademicYears.getAllAcademicYears(queryParams),
+    queryKey: ['adminAcademicYears', queryConfig],
+    queryFn: (_) => AcademicYears.getAllAcademicYears(queryConfig),
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000
   })
@@ -217,7 +225,13 @@ export function AcademicYearTable() {
       )}
       {!isLoading && (
         <div className='h-full px-4 py-6 lg:px-8'>
-          <CustomTable columns={columns} data={academicYearsData} />
+          <CustomTable
+            columns={columns}
+            data={academicYearsData}
+            path={'/admin/academic-years'}
+            queryConfig={queryConfig}
+            pageCount={data?.data?.responseData.pageCount || 1}
+          />
         </div>
       )}
       {Object.keys(academicYear).length > 0 && (
