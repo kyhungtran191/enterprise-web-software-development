@@ -17,6 +17,7 @@ namespace Server.Infrastructure.Persistence.Repositories
         {
             var commentsWithUserDetails = await _appDbContext.ContributionComments
                 .Where(x => x.ContributionId == contributionId)
+                .OrderBy(comment => comment.DateCreated)
                 .Select(comment => new
                 {
                     comment.Content,
