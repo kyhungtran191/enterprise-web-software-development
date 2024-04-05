@@ -16,6 +16,5 @@ namespace Server.Domain.Entity.Content
         public DateTime DateCreated { get; set; }
         public DateTime DateEdited { get; set; }
         public DateTime? DateDeleted { get; set; }
-        public Guid? ParentId { get; set; }
     }
 }
