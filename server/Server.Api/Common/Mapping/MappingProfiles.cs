@@ -13,6 +13,7 @@ using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
 using Server.Application.Features.AcademicYearApp.Queries.InactiveYear;
 using Server.Application.Features.Authentication;
+using Server.Application.Features.CommentApp.Commands;
 using Server.Application.Features.ContributionApp.Commands.ApproveContributions;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
@@ -59,6 +60,7 @@ using Server.Application.Features.TagApp.Queries.GetTagById;
 using Server.Contracts.AcademicYears;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Requests;
+using Server.Contracts.Comment;
 using Server.Contracts.Contributions;
 using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
@@ -177,5 +179,8 @@ public class MappingProfiles : Profile
         CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
         CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
         CreateMap<ValidateForgotTokenRequest, ValidateForgotTokenQuery>();
+        // comment
+        CreateMap<CreateCommentRequest, CreateCommentCommand>();
+        CreateMap<ContributionDto, ContributionWithCommentDto>();
     }    
 }

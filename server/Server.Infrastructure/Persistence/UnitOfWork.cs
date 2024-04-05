@@ -24,6 +24,7 @@ public class UnitOfWork : IUnitOfWork
   public IFileRepository FileRepository => new FilesRepository(_context,_mapper);
   public IPublicContributionRepository PublicContributionRepository => new PublicContributionRepository(_context,_mapper);
   public ILikeRepository LikeRepository => new LikeRepository(_context);
+  public ICommentRepository CommentRepository => new CommentRepository(_context);
   public async Task<int> CompleteAsync()
   => await _context.SaveChangesAsync();
 
