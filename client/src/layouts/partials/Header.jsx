@@ -9,7 +9,8 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
-import { PERMISSIONS } from '@/constant/permissions'
+import { PERMISSIONS } from '@/constant/casl-permissions'
+import { Roles } from '@/constant/roles'
 import { useAppContext } from '@/hooks/useAppContext'
 import { clearLS } from '@/utils/auth'
 import { Icon } from '@iconify/react'
@@ -75,7 +76,7 @@ export default function Header() {
                   <p className='text-sm text-muted-foreground'>{profile && profile?.roles}({(profile?.facultyName)})</p>
                 </div>
                 <div className='gap-2 text-slate-700'>
-                  {profile && profile.roles === "Student" && <>
+                  {profile && profile.roles === Roles.Student && <>
                     <Link to="/student-manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                       <Icon icon='mage:user-fill'></Icon>Recent Post
                     </Link>
@@ -84,14 +85,14 @@ export default function Header() {
                     </div>
                   </>}
 
-                  {profile && profile.roles === "Admin" && <>
+                  {profile && profile.roles === Roles.Admin && <>
                     <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                       <Icon icon='mage:user-fill'></Icon>Admin
                     </Link>
 
 
                   </>}
-                  {profile && profile.roles === "Coordinator" &&
+                  {profile && profile.roles === Roles.Coordinator &&
                     <Link to="/coodinator-manage/contributions" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                       <Icon icon='mage:user-fill'></Icon>Coodinator Manage
                     </Link>

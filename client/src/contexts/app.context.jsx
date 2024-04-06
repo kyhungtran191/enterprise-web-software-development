@@ -6,7 +6,8 @@ const initialAppContext = {
   isAuthenticated: Boolean(getAccessTokenFromLS()),
   setIsAuthenticated: () => { },
   profile: getUserFromLS(),
-  setProfile: () => { }
+  setProfile: () => { },
+  roles: []
 }
 
 export const AppContext = React.createContext(initialAppContext)

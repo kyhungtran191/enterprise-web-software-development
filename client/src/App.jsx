@@ -35,10 +35,11 @@ function App() {
     return () => clearTimeout(timeoutId)
   }, [location.pathname])
 
-  function ProtectedRoute() {
+  function RequireAuth() {
     const { isAuthenticated } = useContext(AppContext)
-    return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/login' />
+    return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
   }
+
   function RejectedRoute() {
     const { isAuthenticated } = useContext(AppContext)
     return !isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
@@ -56,9 +57,8 @@ function App() {
           <Loading></Loading>
         </div>
       )}
-      { }
       <Routes>
-        <Route path="" element={<ProtectedRoute></ProtectedRoute>}>
+        <Route path="" element={<RequireAuth></RequireAuth>}>
           <Route
             path='/'
             element={
