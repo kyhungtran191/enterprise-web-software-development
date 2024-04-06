@@ -9,9 +9,11 @@ import {
   deleteFacultyAPI,
   deleteRoleAPI,
   getAcademicYearByIdAPI,
-  getAllAcademicYearsAPI,
-  getAllFacultiesAPI,
+  getAllAcademicYearsPagingAPI,
+  getAllContributionsPagingAPI,
+  getAllFacultiesPagingAPI,
   getAllRolesAPI,
+  getAllRolesPagingAPI,
   getAllUsersAPI,
   getFacultyByIdAPI,
   getPermissionsForRoleAPI,
@@ -25,7 +27,7 @@ import {
 import instanceAxios from '@/utils/axiosInstance'
 export const AcademicYears = {
   getAllAcademicYears: async (queryParams) =>
-    await instanceAxios.get(getAllAcademicYearsAPI, {
+    await instanceAxios.get(getAllAcademicYearsPagingAPI, {
       params: queryParams
     }),
   createAcademicYear: async (data) =>
@@ -42,8 +44,9 @@ export const AcademicYears = {
     await instanceAxios.post(`${deactivateAcademicYearAPI}/${id}`)
 }
 export const Roles = {
-  getAllRoles: async (queryParams) =>
-    await instanceAxios.get(getAllRolesAPI, { params: queryParams }),
+  getAllRolesPaging: async (queryParams) =>
+    await instanceAxios.get(getAllRolesPagingAPI, { params: queryParams }),
+  getAllRoles: async () => await instanceAxios.get(getAllRolesAPI),
   getRoleById: async (id) => await instanceAxios.get(`${getRoleByIdAPI}/${id}`),
   createRole: async (data) => await instanceAxios.post(createRoleAPI, data),
   updateRoleById: async (id, data) =>
@@ -68,8 +71,8 @@ export const Users = {
 }
 
 export const Faculties = {
-  getAllFaculties: async () =>
-    await instanceAxios.get(`${getAllFacultiesAPI}/paging`),
+  getAllFacultiesPaging: async (queryParams) =>
+    await instanceAxios.get(getAllFacultiesPagingAPI, { params: queryParams }),
   getFacultyById: async (id) =>
     await instanceAxios.get(`${getFacultyByIdAPI}/${id}`),
   createFaculty: async (data) =>
@@ -78,4 +81,11 @@ export const Faculties = {
     await instanceAxios.put(updateFacultyAPI, data),
   deleteFaculty: async (id) =>
     await instanceAxios.delete(`${deleteFacultyAPI}/${id}`)
+}
+
+export const Contributions = {
+  getAllContributionsPaging: async (queryParams) =>
+    await instanceAxios.get(getAllContributionsPagingAPI, {
+      params: queryParams
+    })
 }

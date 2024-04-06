@@ -38,6 +38,8 @@ namespace Server.Domain.Common.Errors
             public static Error NotFoundPublic => Error.NotFound(code: "ContributionPublic.NotFound",
                 description: "This contribution not found or not public");
 
+            public static Error NotBelong => Error.Conflict(code: "Contribution.NotBelong",
+                description: "This contribution is not belong to you");
             public static Error CannotSubmit =>
                 Error.Conflict(code: "Contribution.CannotSubmit", description: "Out of submission date");
             public static Error CannotEdit =>
