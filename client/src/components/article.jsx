@@ -9,6 +9,8 @@ import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
 import ActionSpinner from './ActionSpinner'
 import { useQueryClient } from '@tanstack/react-query'
+import { Roles } from '@/constant/roles'
+import CustomRejectComponent from './CustomRejectComponent'
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
   const navigate = useNavigate()
@@ -22,7 +24,6 @@ export default function Article({ isRevert = false, className, status, classImag
       navigate(`/preview/${article.slug}`)
     }
   }
-
   const handleApproveArticle = (e, id) => {
     const ids = []
     ids.push(id);
@@ -40,6 +41,7 @@ export default function Article({ isRevert = false, className, status, classImag
           onSuccess() {
             toast.success("Approve Article Successfully!")
             queryClient.invalidateQueries('mc-contributions')
+            navigate("/coodinator-manage/contributions?status=APPROVE")
           },
           onError(err) {
             console.log(err)
@@ -59,17 +61,20 @@ export default function Article({ isRevert = false, className, status, classImag
               <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className="flex-shrink-0 object-cover w-12 h-12 rounded-full" />
               <h3 className='text-sm font-semibold medium:text-base'>{article?.userName}</h3>
             </div>
-            <div className=''>
-              {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-blue-500"} font-semibold`} >{status}</Badge>}
-              <Badge variant="outline">{article?.facultyName}</Badge>
+            <div className='flex flex-col'>
+              <div> {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-red-500"} font-semibold`} >{status}</Badge>}
+                <Badge variant="outline">{article?.facultyName}</Badge></div>
+              <></>
             </div>
           </div>
           <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">{article?.title}</h2>
           <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base h-[72px]'>{article.shortDescription}</p>
           <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
-          {profile && profile?.roles == "Coordinator" && status && status == "PENDING" && <div className="flex items-center gap-10 my-10">
+          {profile && profile?.roles == Roles.Coordinator && status && status == "PENDING" && <div className="flex items-center gap-10 my-10">
             <Button className="w-[150px] bg-green-600 shadow-lg" onClick={(e) => handleApproveArticle(e, article.id)}>Approve this</Button>
-            <Button className="w-[150px] bg-red-600">Reject this</Button>
+            <Button className="!bg-none p-0" onClick={(e) => { e.stopPropagation() }}>
+              <CustomRejectComponent id={article?.id}></CustomRejectComponent>
+            </Button>
           </div>}
           {profile && profile?.roles == "Student" && status && status == "PENDING" && <div onClick={(e) => {
             e.stopPropagation();
@@ -77,7 +82,7 @@ export default function Article({ isRevert = false, className, status, classImag
           }} className="mt-4 text-lg font-semibold text-blue-500 underline">Edit</div>}
         </div>
       </div>
-    </div>
+    </div >
 
   )
 }

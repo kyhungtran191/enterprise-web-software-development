@@ -20,7 +20,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 export default function Login() {
-
   const ability = useContext(AbilityContext)
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
@@ -49,6 +48,7 @@ export default function Login() {
         const dataDetail = jwtDecode(accessToken);
         let { email, facultyId, facultyName, family_name, given_name, id, permissions, roles } = dataDetail
         const permissionData = JSON.parse(permissions)
+        console.log(permissionData)
         const permissionAbility = convertPermissionsToObject(permissionData)
         const permissionsArray = [];
         Object.keys(permissionAbility).forEach(action => {

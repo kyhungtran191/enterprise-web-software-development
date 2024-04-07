@@ -21,6 +21,7 @@ import UpdateContribution from './pages/client/manage/contribution/UpdateContrib
 import ManageContributions from './pages/coodinator/ManageContributions'
 import { AppContext } from './contexts/app.context'
 import PreviewContribution from './pages/general/PreviewContribution'
+import SettingGAC from './pages/coodinator/SettingGAC'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -35,10 +36,11 @@ function App() {
     return () => clearTimeout(timeoutId)
   }, [location.pathname])
 
-  function ProtectedRoute() {
+  function RequireAuth() {
     const { isAuthenticated } = useContext(AppContext)
-    return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/login' />
+    return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
   }
+
   function RejectedRoute() {
     const { isAuthenticated } = useContext(AppContext)
     return !isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
@@ -56,9 +58,8 @@ function App() {
           <Loading></Loading>
         </div>
       )}
-      { }
       <Routes>
-        <Route path="" element={<ProtectedRoute></ProtectedRoute>}>
+        <Route path="" element={<RequireAuth></RequireAuth>}>
           <Route
             path='/'
             element={
@@ -116,6 +117,11 @@ function App() {
             path='/coodinator-manage/contributions'
             element={<ManageContributions></ManageContributions>}
           ></Route>
+          <Route
+            path='/coodinator-manage/setting-guest'
+            element={<SettingGAC></SettingGAC>}
+          ></Route>
+
           <Route
             path='/contributions'
             element={<ContributionList></ContributionList>}
