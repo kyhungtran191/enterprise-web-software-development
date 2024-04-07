@@ -26,9 +26,8 @@ import Spinner from '@/components/Spinner'
 import { MC_OPTIONS, STUDENT_OPTIONS } from '@/constant/menuSidebar'
 import { Contributions } from '@/services/coodinator'
 import { CustomTable } from '@/components/CustomTable'
-import { MC_Tables_Columns } from '@/constant/table-columns'
 import { formatDate } from '@/utils/helper'
-export default function ManageContribution() {
+export default function SettingGAC() {
   const [position, setPosition] = React.useState('')
   const navigate = useNavigate()
   const queryParams = useParamsVariables()
@@ -119,7 +118,7 @@ export default function ManageContribution() {
     {
       pageindex: queryParams.pageindex || '1',
       facultyname: queryParams.facultyname,
-      status: queryParams.status,
+      status: 'APPROVE',
       keyword: queryParams.keyword,
       name: queryParams.name,
       year: queryParams.year,
@@ -132,28 +131,6 @@ export default function ManageContribution() {
     queryFn: (_) => Contributions.MCContribution(queryConfig)
   })
 
-  const handleNavigateStatus = (status) => {
-    setPosition(status);
-    if (status !== undefined) {
-      navigate({
-        pathname: "/coodinator-manage/contributions",
-        search: createSearchParams(
-          omitBy(
-            {
-              ...queryConfig,
-              status: status
-            },
-            (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value)
-          )
-        ).toString()
-      });
-    } else {
-      return navigate({
-        pathname: "/coodinator-manage/contributions",
-        search: createSearchParams(omit({ ...queryConfig }, ['status'])).toString()
-      });
-    }
-  }
 
   useEffect(() => {
     if (queryParams['status']) {
@@ -164,13 +141,13 @@ export default function ManageContribution() {
   const handleInputChange = debounce((value) => {
     if (!value) {
       return navigate({
-        pathname: "/coodinator-manage/contributions",
+        pathname: "/coodinator-manage/setting-guest",
         search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
       });
     }
 
     navigate({
-      pathname: "/coodinator-manage/contributions",
+      pathname: "/coodinator-manage/setting-guest",
       search: createSearchParams(omitBy({
         ...queryConfig,
         keyword: value
@@ -179,7 +156,7 @@ export default function ManageContribution() {
   }, 300);
 
   const currentData = data && data?.data?.responseData;
-  console.log(currentData);
+
   return (
     <AdminLayout links={MC_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
@@ -193,53 +170,12 @@ export default function ManageContribution() {
             }}
           />
         </div>
-        <div className='flex flex-wrap items-center gap-2'>
-          <div className='flex-1'>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild className='w-full'>
-                <Button
-                  variant='default'
-                  className='gap-4 border-none outline-none py-7 min-w-[145px]'
-                >
-                  {position.toUpperCase() || "Filter Status"} <ArrowDown10Icon></ArrowDown10Icon>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className='w-56'>
-                <DropdownMenuRadioGroup
-                  value={position}
-                >
-                  {position != "" && <DropdownMenuRadioItem value='' onClick={() => handleNavigateStatus(undefined)}>
-                    All
-                  </DropdownMenuRadioItem>}
-                  <DropdownMenuRadioItem value='PENDING' onClick={() => handleNavigateStatus("PENDING")}>
-                    Pending
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioItem value='APPROVE' onClick={() => handleNavigateStatus("APPROVE")} >
-                    Approve
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioItem value='REJECT' onClick={() => handleNavigateStatus("REJECT")}>
-                    Reject
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
       </div>
-      {currentData && currentData?.results?.length > 0 && <>
-        {currentData && currentData?.results
-          ?.map((article, index) => (
-            <Article key={index} isRevert={true} status={article?.status} className={'my-4'}
-              article={article}></Article>
-          ))}
-        <PaginationCustom path={"/coodinator-manage/contributions"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
-      </>}
+      <CustomTable columns={columns} path={'/coodinator-manage/setting-guest'} queryConfig={queryConfig} data={currentData && currentData?.results || []} pageCount={currentData?.pageCount}></CustomTable>
       {isLoading && <div className="flex justify-center min-h-screen mt-10">
         <Spinner></Spinner>
       </div>}
-      {!isLoading && !currentData?.results?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
+      {!isLoading && currentData?.results?.length < 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
     </AdminLayout>
   )
 }

@@ -93,11 +93,10 @@ export default function Header() {
 
                   </>}
                   {profile && profile.roles === Roles.Coordinator &&
-                    <Link to="/coodinator-manage/contributions" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                    <Link to="/coodinator-manage/contributions?status=PENDING" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                       <Icon icon='mage:user-fill'></Icon>Coodinator Manage
                     </Link>
                   }
-
 
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3' onClick={handleLogout}>
                     <Icon icon='solar:logout-2-bold'></Icon>Logout

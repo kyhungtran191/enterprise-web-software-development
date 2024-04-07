@@ -4,6 +4,7 @@ import {
   useReactTable,
   getSortedRowModel,
   getPaginationRowModel
+
 } from '@tanstack/react-table'
 
 import {
@@ -32,7 +33,7 @@ export function CustomTable({ columns, data, path, queryConfig, pageCount }) {
 
   return (
     <div>
-      <div className='rounded-md border'>
+      <div className='border rounded-md'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -43,9 +44,9 @@ export function CustomTable({ columns, data, path, queryConfig, pageCount }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
@@ -82,7 +83,7 @@ export function CustomTable({ columns, data, path, queryConfig, pageCount }) {
           </TableBody>
         </Table>
       </div>
-      <div className='flex items-center justify-end space-x-2 py-4'>
+      <div className='flex items-center justify-end py-4 space-x-2'>
         <PaginationCustom
           path={path}
           queryConfig={queryConfig}

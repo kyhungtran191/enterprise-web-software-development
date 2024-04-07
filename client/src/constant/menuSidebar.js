@@ -84,9 +84,8 @@ export const MC_OPTIONS = [
     href: '/profile'
   },
   {
-    title: 'Activities',
+    title: 'Settings GAC',
     icon: Clock,
-    href: '/coodinator-manage/artivities-log'
+    href: '/coodinator-manage/setting-guest'
   },
-
 ]

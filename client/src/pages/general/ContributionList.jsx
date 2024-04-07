@@ -1,6 +1,6 @@
 import Article from '@/components/article'
 import GeneralLayout from '@/layouts'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,6 +52,7 @@ export default function ContributionList() {
     keepPreviousData: true, staleTime: 1000
   })
   const navigate = useNavigate()
+  const inputRef = useRef(null)
 
   useEffect(() => {
     if (queryParams["facultyname"]) {
@@ -60,7 +61,7 @@ export default function ContributionList() {
     if (queryParams["year"]) {
       setAcademic(queryParams["year"])
     }
-
+    inputRef?.current.focus()
   }, [queryParams])
 
 
@@ -85,22 +86,26 @@ export default function ContributionList() {
     })
   }
 
-  const handleInputChange = debounce((value) => {
-    if (!value) {
-      return navigate({
-        pathname: "/contributions",
-        search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
-      });
-    }
+  const handleInputChange = useCallback(
+    debounce((value) => {
+      if (!value) {
+        return navigate({
+          pathname: "/contributions",
+          search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
+        });
+      }
 
-    navigate({
-      pathname: "/contributions",
-      search: createSearchParams(omitBy({
-        ...queryConfig,
-        keyword: value
-      }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
-    });
-  }, 300);
+      navigate({
+        pathname: "/contributions",
+        search: createSearchParams(omitBy({
+          ...queryConfig,
+          keyword: value
+        }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
+      });
+    }, 300),
+    [navigate]
+  );
+
 
   const listData = data && data?.data?.responseData?.results
   const listFaculties = falcultiesData && falcultiesData?.data?.responseData?.results
@@ -116,10 +121,11 @@ export default function ContributionList() {
             <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
               // onChange={handleChange}
               // onKeyPress={handleKeyPress} 
-              defaultValue={queryParams["keyword"]}
+              defaultValue={queryParams['keyword']}
+              ref={inputRef}
               onChange={(e) => {
-                setInputValue(e.target.value)
-                handleInputChange(e.target.value);
+                setInputValue(e.target.value);
+                handleInputChange(e.target.value)
               }}
             />
           </div>

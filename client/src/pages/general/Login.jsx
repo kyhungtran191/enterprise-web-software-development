@@ -20,7 +20,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 export default function Login() {
-
   const ability = useContext(AbilityContext)
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()

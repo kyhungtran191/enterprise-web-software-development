@@ -38,6 +38,8 @@ export const validateResetPasswordAPI = `${URL}${clientAPI}/Users/validate-forgo
 export const MCContributionsAPI = `${URL}/coordinator/Contributions/paging`
 export const MCContributionsApprove = `${URL}/coordinator/Contributions/approve`
 export const MCContributionsReject = `${URL}/coordinator/Contributions/reject`
+export const MCPreviewContribution = `${URL}/coordinator/Contributions/preview-contribution`
+export const MCComment = `${URL}/coordinator/Contributions/comment`
 // ADMIN
 // Academic Year
 export const getAllAcademicYearsPagingAPI = `${URL}${adminAPI}/AcademicYear/paging`

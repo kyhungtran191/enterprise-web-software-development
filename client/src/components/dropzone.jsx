@@ -33,6 +33,7 @@ function Dropzone({ open, className, files, setFiles }) {
   })
 
   const handleRenderImage = (filePath) => {
+    console.log(filePath)
     if (filePath === "docx" || filePath === "doc") {
       return "../../word.png"
     } else if (filePath === "pdf") {
