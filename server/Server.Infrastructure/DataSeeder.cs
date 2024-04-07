@@ -856,25 +856,26 @@ public static class DataSeeder
             await context.SaveChangesAsync();
         }
         // seed comment
-        if (!context.ContributionComments.Any())
-        {
-            foreach (var item in listContribution)
-            {
-                context.ContributionComments.Add(new ContributionComment
-                {
-                    Content = "test from student",
-                    ContributionId = item.Id,
-                    UserId = studentList[1].Id,
-                });
-                context.ContributionComments.Add(new ContributionComment
-                {
-                    Content = "test from coordinator",
-                    ContributionId = item.Id,
-                    UserId = coordinatorList[1].Id,
-                });
-            }
-            await context.SaveChangesAsync();
-        }
+        //if (!context.ContributionComments.Any())
+        //{
+        //    foreach (var item in listContribution)
+        //    {
+
+        //        context.ContributionComments.Add(new ContributionComment
+        //        {
+        //            Content = "test from student",
+        //            ContributionId = item.Id,
+        //            UserId = studentList[1].Id,
+        //        });
+        //        context.ContributionComments.Add(new ContributionComment
+        //        {
+        //            Content = "test from coordinator",
+        //            ContributionId = item.Id,
+        //            UserId = coordinatorList[1].Id,
+        //        });
+        //    }
+        //    await context.SaveChangesAsync();
+        //}
     }
     public static async Task SeedFaculty(AppDbContext context,
                                          IFacultyRepository facultyRepository)
