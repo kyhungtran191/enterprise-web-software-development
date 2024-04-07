@@ -40,7 +40,7 @@ namespace Server.Application.Features.Identity.Users.Commands.UpdateProfile
            
             userFromDb.FirstName = request.FirstName;
             userFromDb.LastName = request.LastName;
-            userFromDb.Email = request.Email;
+            //userFromDb.Email = request.Email;
             userFromDb.PhoneNumber = request.PhoneNumber;
             userFromDb.Dob = request.Dob;
           

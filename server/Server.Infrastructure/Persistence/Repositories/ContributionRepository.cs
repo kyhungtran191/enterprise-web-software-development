@@ -115,6 +115,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                     .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 Files = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.File)
                     .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
+                RejectedReason = GetRejectReason(x.c).GetAwaiter().GetResult(),
                 ShortDescription = x.c.ShortDescription
             }).ToList();
 

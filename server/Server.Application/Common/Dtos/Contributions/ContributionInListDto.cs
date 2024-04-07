@@ -16,6 +16,7 @@ namespace Server.Application.Common.Dtos.Contributions
         public DateTime? SubmissionDate { get; set; }
         public DateTime? PublicDate { get; set; }
         public string? ShortDescription { get; set; }
+        public string? RejectedReason { get; set; }
 
     }
 }
