@@ -73,6 +73,11 @@ namespace Server.Infrastructure.Persistence.Repositories
                 if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var statusEnum)) 
                 {
                     query = query.Where(x => x.c.Status == statusEnum);
+                    if (statusEnum == ContributionStatus.Approve)
+                    {
+                        query = query.OrderByDescending(x => x.c.PublicDate);
+                    }
+                    
                 }
                 else
                 {
