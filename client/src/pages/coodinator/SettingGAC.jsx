@@ -27,6 +27,17 @@ import { MC_OPTIONS, STUDENT_OPTIONS } from '@/constant/menuSidebar'
 import { Contributions } from '@/services/coodinator'
 import { CustomTable } from '@/components/CustomTable'
 import { formatDate } from '@/utils/helper'
+
+
+
+import {
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+
+
 export default function SettingGAC() {
   const [position, setPosition] = React.useState('')
   const navigate = useNavigate()
@@ -84,7 +95,6 @@ export default function SettingGAC() {
         )
       }
     },
-
     {
       accessorKey: `${formatDate('publicDate')}`,
       header: ({ column }) => {
@@ -114,6 +124,8 @@ export default function SettingGAC() {
       }
     },
   ]
+  const [rowSelection, setRowSelection] = React.useState({})
+
   const queryConfig = omitBy(
     {
       pageindex: queryParams.pageindex || '1',
@@ -156,6 +168,20 @@ export default function SettingGAC() {
   }, 300);
 
   const currentData = data && data?.data?.responseData;
+  const table = useReactTable({
+    data: currentData?.results,
+    columns,
+    state: {
+      rowSelection,
+    },
+    enableRowSelection: true, //enable row selection for all rows
+    // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    debugTable: true,
+  })
 
   return (
     <AdminLayout links={MC_OPTIONS}>
@@ -171,10 +197,16 @@ export default function SettingGAC() {
           />
         </div>
       </div>
-      <CustomTable columns={columns} path={'/coodinator-manage/setting-guest'} queryConfig={queryConfig} data={currentData && currentData?.results || []} pageCount={currentData?.pageCount}></CustomTable>
+      {!isLoading && <>
+        <CustomTable columns={columns} path={'/coodinator-manage/setting-guest'} queryConfig={queryConfig} pageCount={currentData?.pageCount} table={table}></CustomTable>
+        <pre>{JSON.stringify(table.getSelectedRowModel().rows)}</pre>
+      </>
+
+      }
       {isLoading && <div className="flex justify-center min-h-screen mt-10">
         <Spinner></Spinner>
       </div>}
+
       {!isLoading && currentData?.results?.length < 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
     </AdminLayout>
   )

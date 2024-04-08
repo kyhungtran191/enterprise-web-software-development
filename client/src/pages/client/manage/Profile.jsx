@@ -67,13 +67,16 @@ export default function Profile() {
     })
     const isoString = detailData?.dob
     const dateObject = new Date(isoString)
+    if (detailData?.avatar) {
+      setCurrentThumbnail(detailData?.avatar)
+    }
     setDate(dateObject)
   }, [detailData, reset])
 
 
   const dateString = date;
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     // TransferData
     const formData = new FormData();
     formData.append("FirstName", data.firstName)
@@ -88,7 +91,7 @@ export default function Profile() {
       formData.append("Dob", isoString)
     }
     if (currentThumbnail?.startsWith('blob:')) {
-      fetch(currentThumbnail)
+      await fetch(currentThumbnail)
         .then(response => response.blob())
         .then(blob => {
           const fileName = 'avatar';

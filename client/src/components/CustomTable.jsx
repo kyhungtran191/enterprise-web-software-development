@@ -17,19 +17,19 @@ import {
 } from '@/components/ui/table'
 import { useState } from 'react'
 import PaginationCustom from './PaginationCustom'
-export function CustomTable({ columns, data, path, queryConfig, pageCount }) {
+export function CustomTable({ columns, path, queryConfig, pageCount, table }) {
   const [sorting, setSorting] = useState([])
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
-  })
+  // const table = useReactTable({
+  //   data,
+  //   columns,
+  //   onSortingChange: setSorting,
+  //   getSortedRowModel: getSortedRowModel(),
+  //   state: {
+  //     sorting
+  //   },
+  //   getCoreRowModel: getCoreRowModel(),
+  //   getPaginationRowModel: getPaginationRowModel()
+  // })
 
   return (
     <div>
@@ -54,7 +54,7 @@ export function CustomTable({ columns, data, path, queryConfig, pageCount }) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel()?.rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -73,7 +73,7 @@ export function CustomTable({ columns, data, path, queryConfig, pageCount }) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns?.length}
                   className='h-24 text-center'
                 >
                   No results.
