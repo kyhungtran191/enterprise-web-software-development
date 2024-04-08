@@ -13,6 +13,7 @@ import { formatDate } from '@/utils/helper'
 import Spinner from '@/components/Spinner'
 import DownloadAllButton from '@/components/DownloadAllButton'
 import { useQueryContributionDetail } from '@/query/useQueryContributionDetail'
+import { useLikedContribution } from '@/query/useLikedContribution'
 export default function ContributionDetail() {
   const { id } = useParams()
   const { data, isLoading } = useQueryContributionDetail(id)
@@ -35,6 +36,8 @@ export default function ContributionDetail() {
         console.error('Error downloading file:', error);
       });
   };
+  const isFavorite = useLikedContribution(detailData.id)
+  console.log(isFavorite)
   return (
     <GeneralLayout>
       {isLoading && <div className="container flex items-center justify-center min-h-screen"><Spinner className={"border-blue-500"}></Spinner></div>}
@@ -47,7 +50,7 @@ export default function ContributionDetail() {
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <Badge variant="destructive">{detailData?.facultyName}</Badge>
-              <Button className="bg-transparent border border-black text-black-500 hover:bg-red-500 hover:text-white hover:border-white"><Heart></Heart></Button>
+              <Button className={`bg-transparent hover:bg-red-500 hover:text-white hover:border-white  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `}><Heart></Heart></Button>
             </div>
             <h2 className="mt-3 text-2xl font-semibold text-ellipsis line-clamp-4 medium:text-4xl">{detailData?.title} </h2>
             <div className="flex flex-wrap items-center justify-between my-6 text-xs font-semibold text-gray-600 md:text-sm medium:text-base">

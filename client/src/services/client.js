@@ -1,4 +1,4 @@
-import { ContributionAPI, allAcademicYear, allFacultiesAPI, editContributionsInfo, editProfileAPI, favoriteAPI, featuredContribution, forgotPasswordAPI, latestContribution, loginAPI, profileAPI, publicContributionAPI, recentContributionAPI, resetPasswordAPI, toggleFavoriteAPI, topContributors, validateResetPasswordAPI } from "@/apis"
+import { ContributionAPI, allAcademicYear, allFacultiesAPI, editContributionsInfo, editProfileAPI, favoriteAPI, featuredContribution, forgotPasswordAPI, latestContribution, loginAPI, profileAPI, publicContributionAPI, readLaterListAPI, recentContributionAPI, resetPasswordAPI, toggleFavoriteAPI, toggleReadLaterAPI, topContributors, validateResetPasswordAPI } from "@/apis"
 import instanceAxios from "@/utils/axiosInstance"
 import axios from "axios"
 
@@ -24,7 +24,11 @@ export const Contributions = {
   getFavoriteContribution: async (queryParams = {}) => await instanceAxios.get(favoriteAPI, {
     params: queryParams
   }),
-  likeContribution: async (id) => await instanceAxios.post(`${toggleFavoriteAPI}/${id}`)
+  likeContribution: async (id) => await instanceAxios.post(`${toggleFavoriteAPI}/${id}`),
+  getReadLater: async (queryParams = {}) => await instanceAxios.get(readLaterListAPI, {
+    params: queryParams
+  }),
+  addReadLater: async (id) => await instanceAxios.post(`${toggleReadLaterAPI}/${id}`),
 }
 
 export const Auth = {
