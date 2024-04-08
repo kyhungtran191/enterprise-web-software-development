@@ -42,6 +42,7 @@ using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
 using Server.Application.Features.Identity.Users.Queries.ValidateForgotToken;
+using Server.Application.Features.PublicCommentApp.Commands.CreateComment;
 using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
@@ -181,6 +182,8 @@ public class MappingProfiles : Profile
         CreateMap<ValidateForgotTokenRequest, ValidateForgotTokenQuery>();
         // comment
         CreateMap<CreateCommentRequest, CreateCommentCommand>();
+        CreateMap<CreateCommentRequest, CreatePublicCommentCommand>();
         CreateMap<ContributionDto, ContributionWithCommentDto>();
+        CreateMap<PublicContributionDetailDto, PublicContributionWithCommentDto>();
     }    
 }

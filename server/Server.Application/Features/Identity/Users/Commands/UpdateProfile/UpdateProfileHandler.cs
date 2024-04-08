@@ -49,21 +49,20 @@ namespace Server.Application.Features.Identity.Users.Commands.UpdateProfile
             {
                 // remove
                 var existingFiles = userFromDb.AvatarPublicId;
-                if (existingFiles is null)
+                if (existingFiles is not null)
                 {
-                    return Errors.User.NoAvatarFound;
-                }
-                var removeFilePaths = new List<string>();
-                var removeFileTypes = new List<string>();
-                foreach (var existingFile in existingFiles)
-                {
-                   
+                    var removeFilePaths = new List<string>();
+                    var removeFileTypes = new List<string>();
+
+
                     removeFilePaths.Add(existingFiles);
                     removeFileTypes.Add("Image");
 
-                }
 
-                await _mediaService.RemoveFromCloudinary(removeFilePaths, removeFileTypes);
+
+                    await _mediaService.RemoveFromCloudinary(removeFilePaths, removeFileTypes);
+                }
+                
                 // update
                 var newAvatarList = new List<IFormFile>
                 {
