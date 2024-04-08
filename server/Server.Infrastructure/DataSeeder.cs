@@ -217,7 +217,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -229,7 +230,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -241,7 +243,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -253,7 +256,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
         };
@@ -268,7 +272,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -280,7 +285,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -292,7 +298,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -304,7 +311,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
         };
@@ -319,7 +327,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -331,7 +340,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -343,7 +353,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
             new()
@@ -355,7 +366,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1711952061/thumbnail/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qutiwdhpg6zfme2nfqce.png"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
 
             },
         };
@@ -393,7 +405,8 @@ public static class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                Avatar = "/default.png",
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
+                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf",
                 FacultyId = facultiesList[1].Id,
             };
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
@@ -800,41 +813,41 @@ public static class DataSeeder
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1711952063/file/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qmwnzwl5ysx6blolevgd.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559104/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wtiowfooycu8sgxm8gaq.docx",
+                        Name = "file asm.docx", Type = FileType.File,
+                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wtiowfooycu8sgxm8gaq.docx",
+                        Extension = ".docx"
+                    },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559105/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wobfmmhvn4eputb4lafj.docx",
                         Name = "1_Unit 1 - Assignment 1 frontsheet.docx", Type = FileType.File,
-                        PublicId = "file/contribution-c3027ba5-3794-4ea3-9719-8ea18a4c2d10/qmwnzwl5ysx6blolevgd.docx",
+                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wobfmmhvn4eputb4lafj.docx",
                         Extension = ".docx"
                     },
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034461/file/contribution-8c1205ba-08a3-46d0-ae9c-59633c3f4562/tvkkgtgy1gpmiog6ohoc.docx",
-                        Name = "1_Unit 1 - Assignment 2 frontsheet_.docx", Type = FileType.File,
-                        PublicId = "file/contribution-8c1205ba-08a3-46d0-ae9c-59633c3f4562/tvkkgtgy1gpmiog6ohoc.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559108/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/k4pv5ud1wujtkgulgwfe.docx",
+                        Name = "1_Unit 1 - Assignment 2 frontsheet_.docx    ", Type = FileType.File,
+                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/k4pv5ud1wujtkgulgwfe.docx",
                         Extension = ".docx"
                     },
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034501/file/contribution-667b3931-f8c3-4a51-9498-1d1afbe3c704/eitcnx2hbqqhuxrvxioh.docx",
-                        Name = "Tutorial-1-Case-study Answers.docx", Type = FileType.File,
-                        PublicId = "file/contribution-667b3931-f8c3-4a51-9498-1d1afbe3c704/eitcnx2hbqqhuxrvxioh.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559113/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/a4u0giuhv0w9vxqfuzgr.doc",
+                        Name = "tut3-RADconcepts.doc", Type = FileType.File,
+                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/a4u0giuhv0w9vxqfuzgr.doc",
                         Extension = ".docx"
                     },
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034524/file/contribution-22fa18a8-da86-4fdb-bd46-e8c421a4801f/iakag4ue4jktpvadw5ec.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559116/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/cpf72nciacudv6ly6vvz.docx",
                         Name = "TCS2405-group1.docx", Type = FileType.File,
-                        PublicId = "file/contribution-22fa18a8-da86-4fdb-bd46-e8c421a4801f/iakag4ue4jktpvadw5ec.docx",
-                        Extension = ".docx"
-                    },
-                    new()
-                    {
-                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712034599/file/contribution-f5c2a8ef-42e7-45b9-b665-5b148dbe2ce8/fauby4gpe2yr0bw4zbyi.docx",
-                        Name = "TCS2405 - group 2.docx", Type = FileType.File,
-                        PublicId = "file/contribution-f5c2a8ef-42e7-45b9-b665-5b148dbe2ce8/fauby4gpe2yr0bw4zbyi.docx",
+                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/cpf72nciacudv6ly6vvz.docx",
                         Extension = ".docx"
                     },
                 });
