@@ -217,8 +217,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
+                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
 
             },
             new()
@@ -230,8 +230,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
+                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
 
             },
             new()
@@ -243,8 +243,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
+                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
 
             },
             new()
@@ -256,8 +256,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
+                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
 
             },
         };
@@ -272,8 +272,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
+                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
 
             },
             new()
@@ -285,8 +285,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
+                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
 
             },
             new()
@@ -298,8 +298,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
+                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
 
             },
             new()
@@ -311,8 +311,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
+                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
 
             },
         };
@@ -327,8 +327,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
+                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
 
             },
             new()
@@ -340,8 +340,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
+                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
 
             },
             new()
@@ -353,8 +353,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
+                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
 
             },
             new()
@@ -366,8 +366,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
+                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
 
             },
         };
@@ -405,8 +405,8 @@ public static class DataSeeder
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712559671/avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf.jpg",
-                AvatarPublicId = "avatar/user-ac3ba99e-a4b0-4442-8241-a69686fab504/pg37octt9kpiiimnxthf",
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564003/avatar/user-86f43cf0-d40e-445f-a6c3-f9ff620935f0/u5ckrzjjylvr3nvhbp86.jpg",
+                AvatarPublicId = "avatar/user-86f43cf0-d40e-445f-a6c3-f9ff620935f0/u5ckrzjjylvr3nvhbp86",
                 FacultyId = facultiesList[1].Id,
             };
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");

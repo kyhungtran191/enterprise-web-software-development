@@ -3,8 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.CommentApp.Commands;
 using Server.Application.Features.ContributionApp.Queries.GetTopContributors;
-using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
+using Server.Application.Features.PublicCommentApp.Commands.CreateComment;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
 using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
@@ -14,8 +15,8 @@ using Server.Application.Features.PublicContributionApp.Queries.GetDetailPublicC
 using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked;
 using Server.Application.Features.PublicContributionApp.Queries.GetTop4Contributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopContribution;
+using Server.Contracts.Comment;
 using Server.Contracts.PublicContributions;
-using Server.Contracts.PublicContributions.Favorite;
 using Server.Contracts.PublicContributions.Like;
 using Server.Contracts.PublicContributions.ReadLater;
 
@@ -127,7 +128,16 @@ public class PublicContributionController : ClientApiController
         var result = await _mediatorSender.Send(command);
         return result.Match(result => Ok(result), errors => Problem(errors));
     }
-
+    [HttpPost]
+    [Route("comment/{ContributionId}")]
+    public async Task<IActionResult> Comment([FromRoute] Guid ContributionId, CreateCommentRequest request)
+    {
+        var command = _mapper.Map<CreatePublicCommentCommand>(request);
+        command.ContributionId = ContributionId;
+        command.UserId = User.GetUserId();
+        var result = await _mediatorSender.Send(command);
+        return result.Match(result => Ok(result), errors => Problem(errors));
+    }
     //[HttpPost("toggle-favorite/{ContributionId}")]
     //[Authorize]
     //public async Task<IActionResult> AddFavorite([FromRoute] FavoriteRequest request)
