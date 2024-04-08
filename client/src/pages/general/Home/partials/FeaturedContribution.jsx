@@ -48,7 +48,7 @@ export default function FeaturedContribution() {
         {data && data?.data?.responseData && data?.data?.responseData.length > 0 &&
           <>
             <div className="col-span-12 row-span-3 medium:col-span-6">
-              <Article article={data?.data?.responseData[0]}></Article>
+              <Article article={data?.data?.responseData[0]} classImageCustom={"md:h-[600px]"}></Article>
             </div>
             {data?.data?.responseData.slice(1).map((item, index) => (
               <div className="col-span-12 row-span-1 medium:col-span-6" key={item.id}>

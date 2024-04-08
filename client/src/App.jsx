@@ -22,6 +22,7 @@ import ManageContributions from './pages/coodinator/ManageContributions'
 import { AppContext } from './contexts/app.context'
 import PreviewContribution from './pages/general/PreviewContribution'
 import SettingGAC from './pages/coodinator/SettingGAC'
+import FavoriteContribution from './pages/client/manage/contribution/FavoriteContribution'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -112,6 +113,10 @@ function App() {
           <Route
             path='/student-manage/edit-contribution/:slug'
             element={<UpdateContribution></UpdateContribution>}
+          ></Route>
+          <Route
+            path='/student-manage/favorites'
+            element={<FavoriteContribution></FavoriteContribution>}
           ></Route>
           <Route
             path='/coodinator-manage/contributions'
