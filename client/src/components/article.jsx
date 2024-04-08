@@ -8,9 +8,18 @@ import { useMutateApprove } from '@/query/useMutateApprove'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
 import ActionSpinner from './ActionSpinner'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { Roles } from '@/constant/roles'
 import CustomRejectComponent from './CustomRejectComponent'
+import { Heart, BookMarked } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { Contributions } from '@/services/client'
+import { useLikedContribution } from '@/query/useLikedContribution'
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
   const navigate = useNavigate()
@@ -24,6 +33,9 @@ export default function Article({ isRevert = false, className, status, classImag
       navigate(`/preview/${article.slug}`)
     }
   }
+  const likeMutation = useMutation({
+    mutationFn: (id) => Contributions.likeContribution(id)
+  })
   const handleApproveArticle = (e, id) => {
     const ids = []
     ids.push(id);
@@ -50,12 +62,56 @@ export default function Article({ isRevert = false, className, status, classImag
       }
     });
   }
+  const handleToggleLike = (e, id) => {
+    e.stopPropagation()
+    likeMutation.mutate(id, {
+      onSuccess() {
+        toast.success("Toggle Like Successfully!")
+        queryClient.invalidateQueries(['favorite-list'])
+      },
+      onError(err) {
+        console.log(err)
+      }
+    })
+  }
+
+
+  const isFavorite = useLikedContribution(article?.id)
   return (
     <div onClick={handleOnClickNavigate}>
       {isLoading && <ActionSpinner></ActionSpinner>}
-      <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg`}>
-        <img src={`${article?.thumbnails?.length > 0 ? article?.thumbnails[0].path : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`} alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : `w-full h-[600px] ${classImageCustom}`}  object-cover rounded-md`} />
-        <div className="flex-1 p-2">
+      <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg `}>
+        <img src={`${article?.thumbnails?.length > 0 ? article?.thumbnails[0].path : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`} alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : `w-full h-[300px] ${classImageCustom}`}  object-cover rounded-md `} />
+
+        <div className="w-full p-2 md:flex-1">
+          {!status === "REJECTED" || "PENDING" && <div className="flex flex-wrap items-center justify-end gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className={`inline-block py-2 px-5 rounded-lg shadow-lg 
+                  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `} onClick={(e) => handleToggleLike(e, article?.id)}>
+                    <Heart></Heart>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className='font-semibold'>{isFavorite ? "Remove from favorite list" : "Add to favorite list"}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className={`inline-block py-2 px-5 rounded-lg shadow-lg bg-white text-black`}>
+                    <BookMarked />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className='font-semibold'>Add to read later list</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>}
+
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className='flex items-center gap-1 medium:gap-2'>
               <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className="flex-shrink-0 object-cover w-12 h-12 rounded-full" />
@@ -68,7 +124,7 @@ export default function Article({ isRevert = false, className, status, classImag
             </div>
           </div>
           <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">{article?.title}</h2>
-          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base h-[72px]'>{article.shortDescription}</p>
+          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base md:h-[65px]'>{article.shortDescription}</p>
           <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
           {profile && profile?.roles == Roles.Coordinator && status && status == "PENDING" && <div className="flex items-center gap-10 my-10">
             <Button className="w-[150px] bg-green-600 shadow-lg" onClick={(e) => handleApproveArticle(e, article.id)}>Approve this</Button>
@@ -82,7 +138,7 @@ export default function Article({ isRevert = false, className, status, classImag
           }} className="mt-4 text-lg font-semibold text-blue-500 underline">Edit</div>}
         </div>
       </div>
-    </div >
+    </div>
 
   )
 }

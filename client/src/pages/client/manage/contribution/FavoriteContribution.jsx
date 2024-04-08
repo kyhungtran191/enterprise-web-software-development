@@ -23,7 +23,9 @@ import { useAcademicYear } from '@/query/useAcademicYear'
 import { Icon } from '@iconify/react'
 import Spinner from '@/components/Spinner'
 import PaginationCustom from '@/components/PaginationCustom'
-export default function ContributionList() {
+import AdminLayout from '@/layouts/AdminLayout'
+import { STUDENT_OPTIONS } from '@/constant/menuSidebar'
+export default function FavoriteContribution() {
   // State
   const [faculty, setFaculty] = useState("")
   const [academic, setAcademic] = useState("")
@@ -32,7 +34,6 @@ export default function ContributionList() {
   const { data: falcultiesData } = useFaculty()
   //
   const { data: academicData } = useAcademicYear()
-
 
   const queryParams = useParamsVariables()
   const queryConfig = omitBy(
@@ -48,7 +49,7 @@ export default function ContributionList() {
     isUndefined
   )
   const { data, isLoading } = useQuery({
-    queryKey: ['contributions', queryConfig], queryFn: (_) => Contributions.getAllPublicContribution(queryConfig),
+    queryKey: ['favorite-list', queryConfig], queryFn: (_) => Contributions.getFavoriteContribution(queryConfig),
     keepPreviousData: true, staleTime: 1000
   })
   const navigate = useNavigate()
@@ -67,7 +68,7 @@ export default function ContributionList() {
 
   const handleQueryByFaculty = (value) => {
     navigate({
-      pathname: "/contributions",
+      pathname: "/student-manage/favorites",
       search: createSearchParams(omitBy({
         ...queryConfig,
         facultyname: value
@@ -78,7 +79,7 @@ export default function ContributionList() {
 
   const handleQueryByAcademic = (value) => {
     navigate({
-      pathname: "/contributions",
+      pathname: "/student-manage/favorites",
       search: createSearchParams(omitBy({
         ...queryConfig,
         year: value
@@ -90,13 +91,13 @@ export default function ContributionList() {
     debounce((value) => {
       if (!value) {
         return navigate({
-          pathname: "/contributions",
+          pathname: "/student-manage/favorites",
           search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
         });
       }
 
       navigate({
-        pathname: "/contributions",
+        pathname: "/student-manage/favorites",
         search: createSearchParams(omitBy({
           ...queryConfig,
           keyword: value
@@ -107,20 +108,17 @@ export default function ContributionList() {
   );
 
 
-  const listData = data && data?.data?.responseData?.results
+  const listData = data && data?.data?.responseData
   const listFaculties = falcultiesData && falcultiesData?.data?.responseData?.results
   const listAcademic = academicData && academicData?.data?.responseData?.results
-
   return (
-    <GeneralLayout>
+    <AdminLayout links={STUDENT_OPTIONS}>
       <div className="container py-5">
         <DynamicBreadcrumb></DynamicBreadcrumb>
         <div className="flex flex-wrap items-center justify-between md:gap-5">
           <div className={`flex items-center w-full px-5 py-4 border rounded-lg gap-x-2 w-1/2`}>
             <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
             <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
-              // onChange={handleChange}
-              // onKeyPress={handleKeyPress} 
               defaultValue={queryParams['keyword']}
               ref={inputRef}
               onChange={(e) => {
@@ -165,18 +163,18 @@ export default function ContributionList() {
           </div>
         </div>
         {listData && listData.length > 0 && <>
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xl:gap-4">
+          <div className="">
             {listData.map((article) => (
-              <Article article={article} key={article.id} classImageCustom="!h-[300px]"></Article>
+              <Article article={article} key={article.id} classImageCustom="!h-[300px]" isRevert={true}></Article>
             ))}
           </div>
-          <PaginationCustom path={"/contributions"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
+          <PaginationCustom path={"/student-manage/favorites"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
         </>}
         {isLoading && <div className="flex justify-center min-h-screen mt-10">
           <Spinner></Spinner>
         </div>}
         {!listData?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
       </div>
-    </GeneralLayout>
+    </AdminLayout>
   )
 }

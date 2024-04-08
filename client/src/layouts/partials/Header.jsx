@@ -21,7 +21,6 @@ import { toast } from 'react-toastify'
 export default function Header() {
   const { isAuthenticated, profile, setProfile, setIsAuthenticated } = useAppContext()
   const ability = useContext(AbilityContext)
-  console.log(ability)
   let navigate = useNavigate()
   const handleLogout = () => {
     clearLS()
