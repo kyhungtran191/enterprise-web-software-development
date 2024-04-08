@@ -217,8 +217,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
-                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572469/avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu.jpg",
+                AvatarPublicId = "avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu"
 
             },
             new()
@@ -230,8 +230,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
-                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572469/avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu.jpg",
+                AvatarPublicId = "avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu"
 
             },
             new()
@@ -243,8 +243,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
-                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572469/avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu.jpg",
+                AvatarPublicId = "avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu"
 
             },
             new()
@@ -256,8 +256,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564457/avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre.jpg",
-                AvatarPublicId = "avatar/user-dab3e824-14da-4f73-9946-cf9d20ff7467/ftdnkkkzwiecvqnlthre"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572469/avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu.jpg",
+                AvatarPublicId = "avatar/user-7f65f0e5-fc13-4cea-bff6-677844b5871a/fontiyvnmsbxq5wjdbqu"
 
             },
         };
@@ -272,8 +272,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
-                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572623/avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8.jpg",
+                AvatarPublicId = "avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8"
 
             },
             new()
@@ -285,8 +285,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
-                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572623/avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8.jpg",
+                AvatarPublicId = "avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8"
 
             },
             new()
@@ -298,8 +298,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
-                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572623/avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8.jpg",
+                AvatarPublicId = "avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8"
 
             },
             new()
@@ -311,8 +311,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565481/avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow.jpg",
-                AvatarPublicId = "avatar/user-bdb514a1-936f-43e1-a601-42bc8655104c/xstjuwjgphjagvzbnhow"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572623/avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8.jpg",
+                AvatarPublicId = "avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8"
 
             },
         };
@@ -327,8 +327,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[0].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
-                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572892/avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
 
             },
             new()
@@ -340,8 +340,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[1].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
-                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572892/avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
 
             },
             new()
@@ -353,8 +353,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[2].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
-                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572892/avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
 
             },
             new()
@@ -366,8 +366,8 @@ public static class DataSeeder
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
                 FacultyId = facultiesList[3].Id,
-                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712565699/avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk.jpg",
-                AvatarPublicId = "avatar/user-f28f91d7-658e-44f9-8934-189fb4d6842b/atexa9y3u2gsszgjxpwk"
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572892/avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
 
             },
         };
@@ -813,41 +813,41 @@ public static class DataSeeder
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559104/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wtiowfooycu8sgxm8gaq.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712572059/file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/cd2vojbncylsqljk0xww.docx",
                         Name = "file asm.docx", Type = FileType.File,
-                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wtiowfooycu8sgxm8gaq.docx",
+                        PublicId = "file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/cd2vojbncylsqljk0xww.docx",
                         Extension = ".docx"
                     },
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559105/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wobfmmhvn4eputb4lafj.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712572059/file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/dj5kco9ywflongrrsd4h.docx",
                         Name = "1_Unit 1 - Assignment 1 frontsheet.docx", Type = FileType.File,
-                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/wobfmmhvn4eputb4lafj.docx",
+                        PublicId = "file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/dj5kco9ywflongrrsd4h.docx",
                         Extension = ".docx"
                     },
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559108/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/k4pv5ud1wujtkgulgwfe.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712572060/file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/i8mhjnipdm8ozmjkwl1d.docx",
                         Name = "1_Unit 1 - Assignment 2 frontsheet_.docx    ", Type = FileType.File,
-                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/k4pv5ud1wujtkgulgwfe.docx",
+                        PublicId = "file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/i8mhjnipdm8ozmjkwl1d.docx",
                         Extension = ".docx"
                     },
                     new()
                     {
                         ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559113/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/a4u0giuhv0w9vxqfuzgr.doc",
-                        Name = "tut3-RADconcepts.doc", Type = FileType.File,
-                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/a4u0giuhv0w9vxqfuzgr.doc",
-                        Extension = ".docx"
-                    },
-                    new()
-                    {
-                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
-                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712559116/file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/cpf72nciacudv6ly6vvz.docx",
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712572061/file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/niip3irfujngx2l8yxnl.docx",
                         Name = "TCS2405-group1.docx", Type = FileType.File,
-                        PublicId = "file/contribution-fad833be-11f0-4b54-a8ad-c4a59cb507cb/cpf72nciacudv6ly6vvz.docx",
+                        PublicId = "file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/niip3irfujngx2l8yxnl.docx",
+                        Extension = ".docx"
+                    },
+                    new()
+                    {
+                        ContributionId = contribution.Id, DateCreated = DateTime.UtcNow, Id = Guid.NewGuid(),
+                        Path = "http://res.cloudinary.com/dlqxj0ibb/raw/upload/v1712572061/file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/qu5j8gxtyjffvxskcjwv.docx",
+                        Name = "TCS2405 - group 2.docx", Type = FileType.File,
+                        PublicId = "file/contribution-f99a2fcc-62da-48b0-bad6-f51c4af0d9e2/qu5j8gxtyjffvxskcjwv.docx",
                         Extension = ".docx"
                     },
                 });

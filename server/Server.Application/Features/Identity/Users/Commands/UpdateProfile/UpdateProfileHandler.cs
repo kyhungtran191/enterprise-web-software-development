@@ -48,20 +48,20 @@ namespace Server.Application.Features.Identity.Users.Commands.UpdateProfile
             if (request.Avatar is not null)
             {
                 // remove
-                var existingFiles = userFromDb.AvatarPublicId;
-                if (existingFiles is not null)
-                {
-                    var removeFilePaths = new List<string>();
-                    var removeFileTypes = new List<string>();
+                //var existingFiles = userFromDb.AvatarPublicId;
+                //if (existingFiles is not null)
+                //{
+                //    var removeFilePaths = new List<string>();
+                //    var removeFileTypes = new List<string>();
 
 
-                    removeFilePaths.Add(existingFiles);
-                    removeFileTypes.Add("Image");
+                //    removeFilePaths.Add(existingFiles);
+                //    removeFileTypes.Add("Image");
 
 
 
-                    await _mediaService.RemoveFromCloudinary(removeFilePaths, removeFileTypes);
-                }
+                //    await _mediaService.RemoveFromCloudinary(removeFilePaths, removeFileTypes);
+                //}
                 
                 // update
                 var newAvatarList = new List<IFormFile>
