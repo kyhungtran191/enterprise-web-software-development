@@ -19,6 +19,8 @@ using Server.Contracts.Comment;
 using Server.Contracts.PublicContributions;
 using Server.Contracts.PublicContributions.Like;
 using Server.Contracts.PublicContributions.ReadLater;
+using Server.Domain.Common.Constants;
+using System.Security;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -32,6 +34,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpGet]
     [Route("paging")]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetAllPublicContribution([FromQuery] GetAllPublicContributionPagingRequest request)
     {
         var query = _mapper.Map<GetAllPublicContributionPagingQuery>(request);
@@ -42,6 +45,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpGet]
     [Route("latest")]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetTop4Contributions()
     {
         var query = new GetTop4ContributionQuery();
@@ -51,6 +55,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpPost]
     [Route("toggle-like/{ContributionId}")]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> LikeContribution([FromRoute] LikeContributionRequest request)
     {
         var command = _mapper.Map<LikeContributionCommand>(request);
@@ -61,6 +66,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpGet]
     [Route("who-liked/{ContributionId}")]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetListUserLiked([FromRoute] GetListUserLikedRequest request)
     {
         var query = _mapper.Map<GetListUserLikedQuery>(request);
@@ -69,9 +75,11 @@ public class PublicContributionController : ClientApiController
     }
     [HttpGet]
     [Route("{Slug}")]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetDetailContribution([FromRoute] GetDetailPublicContributionBySlugRequest request)
     {
         var query = _mapper.Map<GetDetailPublicContributionBySlugQuery>(request);
+        query.UserId = User.GetUserId();
         var result = await _mediatorSender.Send(query);
         return result.Match(success => Ok(success), errors => Problem(errors));
 
@@ -79,6 +87,7 @@ public class PublicContributionController : ClientApiController
     }
     [HttpGet("download-files/{ContributionId}")]
     [Authorize]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> DownloadFiles([FromRoute] DownloadAllFileRequest request)
     {
         var query = _mapper.Map<DownloadAllFileQuery>(request);
@@ -88,6 +97,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpGet("download-file")]
     [Authorize]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> DownloadFile(DownSingleFileRequest request)
     {
         var query = _mapper.Map<DownSingleFileQuery>(request);
@@ -96,6 +106,7 @@ public class PublicContributionController : ClientApiController
     }
     [HttpGet]
     [Route("featured-contribution")]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetTopContribution()
     {
         var query = new GetFeaturedContributionQuery();
@@ -105,6 +116,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpGet]
     [Route("top-contributors")]
+    [Authorize(Permissions.Contributions.View)]
     public async Task<IActionResult> GetTopContributors()
     {
         var query = new GetTopContributorsQuery();

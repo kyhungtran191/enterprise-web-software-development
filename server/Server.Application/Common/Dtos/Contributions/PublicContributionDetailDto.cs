@@ -4,5 +4,6 @@
     {
         public List<FileReturnDto>? Files { get; set; }
         public string Content { get; set; }
+        public bool AllowedGuest { get; set; }
     }
 }

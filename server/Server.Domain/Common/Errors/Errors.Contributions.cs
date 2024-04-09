@@ -43,6 +43,9 @@ namespace Server.Domain.Common.Errors
             public static Error NotBelongFaculty => Error.Conflict(code: "Contribution.NotBelongFaculty",
                 description: "This contribution is not belong to your faculty");
 
+            public static Error NotAllowed => Error.Conflict(code: "Contribution.NotAllowed",
+                description: "You do not have permission to access this contribution");
+
             public static Error CannotSubmit =>
                 Error.Conflict(code: "Contribution.CannotSubmit", description: "Out of submission date");
             public static Error CannotEdit =>

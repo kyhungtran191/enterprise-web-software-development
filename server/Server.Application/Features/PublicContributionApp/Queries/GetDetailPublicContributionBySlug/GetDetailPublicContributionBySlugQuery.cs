@@ -8,5 +8,6 @@ namespace Server.Application.Features.PublicContributionApp.Queries.GetDetailPub
     public class GetDetailPublicContributionBySlugQuery : IRequest<ErrorOr<IResponseWrapper<PublicContributionWithCommentDto>>>
     {
         public string Slug { get; set; }
+        public Guid UserId { get; set; }
     }
 }
