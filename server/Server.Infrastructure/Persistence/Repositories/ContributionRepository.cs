@@ -120,7 +120,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Files = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.File)
                     .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 RejectedReason = GetRejectReason(x.c).GetAwaiter().GetResult(),
-                ShortDescription = x.c.ShortDescription
+                ShortDescription = x.c.ShortDescription,
+                GuestAllowed = x.c.AllowedGuest
             }).ToList();
 
 

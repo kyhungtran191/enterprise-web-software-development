@@ -17,6 +17,7 @@ namespace Server.Application.Common.Dtos.Contributions
         public DateTime? PublicDate { get; set; }
         public string? ShortDescription { get; set; }
         public string? RejectedReason { get; set; }
+        public bool? GuestAllowed { get; set; }
 
     }
 }

@@ -21,6 +21,7 @@ using Server.Contracts.PublicContributions.Like;
 using Server.Contracts.PublicContributions.ReadLater;
 using Server.Domain.Common.Constants;
 using System.Security;
+using Server.Contracts.Contributions;
 
 namespace Server.Api.Controllers.ClientApi;
 
@@ -43,6 +44,17 @@ public class PublicContributionController : ClientApiController
 
     }
 
+    [HttpGet]
+    [Route("guest/paging")]
+    [Authorize(Permissions.Contributions.View)]
+    public async Task<IActionResult> GetGuestPublicContribution(
+        [FromQuery] GetGuestContributionRequest request)
+    {
+        var query = _mapper.Map<GetAllPublicContributionPagingQuery>(request);
+        query.FacultyName = User.GetFacultyName();
+        var result = await _mediatorSender.Send(query);
+        return result.Match(success => Ok(success), errors => Problem(errors));
+    }
     [HttpGet]
     [Route("latest")]
     [Authorize(Permissions.Contributions.View)]
