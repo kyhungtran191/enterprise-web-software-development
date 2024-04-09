@@ -76,17 +76,17 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                 {
                     return Errors.Contribution.NoFilesFound;
                 }
-                var removeFilePaths = new List<string>();
-                var removeFileTypes = new List<string>();
+                //var removeFilePaths = new List<string>();
+                //var removeFileTypes = new List<string>();
                 foreach (var existingFile in existingFiles)
                 {
                     _unitOfWork.FileRepository.Remove(existingFile);
-                    removeFilePaths.Add(existingFile.PublicId);
-                    removeFileTypes.Add(existingFile.Type);
+                    //removeFilePaths.Add(existingFile.PublicId);
+                    //removeFileTypes.Add(existingFile.Type);
 
                 }
 
-                await _mediaService.RemoveFromCloudinary(removeFilePaths,removeFileTypes);
+                //await _mediaService.RemoveFromCloudinary(removeFilePaths,removeFileTypes);
 
                 // create new files
                 var thumbnailList = new List<IFormFile>
