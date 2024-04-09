@@ -7,6 +7,7 @@ namespace Server.Contracts.Contributions
     {
         [FromQuery(Name = "year")] public string? Year { get; set; }
         [FromQuery(Name = "status")] public string? Status { get; set; }
-       
+        [FromQuery(Name = "guest_allowed")] public bool? GuestAllowed { get; set; }
+
     }
 }
