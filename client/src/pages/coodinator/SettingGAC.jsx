@@ -182,7 +182,8 @@ export default function SettingGAC() {
     getPaginationRowModel: getPaginationRowModel(),
     debugTable: true,
   })
-
+  // console.log(rowSelection)
+  // console.log(Object.keys(rowSelection).length)
   return (
     <AdminLayout links={MC_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
@@ -196,18 +197,21 @@ export default function SettingGAC() {
             }}
           />
         </div>
+        {Object.keys(rowSelection)?.length > 0 && <Button>Add selection</Button>}
       </div>
-      {!isLoading && <>
-        <CustomTable columns={columns} path={'/coodinator-manage/setting-guest'} queryConfig={queryConfig} pageCount={currentData?.pageCount} table={table}></CustomTable>
-        <pre>{JSON.stringify(table.getSelectedRowModel().rows)}</pre>
-      </>
+      {
+        !isLoading && <>
+          <CustomTable columns={columns} path={'/coodinator-manage/setting-guest'} queryConfig={queryConfig} pageCount={currentData?.pageCount} table={table}></CustomTable>
+        </>
 
       }
-      {isLoading && <div className="flex justify-center min-h-screen mt-10">
-        <Spinner></Spinner>
-      </div>}
+      {
+        isLoading && <div className="flex justify-center min-h-screen mt-10">
+          <Spinner></Spinner>
+        </div>
+      }
 
       {!isLoading && currentData?.results?.length < 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
-    </AdminLayout>
+    </AdminLayout >
   )
 }
