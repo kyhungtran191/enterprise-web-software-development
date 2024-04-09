@@ -4,12 +4,12 @@ import axios from "axios"
 
 export const Contributions = {
   getAllFaculties: async () => await axios.get(allFacultiesAPI),
-  getTopContributors: async () => await axios.get(topContributors),
-  getFeaturedContributions: async () => await axios.get(featuredContribution),
+  getTopContributors: async () => await instanceAxios.get(topContributors),
+  getFeaturedContributions: async () => await instanceAxios.get(featuredContribution),
   getAllAcademicYear: async () => await axios.get(allAcademicYear),
-  getLatestContribution: async () => await axios.get(latestContribution),
-  getDetailPublicContribution: async (slug) => await axios.get(`${publicContributionAPI}/${slug}`),
-  getAllPublicContribution: async (queryParams) => await axios.get(`${publicContributionAPI}/paging`, {
+  getLatestContribution: async () => await instanceAxios.get(latestContribution),
+  getDetailPublicContribution: async (slug) => await instanceAxios.get(`${publicContributionAPI}/${slug}`),
+  getAllPublicContribution: async (queryParams) => await instanceAxios.get(`${publicContributionAPI}/paging`, {
     params: queryParams
   }),
   getCurrentContribution: async (queryParams) =>

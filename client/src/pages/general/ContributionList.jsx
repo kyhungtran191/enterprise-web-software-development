@@ -23,6 +23,8 @@ import { useAcademicYear } from '@/query/useAcademicYear'
 import { Icon } from '@iconify/react'
 import Spinner from '@/components/Spinner'
 import PaginationCustom from '@/components/PaginationCustom'
+import { useAppContext } from '@/hooks/useAppContext'
+import { Roles } from '@/constant/roles'
 export default function ContributionList() {
   // State
   const [faculty, setFaculty] = useState("")
@@ -32,7 +34,7 @@ export default function ContributionList() {
   const { data: falcultiesData } = useFaculty()
   //
   const { data: academicData } = useAcademicYear()
-
+  const { profile } = useAppContext()
 
   const queryParams = useParamsVariables()
   const queryConfig = omitBy(
@@ -50,7 +52,15 @@ export default function ContributionList() {
   const { data, isLoading } = useQuery({
     queryKey: ['contributions', queryConfig], queryFn: (_) => Contributions.getAllPublicContribution(queryConfig),
     keepPreviousData: true, staleTime: 1000
+    // disabled: role == guest
   })
+
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ['contributions', { }], queryFn: (_) => Contributions.getAllPublicContribution(queryConfig),
+  //   keepPreviousData: true, staleTime: 1000
+  //   // disabled: role == guest
+  // })
+  
   const navigate = useNavigate()
   const inputRef = useRef(null)
 
