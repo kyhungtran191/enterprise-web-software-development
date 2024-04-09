@@ -163,6 +163,7 @@ public class MappingProfiles : Profile
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
         CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
+        CreateMap<GetGuestContributionRequest, GetAllPublicContributionPagingQuery>();
         CreateMap<LikeContributionRequest, LikeContributionCommand>();
         CreateMap<ViewContributionRequest, ViewContributionCommand>();
         CreateMap<ReadLaterRequest, CreateReadLaterCommand>();
