@@ -17,16 +17,19 @@ import { Icon } from '@iconify/react'
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useQueryClient } from "@tanstack/react-query"
 
 export default function Header() {
+  const queryClient = useQueryClient()
   const { isAuthenticated, profile, setProfile, setIsAuthenticated } = useAppContext()
   const ability = useContext(AbilityContext)
   let navigate = useNavigate()
   const handleLogout = () => {
     clearLS()
-    toast.success("Logout successfully!")
     setProfile({})
     setIsAuthenticated(false)
+    queryClient.clear()
+    toast.success("Logout successfully!")
     navigate('/login')
   }
 

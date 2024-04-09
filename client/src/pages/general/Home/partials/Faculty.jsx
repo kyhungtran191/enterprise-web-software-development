@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 
 export default function Faculty() {
   const { data, isLoading } = useFaculty()
+  if (!data) return <></>
   return (
     <section className="my-4">
       <h2 className='text-2xl font-bold'>Faculty</h2>
