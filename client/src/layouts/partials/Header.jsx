@@ -29,6 +29,7 @@ export default function Header() {
     setIsAuthenticated(false)
     navigate('/login')
   }
+
   return (
     <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black'>
       <nav className='container h-full flex justify-between items-center leading-[72px] relative'>
@@ -52,7 +53,6 @@ export default function Header() {
           <Can I={PERMISSIONS.View.Dashboard.index} a={PERMISSIONS.View.Dashboard.value}>
             <button>Add</button>
           </Can>
-
         </div>
         <div className='flex items-center gap-x-5'>
           <Switch />
@@ -60,7 +60,7 @@ export default function Header() {
             <PopoverTrigger asChild className='cursor-pointer'>
               <Avatar>
                 <AvatarImage
-                  src='https://variety.com/wp-content/uploads/2021/04/Avatar.jpg'
+                  src={`${profile?.avatar || "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`}
                   className='object-cover'
                 ></AvatarImage>
                 <AvatarFallback>CN</AvatarFallback>

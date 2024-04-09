@@ -18,6 +18,9 @@ import { Contributions } from '@/services/admin'
 import { format } from 'date-fns'
 import Spinner from './Spinner'
 import { isUndefined, omitBy } from 'lodash'
+
+import { useState } from 'react'
+
 export function ContributionTable() {
   const columns = [
     {
@@ -188,7 +191,7 @@ export function ContributionTable() {
           : 'Not published'
       }))
     : []
-
+  const [selectedRow, setSelectedRow] = useState({})
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
@@ -207,6 +210,7 @@ export function ContributionTable() {
             path={'/admin/contributions'}
             queryConfig={queryConfig}
             pageCount={data?.data?.responseData.pageCount || 1}
+            selectedRows={setSelectedRow}
           />
         </div>
       )}

@@ -24,6 +24,7 @@ export const allContributionAPI = `${URL}${clientAPI}/PublicContribution/paging`
 export const latestContribution = `${URL}${clientAPI}/PublicContribution/latest`
 export const featuredContribution = `${URL}${clientAPI}/PublicContribution/featured-contribution`
 export const publicContributionAPI = `${URL}${clientAPI}/PublicContribution`
+export const commentPublicAPI = `${URL}${clientAPI}/PublicContribution/comment`
 // Faculty
 export const allFacultiesAPI = `${URL}${clientAPI}/Faculties`
 // Academic Year
@@ -40,6 +41,7 @@ export const MCContributionsApprove = `${URL}/coordinator/Contributions/approve`
 export const MCContributionsReject = `${URL}/coordinator/Contributions/reject`
 export const MCPreviewContribution = `${URL}/coordinator/Contributions/preview-contribution`
 export const MCComment = `${URL}/coordinator/Contributions/comment`
+export const MCAllowGuest = `${URL}/coordinator/Contributions/allow-guest`
 // ADMIN
 // Academic Year
 export const getAllAcademicYearsPagingAPI = `${URL}${adminAPI}/AcademicYear/paging`

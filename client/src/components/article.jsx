@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/tooltip"
 import { Contributions } from '@/services/client'
 import { useLikedContribution } from '@/query/useLikedContribution'
+import { useLikeMutation } from '@/query/useLikeMutation'
+
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
   const navigate = useNavigate()
@@ -33,9 +35,7 @@ export default function Article({ isRevert = false, className, status, classImag
       navigate(`/preview/${article.slug}`)
     }
   }
-  const likeMutation = useMutation({
-    mutationFn: (id) => Contributions.likeContribution(id)
-  })
+  const likeMutation = useLikeMutation(article?.id)
   const handleApproveArticle = (e, id) => {
     const ids = []
     ids.push(id);
@@ -78,7 +78,6 @@ export default function Article({ isRevert = false, className, status, classImag
 
 
   const isFavorite = useLikedContribution(article?.id)
-  console.log(status)
   return (
     <div onClick={handleOnClickNavigate}>
       {isLoading && <ActionSpinner></ActionSpinner>}
