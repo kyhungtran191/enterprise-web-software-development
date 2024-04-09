@@ -97,6 +97,7 @@ namespace Server.Api.Controllers.CoordinatorApi
         public async Task<IActionResult> AllowGuest(AllowGuestRequest request)
         {
             var command = _mapper.Map<AllowGuestCommand>(request);
+            command.FacultyId = User.GetFacultyId();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
