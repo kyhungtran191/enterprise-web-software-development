@@ -36,7 +36,7 @@ public class UsersController : AdminApiController
 
     [HttpPut]
     [Authorize(Permissions.Users.Edit)]
-    public async Task<IActionResult> UpdateUser(UpdateUserRequest updateUserRequest)
+    public async Task<IActionResult> UpdateUser([FromForm] UpdateUserRequest updateUserRequest)
     {
         var command = _mapper.Map<UpdateUserCommand>(updateUserRequest);
 
