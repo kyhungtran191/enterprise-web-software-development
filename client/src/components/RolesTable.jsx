@@ -10,6 +10,9 @@ import useParamsVariables from '@/hooks/useParams'
 import { Roles } from '@/services/admin'
 import Spinner from './Spinner'
 import { isUndefined, omitBy } from 'lodash'
+
+import { useState } from 'react'
+
 export function RolesTable() {
   const queryClient = useQueryClient()
   const columns = [
@@ -75,7 +78,7 @@ export function RolesTable() {
   const queryConfig = omitBy(
     {
       pageindex: queryParams.pageindex || '1',
-      pagesize: queryParams.pagesize || '5'
+      pagesize: queryParams.pagesize || '10'
     },
     isUndefined
   )
@@ -86,6 +89,7 @@ export function RolesTable() {
     staleTime: 3 * 60 * 1000
   })
   const rolesData = data ? data?.data?.responseData.results : []
+  const [selectedRow, setSelectedRow] = useState({})
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
@@ -105,6 +109,7 @@ export function RolesTable() {
             path={'/admin/roles'}
             queryConfig={queryConfig}
             pageCount={data?.data?.responseData.pageCount || 1}
+            selectedRows={setSelectedRow}
           />
         </div>
       )}

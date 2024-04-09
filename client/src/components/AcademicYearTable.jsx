@@ -23,6 +23,8 @@ import { AcademicYearEditDialog } from './AcademicYearEditDialog'
 import { isUndefined, omitBy } from 'lodash'
 export function AcademicYearTable() {
   const [isOpenEditAcademicYear, setIsOpenEditAcademicYear] = useState(false)
+  const [selectedRow, setSelectedRow] = useState({})
+
   const [academicYear, setAcademicYear] = useState({})
   const queryClient = useQueryClient()
   const { mutate: activateAcademicYear } = useMutation({
@@ -231,6 +233,7 @@ export function AcademicYearTable() {
             path={'/admin/academic-years'}
             queryConfig={queryConfig}
             pageCount={data?.data?.responseData.pageCount || 1}
+            selectedRows={setSelectedRow}
           />
         </div>
       )}

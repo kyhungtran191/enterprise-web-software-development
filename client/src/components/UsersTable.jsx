@@ -20,11 +20,18 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Spinner from './Spinner'
 import { format } from 'date-fns'
 import { isUndefined, omitBy } from 'lodash'
+import { EditUserDialog } from './EditUserDialog'
+
 export function UsersTable() {
   const [isOpenViewUser, setIsOpenViewUser] = useState(false)
+  const [isOpenEditUser, setIsOpenEditUser] = useState(false)
   const [viewUser, setViewUser] = useState({})
   const handleViewUser = (user) => {
     setIsOpenViewUser(true)
+    setViewUser(user)
+  }
+  const handleEditUser = (user) => {
+    setIsOpenEditUser(true)
     setViewUser(user)
   }
   const columns = [
@@ -193,7 +200,7 @@ export function UsersTable() {
                   <User className='w-4 h-4 mr-2' />
                   <span>View User</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleEditUser(row.original)}>
                   <Pencil className='w-4 h-4 mr-2' />
                   <span>Edit user</span>
                 </DropdownMenuItem>
@@ -232,6 +239,9 @@ export function UsersTable() {
         }
       })
     : []
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedRow, setSelectedRow] = useState({})
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
@@ -251,6 +261,7 @@ export function UsersTable() {
             path={'/admin/users'}
             queryConfig={queryConfig}
             pageCount={data?.data?.responseData.pageCount || 1}
+            selectedRows={setSelectedRow}
           />
         </div>
       )}
@@ -259,6 +270,15 @@ export function UsersTable() {
         handleOpenChange={setIsOpenViewUser}
         user={viewUser}
       />
+      {Object.keys(viewUser).length > 0 && isOpenEditUser && (
+        <EditUserDialog
+          isOpen={isOpenEditUser}
+          handleOpenChange={setIsOpenEditUser}
+          data={viewUser}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+        />
+      )}
     </div>
   )
 }
