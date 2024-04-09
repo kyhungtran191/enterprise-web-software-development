@@ -23,12 +23,6 @@ import { AppContext } from './contexts/app.context'
 import PreviewContribution from './pages/general/PreviewContribution'
 import SettingGAC from './pages/coodinator/SettingGAC'
 import FavoriteContribution from './pages/client/manage/contribution/FavoriteContribution'
-import UpdateContribution from './pages/client/manage/contribution/UpdateContribution'
-import ManageContributions from './pages/coodinator/ManageContributions'
-import { AppContext } from './contexts/app.context'
-import PreviewContribution from './pages/general/PreviewContribution'
-import SettingGAC from './pages/coodinator/SettingGAC'
-import FavoriteContribution from './pages/client/manage/contribution/FavoriteContribution'
 import { FacultiesTable } from './components/FacultiesTable'
 function App() {
   // const routes = useRoutesElements()
@@ -54,7 +48,6 @@ function App() {
     return !isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
   }
   return (
-
     <>
       {loading && (
         <div className='fixed inset-0 z-50 flex flex-col items-center justify-center h-screen text-white bg-blue-800'>
@@ -67,7 +60,7 @@ function App() {
         </div>
       )}
       <Routes>
-        <Route path="" element={<RequireAuth></RequireAuth>}>
+        <Route path='' element={<RequireAuth></RequireAuth>}>
           <Route
             path='/'
             element={
@@ -142,10 +135,13 @@ function App() {
             path='/contributions/:id'
             element={<ContributionDetail></ContributionDetail>}
           ></Route>
-          <Route path="/preview/:slug" element={<PreviewContribution></PreviewContribution>}></Route>
+          <Route
+            path='/preview/:slug'
+            element={<PreviewContribution></PreviewContribution>}
+          ></Route>
           <Route path='/profile' element={<Profile></Profile>}></Route>
         </Route>
-        <Route path="" element={<RejectedRoute></RejectedRoute>}>
+        <Route path='' element={<RejectedRoute></RejectedRoute>}>
           <Route path='/login' element={<Login></Login>} index></Route>
           <Route
             path='/forgot-password'
