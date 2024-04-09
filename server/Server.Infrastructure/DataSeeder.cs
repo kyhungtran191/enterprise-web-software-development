@@ -540,11 +540,6 @@ public static class DataSeeder
                     new()
                     {
                         Selected = true,
-                        Value = "Permissions.Dashboard.View"
-                    },
-                    new()
-                    {
-                        Selected = true,
                         Value = "Permissions.Contributions.View"
                     },
                 };
