@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Server.Contracts.Identity.Users;
 
 public class UpdateUserRequest
@@ -9,6 +11,6 @@ public class UpdateUserRequest
     public Guid FacultyId { get; set; }
     public Guid RoleId { get; set; }    
     public DateTime? Dob { get; set; }
-    public string? Avatar { get; set; }
+    public IFormFile? Avatar { get; set; }
     public bool IsActive { get; set; }
 }
