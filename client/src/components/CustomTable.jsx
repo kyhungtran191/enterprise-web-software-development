@@ -1,11 +1,4 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  getPaginationRowModel
-
-} from '@tanstack/react-table'
+import { flexRender, getSortedRowModel } from '@tanstack/react-table'
 
 import {
   Table,
@@ -15,22 +8,48 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { useState } from 'react'
+import {
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable
+} from '@tanstack/react-table'
 import PaginationCustom from './PaginationCustom'
-export function CustomTable({ columns, path, queryConfig, pageCount, table }) {
+import { useEffect, useState } from 'react'
+export function CustomTable({
+  columns,
+  data,
+  path,
+  queryConfig,
+  pageCount,
+  selectedRows
+}) {
+  const [rowSelection, setRowSelection] = useState({})
   const [sorting, setSorting] = useState([])
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   onSortingChange: setSorting,
-  //   getSortedRowModel: getSortedRowModel(),
-  //   state: {
-  //     sorting
-  //   },
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel()
-  // })
+  const table = useReactTable({
+    data,
+    columns,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+      rowSelection
+    },
+    onSortingChange: setSorting,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
+  })
+  useEffect(() => {
+    if (selectedRows) {
+      const selected = table
+        .getSelectedRowModel()
+        .rows.map(({ original }) => original)
 
+      selectedRows(selected)
+    }
+  }, [selectedRows, rowSelection, table])
   return (
     <div>
       <div className='border rounded-md'>
@@ -44,9 +63,9 @@ export function CustomTable({ columns, path, queryConfig, pageCount, table }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}

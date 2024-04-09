@@ -19,7 +19,7 @@ import useParamsVariables from '@/hooks/useParams'
 import { isUndefined, omitBy, omit, debounce } from 'lodash'
 import { Icon } from '@iconify/react'
 import PaginationCustom from '@/components/PaginationCustom'
-import { Checkbox } from "@/components/ui/checkbox"
+import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown } from 'lucide-react'
 
 import Spinner from '@/components/Spinner'
@@ -28,21 +28,18 @@ import { Contributions } from '@/services/coodinator'
 import { CustomTable } from '@/components/CustomTable'
 import { formatDate } from '@/utils/helper'
 
-
-
 import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  useReactTable,
+  useReactTable
 } from '@tanstack/react-table'
-
 
 export default function SettingGAC() {
   const [position, setPosition] = React.useState('')
   const navigate = useNavigate()
   const queryParams = useParamsVariables()
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState('')
   const columns = [
     {
       id: 'select',
@@ -122,7 +119,7 @@ export default function SettingGAC() {
           </Button>
         )
       }
-    },
+    }
   ]
   const [rowSelection, setRowSelection] = React.useState({})
 
@@ -134,7 +131,7 @@ export default function SettingGAC() {
       keyword: queryParams.keyword,
       name: queryParams.name,
       year: queryParams.year,
-      pagesize: queryParams.pagesize || '4',
+      pagesize: queryParams.pagesize || '4'
     },
     isUndefined
   )
@@ -143,71 +140,83 @@ export default function SettingGAC() {
     queryFn: (_) => Contributions.MCContribution(queryConfig)
   })
 
-
   useEffect(() => {
     if (queryParams['status']) {
       setPosition(queryParams['status'])
     }
-  }, [queryParams]);
+  }, [queryParams])
 
   const handleInputChange = debounce((value) => {
     if (!value) {
       return navigate({
-        pathname: "/coodinator-manage/setting-guest",
-        search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
-      });
+        pathname: '/coodinator-manage/setting-guest',
+        search: createSearchParams(
+          omit({ ...queryConfig }, ['keyword'])
+        ).toString()
+      })
     }
 
     navigate({
-      pathname: "/coodinator-manage/setting-guest",
-      search: createSearchParams(omitBy({
-        ...queryConfig,
-        keyword: value
-      }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
-    });
-  }, 300);
+      pathname: '/coodinator-manage/setting-guest',
+      search: createSearchParams(
+        omitBy(
+          {
+            ...queryConfig,
+            keyword: value
+          },
+          (value, key) =>
+            key === 'pageindex' || key === 'pagesize' || isUndefined(value)
+        )
+      ).toString()
+    })
+  }, 300)
 
-  const currentData = data && data?.data?.responseData;
-  const table = useReactTable({
-    data: currentData?.results,
-    columns,
-    state: {
-      rowSelection,
-    },
-    enableRowSelection: true, //enable row selection for all rows
-    // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
-    onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    debugTable: true,
-  })
-
+  const currentData = data && data?.data?.responseData
+  const [selectedRow, setSelectedRow] = useState({})
   return (
     <AdminLayout links={MC_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
-        <div className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}>
-          <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
-          <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
-            defaultValue={queryParams["keyword"]}
+        <div
+          className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}
+        >
+          <Icon
+            icon='ic:outline-search'
+            className='flex-shrink-0 w-6 h-6 text-slate-700'
+          ></Icon>
+          <input
+            type='text'
+            className='flex-1 border-none outline-none'
+            placeholder="What you're looking for ?"
+            defaultValue={queryParams['keyword']}
             onChange={(e) => {
               setInputValue(e.target.value)
-              handleInputChange(e.target.value);
+              handleInputChange(e.target.value)
             }}
           />
         </div>
       </div>
-      {!isLoading && <>
-        <CustomTable columns={columns} path={'/coodinator-manage/setting-guest'} queryConfig={queryConfig} pageCount={currentData?.pageCount} table={table}></CustomTable>
-        <pre>{JSON.stringify(table.getSelectedRowModel().rows)}</pre>
-      </>
+      {!isLoading && (
+        <>
+          <CustomTable
+            columns={columns}
+            data={currentData?.results}
+            path={'/coodinator-manage/setting-guest'}
+            queryConfig={queryConfig}
+            pageCount={currentData?.pageCount}
+            selectedRows={setSelectedRow}
+          ></CustomTable>
+          <pre>{JSON.stringify(selectedRow)}</pre>
+        </>
+      )}
+      {isLoading && (
+        <div className='flex justify-center min-h-screen mt-10'>
+          <Spinner></Spinner>
+        </div>
+      )}
 
-      }
-      {isLoading && <div className="flex justify-center min-h-screen mt-10">
-        <Spinner></Spinner>
-      </div>}
-
-      {!isLoading && currentData?.results?.length < 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
+      {!isLoading && currentData?.results?.length < 0 && (
+        <div className='my-10 text-3xl font-semibold text-center '>No Data</div>
+      )}
     </AdminLayout>
   )
 }
