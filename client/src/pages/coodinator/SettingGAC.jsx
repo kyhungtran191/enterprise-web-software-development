@@ -14,11 +14,10 @@ import {
 
 import Article from '@/components/article'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import { isUndefined, omitBy, omit, debounce } from 'lodash'
 import { Icon } from '@iconify/react'
-import PaginationCustom from '@/components/PaginationCustom'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ArrowUpDown } from 'lucide-react'
 
@@ -28,12 +27,8 @@ import { Contributions } from '@/services/coodinator'
 import { CustomTable } from '@/components/CustomTable'
 import { formatDate } from '@/utils/helper'
 
-import {
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable
-} from '@tanstack/react-table'
+import Swal from 'sweetalert2'
+import { toast } from 'react-toastify'
 
 export default function SettingGAC() {
   const [position, setPosition] = React.useState('')
@@ -93,7 +88,7 @@ export default function SettingGAC() {
       }
     },
     {
-      accessorKey: `${formatDate('publicDate')}`,
+      accessorKey: `publicDate`,
       header: ({ column }) => {
         return (
           <Button
@@ -121,8 +116,6 @@ export default function SettingGAC() {
       }
     }
   ]
-  const [rowSelection, setRowSelection] = React.useState({})
-
   const queryConfig = omitBy(
     {
       pageindex: queryParams.pageindex || '1',
@@ -139,12 +132,6 @@ export default function SettingGAC() {
     queryKey: ['mc-contributions', queryConfig],
     queryFn: (_) => Contributions.MCContribution(queryConfig)
   })
-
-  useEffect(() => {
-    if (queryParams['status']) {
-      setPosition(queryParams['status'])
-    }
-  }, [queryParams])
 
   const handleInputChange = debounce((value) => {
     if (!value) {
@@ -170,9 +157,38 @@ export default function SettingGAC() {
       ).toString()
     })
   }, 300)
-
-  const currentData = data && data?.data?.responseData
+  const { mutate } = useMutation({
+    mutationFn: (body) => Contributions.MCAllowGuest(body)
+  })
+  let currentData = data && data?.data?.responseData
+  let results = currentData?.results?.map((item) => ({ ...item, publicDate: formatDate(item.publicDate) }))
   const [selectedRow, setSelectedRow] = useState({})
+  const handleApproveArticle = () => {
+    let ids = []
+    selectedRow && selectedRow?.length > 0 && selectedRow.forEach((item) => {
+      ids.push(item.id)
+    });
+
+    Swal.fire({
+      title: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Approve it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutate({ ids }, {
+          onSuccess() {
+            toast.success("Update Contribution for Guest Successfully!")
+          },
+          onError(err) {
+            console.log(err)
+          }
+        })
+      }
+    });
+  }
   return (
     <AdminLayout links={MC_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
@@ -194,18 +210,18 @@ export default function SettingGAC() {
             }}
           />
         </div>
+        {selectedRow?.length > 0 && <Button onClick={handleApproveArticle}>Add selection</Button>}
       </div>
       {!isLoading && (
         <>
           <CustomTable
             columns={columns}
-            data={currentData?.results}
+            data={results}
             path={'/coodinator-manage/setting-guest'}
             queryConfig={queryConfig}
             pageCount={currentData?.pageCount}
             selectedRows={setSelectedRow}
           ></CustomTable>
-          <pre>{JSON.stringify(selectedRow)}</pre>
         </>
       )}
       {isLoading && (
@@ -214,7 +230,7 @@ export default function SettingGAC() {
         </div>
       )}
 
-      {!isLoading && currentData?.results?.length < 0 && (
+      {!isLoading && results?.length < 0 && (
         <div className='my-10 text-3xl font-semibold text-center '>No Data</div>
       )}
     </AdminLayout>
