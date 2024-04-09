@@ -189,6 +189,13 @@ export function AcademicYearTable() {
     }
   ]
   const queryParams = useParamsVariables()
+  const queryConfig = omitBy(
+    {
+      pageindex: queryParams.pageindex || '1',
+      pagesize: queryParams.pagesize || '10'
+    },
+    isUndefined
+  )
   const { data, isLoading } = useQuery({
     queryKey: ['adminAcademicYears', queryParams],
     queryFn: (_) => AcademicYears.getAllAcademicYears(queryParams),

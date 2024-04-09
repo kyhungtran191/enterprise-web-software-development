@@ -19,6 +19,10 @@ import { Users } from '@/services/admin'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Spinner from './Spinner'
 import { format } from 'date-fns'
+import { isUndefined, omitBy } from 'lodash'
+import { EditUserDialog } from './EditUserDialog'
+// import { EditUserDialog } from './EditUserDialog'
+
 export function UsersTable() {
   const [isOpenViewUser, setIsOpenViewUser] = useState(false)
   const [viewUser, setViewUser] = useState({})
@@ -133,7 +137,7 @@ export function UsersTable() {
             Date of Birth
             <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
-        )
+      )
       }
     },
     {
@@ -227,7 +231,7 @@ export function UsersTable() {
     staleTime: 3 * 60 * 1000
   })
   const users = data
-    ? data?.data?.responseData.results.map((user) => {
+    ? data?.data?.responseData?.results?.map((user) => {
         return {
           ...user,
           dob: format(new Date(user.dob), 'MM-dd-yyyy'),
@@ -257,6 +261,15 @@ export function UsersTable() {
         handleOpenChange={setIsOpenViewUser}
         user={viewUser}
       />
+      {Object.keys(viewUser).length > 0 && isOpenEditUser && (
+        <EditUserDialog
+          isOpen={isOpenEditUser}
+          handleOpenChange={setIsOpenEditUser}
+          data={viewUser}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+        />
+      )}
     </div>
   )
 }

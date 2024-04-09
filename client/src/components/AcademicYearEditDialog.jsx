@@ -40,6 +40,7 @@ import { useEffect } from 'react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { AcademicYears } from '@/services/admin'
 import { toast } from 'react-toastify'
+import DatePickerCustom from './DatePickerCustom'
 export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
   const [academicYears, setAcademicYears] = useState([])
   const [academicYear, setAcademicYear] = useState(data.name)
@@ -122,7 +123,6 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
       finalClosureDate: finalClosureDate
     }
   })
-  console.log('form', form.formState.errors)
   function onSubmit(academicYearData) {
     academicYearData.id = data.id
     if (!Object.keys(form.formState.errors).length > 0) {
@@ -133,7 +133,7 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
           setStartClosureDate(null)
           setEndClosureDate(null)
           setFinalClosureDate(null)
-          toast.success('Academic year created successfully!')
+          toast.success('Academic year edited successfully!')
         },
         onError: (error) => {
           const errorMessage = error?.response?.data?.title
@@ -144,6 +144,8 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
       toast.error('Please fill in all required fields correctly.')
     }
   }
+  console.log(academicYears)
+  console.log('data', data)
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className='sm:max-w-md'>
@@ -212,8 +214,9 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className='w-auto p-0' align='start'>
-                        <Calendar
+                        <DatePickerCustom
                           mode='single'
+                          captionLayout='dropdown-buttons'
                           selected={field.value}
                           onSelect={(date) => {
                             field.onChange(date)
@@ -221,6 +224,8 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
                           }}
                           disabled={(date) => date < new Date('2000-01-01')}
                           initialFocus
+                          fromYear={new Date().getFullYear()}
+                          toYear={new Date().getFullYear() + 10}
                         />
                       </PopoverContent>
                     </Popover>
@@ -254,15 +259,18 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className='w-auto p-0' align='start'>
-                        <Calendar
+                        <DatePickerCustom
                           mode='single'
+                          captionLayout='dropdown-buttons'
                           selected={field.value}
                           onSelect={(date) => {
                             field.onChange(date)
-                            setEndClosureDate(date)
+                            setStartClosureDate(date)
                           }}
                           disabled={(date) => date < new Date('2000-01-01')}
                           initialFocus
+                          fromYear={new Date().getFullYear()}
+                          toYear={new Date().getFullYear() + 10}
                         />
                       </PopoverContent>
                     </Popover>
@@ -296,15 +304,18 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className='w-auto p-0' align='start'>
-                        <Calendar
+                        <DatePickerCustom
                           mode='single'
+                          captionLayout='dropdown-buttons'
                           selected={field.value}
                           onSelect={(date) => {
                             field.onChange(date)
-                            setFinalClosureDate(date)
+                            setStartClosureDate(date)
                           }}
                           disabled={(date) => date < new Date('2000-01-01')}
                           initialFocus
+                          fromYear={new Date().getFullYear()}
+                          toYear={new Date().getFullYear() + 10}
                         />
                       </PopoverContent>
                     </Popover>
