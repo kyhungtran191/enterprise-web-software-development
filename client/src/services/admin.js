@@ -67,7 +67,9 @@ export const Users = {
       headers: { 'Content-Type': 'multipart/form-data' }
     }),
   updateUserById: async (data) =>
-    await instanceAxios.put(`${updateUserAPI}`, data)
+    await instanceAxios.put(`${updateUserAPI}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
 }
 
 export const Faculties = {

@@ -47,7 +47,8 @@ export function EditUserDialog({
   handleOpenChange,
   data,
   isSubmitting,
-  setIsSubmitting
+  setIsSubmitting,
+  closeDialog
 }) {
   const [userType, setUserType] = useState('')
   const queryClient = useQueryClient()
@@ -148,7 +149,7 @@ export function EditUserDialog({
           setIsSubmitting(false)
           toast.success('User created successfully!')
           form.reset()
-          // closeDialog()
+          closeDialog()
         },
         onError: (error) => {
           const errorMessage = error?.response?.data?.title

@@ -243,6 +243,7 @@ export function UsersTable() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [selectedRow, setSelectedRow] = useState({})
+  const closeDialog = () => setIsOpenEditUser(false)
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
@@ -278,6 +279,7 @@ export function UsersTable() {
           data={viewUser}
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}
+          closeDialog={closeDialog}
         />
       )}
     </div>
