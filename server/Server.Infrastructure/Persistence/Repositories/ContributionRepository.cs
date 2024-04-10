@@ -191,7 +191,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                     .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
-                ShortDescription = contributionDetail.c.ShortDescription
+                ShortDescription = contributionDetail.c.ShortDescription,
+                Content = contributionDetail.c.Content
             };
 
 
