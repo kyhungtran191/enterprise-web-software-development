@@ -210,7 +210,7 @@ export default function SettingGAC() {
       }
     });
   }
-  console.log(tableData, selectedRow);
+  console.log(tableData);
   return (
     <AdminLayout links={MC_OPTIONS}>
 
@@ -221,7 +221,7 @@ export default function SettingGAC() {
             data={tableData}
             path={'/coodinator-manage/setting-guest'}
             // queryConfig={queryConfig}
-            // pageCount={currentData?.pageCount}
+            // pageCount={data.data?.responseData?.pageCount}
             selectedRows={setSelectedRow}
           ></CustomTable>
         </>
