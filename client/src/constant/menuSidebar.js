@@ -5,12 +5,12 @@ import {
   Settings,
   CalendarDays,
   Heart,
+  GraduationCap,
   User,
   MoreHorizontal,
   ArrowUpDown,
   Clock
 } from 'lucide-react'
-
 
 export const ADMIN_OPTIONS = [
   {
@@ -39,9 +39,9 @@ export const ADMIN_OPTIONS = [
     href: '/admin/roles'
   },
   {
-    title: 'Settings',
-    icon: Settings,
-    href: '/admin/settings'
+    title: 'Faculties',
+    icon: GraduationCap,
+    href: '/admin/faculties'
   }
 ]
 export const STUDENT_OPTIONS = [
@@ -87,5 +87,5 @@ export const MC_OPTIONS = [
     title: 'Settings GAC',
     icon: Clock,
     href: '/coodinator-manage/setting-guest'
-  },
+  }
 ]

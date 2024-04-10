@@ -4,5 +4,5 @@ export const routesMapping = {
   contributions: 'Contributions',
   users: 'Users',
   roles: 'Roles & Permissions',
-  settings: 'Settings'
+  faculties: 'Faculties'
 }

@@ -32,7 +32,7 @@ export function AuthorizeDialog({ role }) {
     onSuccess: () => {
       queryClient.invalidateQueries(['adminPermissions', role])
     },
-    onError: () => {}
+    onError: () => { }
   })
   useEffect(() => {
     if (isDialogOpen && data?.data?.responseData?.roleClaims) {
@@ -49,6 +49,7 @@ export function AuthorizeDialog({ role }) {
       )
     )
   }
+
   const handleUpdatePermissions = () => {
     const updatedPermissions = permissions.map((permission) => ({
       type: permission.type,

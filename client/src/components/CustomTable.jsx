@@ -63,9 +63,9 @@ export function CustomTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
@@ -73,8 +73,8 @@ export function CustomTable({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel()?.rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+            {table?.getRowModel()?.rows?.length ? (
+              table?.getRowModel()?.rows?.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}

@@ -23,6 +23,7 @@ import { AppContext } from './contexts/app.context'
 import PreviewContribution from './pages/general/PreviewContribution'
 import SettingGAC from './pages/coodinator/SettingGAC'
 import FavoriteContribution from './pages/client/manage/contribution/FavoriteContribution'
+import { FacultiesTable } from './components/FacultiesTable'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -47,7 +48,6 @@ function App() {
     return !isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
   }
   return (
-
     <>
       {loading && (
         <div className='fixed inset-0 z-50 flex flex-col items-center justify-center h-screen text-white bg-blue-800'>
@@ -60,7 +60,7 @@ function App() {
         </div>
       )}
       <Routes>
-        <Route path="" element={<RequireAuth></RequireAuth>}>
+        <Route path='' element={<RequireAuth></RequireAuth>}>
           <Route
             path='/'
             element={
@@ -135,10 +135,113 @@ function App() {
             path='/contributions/:id'
             element={<ContributionDetail></ContributionDetail>}
           ></Route>
-          <Route path="/preview/:slug" element={<PreviewContribution></PreviewContribution>}></Route>
+          <Route
+            path='/preview/:slug'
+            element={<PreviewContribution></PreviewContribution>}
+          ></Route>
           <Route path='/profile' element={<Profile></Profile>}></Route>
         </Route>
-        <Route path="" element={<RejectedRoute></RejectedRoute>}>
+        <Route path='' element={<RejectedRoute></RejectedRoute>}>
+          <Route path='/login' element={<Login></Login>} index></Route>
+          <Route
+            path='/forgot-password'
+            element={<ForgotPassword></ForgotPassword>}
+          ></Route>
+          <Route
+            path='/reset-password/:token'
+            element={<ResetPassword></ResetPassword>}
+          ></Route>
+        </Route>
+        <Route path='' element={<RequireAuth></RequireAuth>}>
+          <Route
+            path='/'
+            element={
+              <GeneralLayout>
+                <Home></Home>
+              </GeneralLayout>
+            }
+          ></Route>
+          <Route
+            path='/admin/roles'
+            element={
+              <AdminLayout>
+                <RolesTable />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path='/admin/users'
+            element={
+              <AdminLayout>
+                <UsersTable />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path='/admin/academic-years'
+            element={
+              <AdminLayout>
+                <AcademicYearTable />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path='/admin/contributions'
+            element={
+              <AdminLayout>
+                <ContributionTable />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path='/admin/faculties'
+            element={
+              <AdminLayout>
+                <FacultiesTable />
+              </AdminLayout>
+            }
+          />
+
+          <Route
+            path='/student-manage/recent'
+            element={<StudentContribution></StudentContribution>}
+          ></Route>
+          <Route
+            path='/student-manage/add-contribution'
+            element={<AddContribution></AddContribution>}
+          ></Route>
+          <Route
+            path='/student-manage/edit-contribution/:slug'
+            element={<UpdateContribution></UpdateContribution>}
+          ></Route>
+          <Route
+            path='/student-manage/favorites'
+            element={<FavoriteContribution></FavoriteContribution>}
+          ></Route>
+          <Route
+            path='/coodinator-manage/contributions'
+            element={<ManageContributions></ManageContributions>}
+          ></Route>
+          <Route
+            path='/coodinator-manage/setting-guest'
+            element={<SettingGAC></SettingGAC>}
+          ></Route>
+
+          <Route
+            path='/contributions'
+            element={<ContributionList></ContributionList>}
+          ></Route>
+          <Route
+            path='/contributions/:id'
+            element={<ContributionDetail></ContributionDetail>}
+          ></Route>
+          <Route
+            path='/preview/:slug'
+            element={<PreviewContribution></PreviewContribution>}
+          ></Route>
+          <Route path='/profile' element={<Profile></Profile>}></Route>
+        </Route>
+        <Route path='' element={<RejectedRoute></RejectedRoute>}>
           <Route path='/login' element={<Login></Login>} index></Route>
           <Route
             path='/forgot-password'

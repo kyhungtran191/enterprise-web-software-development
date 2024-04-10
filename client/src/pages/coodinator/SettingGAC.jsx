@@ -35,6 +35,13 @@ export default function SettingGAC() {
   const navigate = useNavigate()
   const queryParams = useParamsVariables()
   const [inputValue, setInputValue] = useState('')
+  const [tableData, setTableData] = useState([])
+  const handleChangeCheckbox = (data) => {
+    setTableData((prev) => prev.map((item) => item.id == data.id ? { ...item, guestAllowed: !item.guestAllowed } : item))
+  }
+  const handleSelectAll = (value) => {
+    setTableData((prev) => prev.map((item) => ({ ...item, guestAllowed: value })))
+  }
   const columns = [
     {
       id: 'select',
@@ -44,15 +51,22 @@ export default function SettingGAC() {
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value)
+            handleSelectAll(!!value)
+          }}
           aria-label='Select all'
           className='mx-4'
         />
       ),
       cell: ({ row }) => (
         <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          checked={row.original.guestAllowed}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value)
+            handleChangeCheckbox(row.original)
+          }
+          }
           aria-label='Select row'
         />
       ),
@@ -73,6 +87,7 @@ export default function SettingGAC() {
         )
       }
     },
+
     {
       accessorKey: 'shortDescription',
       header: ({ column }) => {
@@ -161,11 +176,14 @@ export default function SettingGAC() {
     mutationFn: (body) => Contributions.MCAllowGuest(body)
   })
   let currentData = data && data?.data?.responseData
-  let results = currentData?.results?.map((item) => ({ ...item, publicDate: formatDate(item.publicDate) }))
+  // let results = currentData?.results?.map((item) => ({ ...item, publicDate: formatDate(item.publicDate) }))
+  useEffect(() => {
+    setTableData(data && data?.data?.responseData?.results?.map((item) => ({ ...item, publicDate: formatDate(item.publicDate) })) || []);
+  }, [data])
   const [selectedRow, setSelectedRow] = useState({})
   const handleApproveArticle = () => {
     let ids = []
-    selectedRow && selectedRow?.length > 0 && selectedRow.forEach((item) => {
+    selectedRow && selectedRow?.length > 0 && selectedRow?.forEach((item) => {
       ids.push(item.id)
     });
 
@@ -189,6 +207,7 @@ export default function SettingGAC() {
       }
     });
   }
+
   return (
     <AdminLayout links={MC_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
@@ -216,7 +235,7 @@ export default function SettingGAC() {
         <>
           <CustomTable
             columns={columns}
-            data={results}
+            data={tableData}
             path={'/coodinator-manage/setting-guest'}
             queryConfig={queryConfig}
             pageCount={currentData?.pageCount}
@@ -230,7 +249,7 @@ export default function SettingGAC() {
         </div>
       )}
 
-      {!isLoading && results?.length < 0 && (
+      {!isLoading && tableData?.length < 0 && (
         <div className='my-10 text-3xl font-semibold text-center '>No Data</div>
       )}
     </AdminLayout>

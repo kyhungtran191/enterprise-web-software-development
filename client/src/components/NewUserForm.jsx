@@ -34,6 +34,7 @@ import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { Faculties, Roles, Users } from '@/services/admin'
 import { toast } from 'react-toastify'
 import useParamsVariables from '@/hooks/useParams'
+import DatePickerCustom from './DatePickerCustom'
 
 export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
   const [userType, setUserType] = useState('')
@@ -71,7 +72,6 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
     username: z.string().min(2, {
       message: 'Username must be at least 6 characters.'
     }),
-    gender: z.enum(['male', 'female'], { message: 'Gender must be chosen' }),
     email: z.string().email(),
     dob: z.date({
       message: 'A date of birth is required.'
@@ -98,9 +98,7 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
       lastName: '',
       phoneNumber: '',
       username: '',
-      // password: '',
       role: '',
-      gender: '',
       email: '',
       dob: '',
       faculty: ''
@@ -139,6 +137,7 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
         onError: (error) => {
           const errorMessage = error?.response?.data?.title
           toast.error(errorMessage)
+          setIsSubmitting(false)
         }
       })
     } catch (error) {
@@ -233,36 +232,6 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
         />
         <FormField
           control={form.control}
-          name='gender'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Gender</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className='flex flex-col space-y-1'
-                >
-                  <FormItem className='flex items-center space-x-3 space-y-0'>
-                    <FormControl>
-                      <RadioGroupItem value='male' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>Male</FormLabel>
-                  </FormItem>
-                  <FormItem className='flex items-center space-x-3 space-y-0'>
-                    <FormControl>
-                      <RadioGroupItem value='female' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>Female</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name='dob'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
@@ -287,14 +256,17 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className='w-auto p-0' align='start'>
-                  <Calendar
+                  <DatePickerCustom
                     mode='single'
+                    captionLayout='dropdown-buttons'
                     selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
+                    onSelect={(date) => {
+                      field.onChange(date)
+                    }}
+                    disabled={(date) => date < new Date('2000-01-01')}
                     initialFocus
+                    fromYear={1960}
+                    toYear={new Date().getFullYear()}
                   />
                 </PopoverContent>
               </Popover>

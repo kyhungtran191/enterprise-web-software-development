@@ -195,7 +195,7 @@ export function AcademicYearTable() {
   const queryConfig = omitBy(
     {
       pageindex: queryParams.pageindex || '1',
-      pagesize: queryParams.pagesize || '5'
+      pagesize: queryParams.pagesize || '10'
     },
     isUndefined
   )
