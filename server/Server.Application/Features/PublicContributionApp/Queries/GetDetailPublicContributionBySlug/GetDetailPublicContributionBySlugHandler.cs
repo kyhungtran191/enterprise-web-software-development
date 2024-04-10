@@ -47,11 +47,13 @@ namespace Server.Application.Features.PublicContributionApp.Queries.GetDetailPub
             }
           
             
-            itemFromDb.View += 1;
+            var entityFromDb = await _unitOfWork.PublicContributionRepository.GetByIdAsync(itemFromDb.Id);
+            entityFromDb.Views += 1;
+            itemFromDb.View = entityFromDb.Views;
+            await _unitOfWork.CompleteAsync();
             var comments = await _unitOfWork.PublicCommentRepository.GetCommentByContribution(itemFromDb.Id);
             var result = _mapper.Map<PublicContributionWithCommentDto>(itemFromDb);
             result.Comments = comments;
-            await _unitOfWork.CompleteAsync();
             return new ResponseWrapper<PublicContributionWithCommentDto>
             {
                 IsSuccessfull = true,
