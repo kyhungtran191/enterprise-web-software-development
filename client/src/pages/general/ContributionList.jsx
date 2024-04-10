@@ -60,7 +60,7 @@ export default function ContributionList() {
   //   keepPreviousData: true, staleTime: 1000
   //   // disabled: role == guest
   // })
-  
+
   const navigate = useNavigate()
   const inputRef = useRef(null)
 
@@ -104,7 +104,6 @@ export default function ContributionList() {
           search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
         });
       }
-
       navigate({
         pathname: "/contributions",
         search: createSearchParams(omitBy({

@@ -85,7 +85,7 @@ export default function Article({ isRevert = false, className, status, classImag
         <img src={`${article?.thumbnails?.length > 0 ? article?.thumbnails[0].path : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`} alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : `w-full h-[300px] ${classImageCustom}`}  object-cover rounded-md `} />
 
         <div className="w-full p-2 md:flex-1">
-          {status !== "REJECTED" && status !== "PENDING" && <div className="flex flex-wrap items-center justify-end gap-2">
+          {status !== "REJECTED" && status !== "PENDING" && profile?.roles !== Roles.Guest && <div className="flex flex-wrap items-center justify-end gap-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>

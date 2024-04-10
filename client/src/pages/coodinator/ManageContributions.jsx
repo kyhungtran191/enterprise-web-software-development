@@ -2,7 +2,7 @@ import Search from '@/components/Search'
 import { Button } from '@/components/ui/button'
 import AdminLayout from '@/layouts/AdminLayout'
 import { ArrowDown10Icon, Plus } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -159,24 +159,28 @@ export default function ManageContribution() {
     if (queryParams['status']) {
       setPosition(queryParams['status'])
     }
+    inputRef.current.focus()
   }, [queryParams]);
 
-  const handleInputChange = debounce((value) => {
-    if (!value) {
-      return navigate({
+  const inputRef = useRef(null)
+  const handleInputChange = useCallback(
+    debounce((value) => {
+      if (!value) {
+        return navigate({
+          pathname: "/coodinator-manage/contributions",
+          search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
+        });
+      }
+      navigate({
         pathname: "/coodinator-manage/contributions",
-        search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
+        search: createSearchParams(omitBy({
+          ...queryConfig,
+          keyword: value
+        }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
       });
-    }
-
-    navigate({
-      pathname: "/coodinator-manage/contributions",
-      search: createSearchParams(omitBy({
-        ...queryConfig,
-        keyword: value
-      }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
-    });
-  }, 300);
+    }, 300),
+    [navigate]
+  );
 
   const currentData = data && data?.data?.responseData;
   console.log(currentData);
@@ -186,6 +190,7 @@ export default function ManageContribution() {
         <div className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}>
           <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
           <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
+            ref={inputRef}
             defaultValue={queryParams["keyword"]}
             onChange={(e) => {
               setInputValue(e.target.value)
