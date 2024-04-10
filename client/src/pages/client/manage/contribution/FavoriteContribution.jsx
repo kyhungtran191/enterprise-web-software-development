@@ -53,59 +53,57 @@ export default function FavoriteContribution() {
     keepPreviousData: true, staleTime: 1000
   })
   const navigate = useNavigate()
-  const inputRef = useRef(null)
 
-  useEffect(() => {
-    if (queryParams["facultyname"]) {
-      setFaculty(queryParams["facultyname"])
-    }
-    if (queryParams["year"]) {
-      setAcademic(queryParams["year"])
-    }
-    inputRef?.current.focus()
-  }, [queryParams])
+  // useEffect(() => {
+  //   if (queryParams["facultyname"]) {
+  //     setFaculty(queryParams["facultyname"])
+  //   }
+  //   if (queryParams["year"]) {
+  //     setAcademic(queryParams["year"])
+  //   }
+  // }, [queryParams])
 
 
-  const handleQueryByFaculty = (value) => {
-    navigate({
-      pathname: "/student-manage/favorites",
-      search: createSearchParams(omitBy({
-        ...queryConfig,
-        facultyname: value
-      }, isUndefined)).toString()
-    })
-  }
+  // const handleQueryByFaculty = (value) => {
+  //   navigate({
+  //     pathname: "/student-manage/favorites",
+  //     search: createSearchParams(omitBy({
+  //       ...queryConfig,
+  //       facultyname: value
+  //     }, isUndefined)).toString()
+  //   })
+  // }
 
 
-  const handleQueryByAcademic = (value) => {
-    navigate({
-      pathname: "/student-manage/favorites",
-      search: createSearchParams(omitBy({
-        ...queryConfig,
-        year: value
-      }, isUndefined)).toString()
-    })
-  }
+  // const handleQueryByAcademic = (value) => {
+  //   navigate({
+  //     pathname: "/student-manage/favorites",
+  //     search: createSearchParams(omitBy({
+  //       ...queryConfig,
+  //       year: value
+  //     }, isUndefined)).toString()
+  //   })
+  // }
 
-  const handleInputChange = useCallback(
-    debounce((value) => {
-      if (!value) {
-        return navigate({
-          pathname: "/student-manage/favorites",
-          search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
-        });
-      }
+  // const handleInputChange = useCallback(
+  //   debounce((value) => {
+  //     if (!value) {
+  //       return navigate({
+  //         pathname: "/student-manage/favorites",
+  //         search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
+  //       });
+  //     }
 
-      navigate({
-        pathname: "/student-manage/favorites",
-        search: createSearchParams(omitBy({
-          ...queryConfig,
-          keyword: value
-        }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
-      });
-    }, 300),
-    [navigate]
-  );
+  //     navigate({
+  //       pathname: "/student-manage/favorites",
+  //       search: createSearchParams(omitBy({
+  //         ...queryConfig,
+  //         keyword: value
+  //       }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
+  //     });
+  //   }, 300),
+  //   [navigate]
+  // );
 
 
   const listData = data && data?.data?.responseData
@@ -116,7 +114,7 @@ export default function FavoriteContribution() {
       <div className="container py-5">
         <DynamicBreadcrumb></DynamicBreadcrumb>
         <div className="flex flex-wrap items-center justify-between md:gap-5">
-          <div className={`flex items-center w-full px-5 py-4 border rounded-lg gap-x-2 w-1/2`}>
+          {/* <div className={`flex items-center w-full px-5 py-4 border rounded-lg gap-x-2 w-1/2`}>
             <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
             <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
               defaultValue={queryParams['keyword']}
@@ -126,8 +124,8 @@ export default function FavoriteContribution() {
                 handleInputChange(e.target.value)
               }}
             />
-          </div>
-          <div className="flex flex-wrap items-center gap-2 py-5 md:gap-5 ">
+          </div> */}
+          {/* <div className="flex flex-wrap items-center gap-2 py-5 md:gap-5 ">
             <DropdownMenu>
               <DropdownMenuTrigger asChild disabled={isLoading}>
                 <Button variant="default" className=" md:min-w-[200px] outline-none shadow-inner text-md md:text-lg font-bold md:p-6">{faculty || "Filter Faculty"}
@@ -160,7 +158,7 @@ export default function FavoriteContribution() {
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          </div> */}
         </div>
         {listData && listData.length > 0 && <>
           <div className="">

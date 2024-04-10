@@ -87,7 +87,6 @@ export default function ContributionDetail() {
       }
     })
   }
-
   return (
     <GeneralLayout>
       {isLoading && <div className="container flex items-center justify-center min-h-screen"><Spinner className={"border-blue-500"}></Spinner></div>}
@@ -131,7 +130,7 @@ export default function ContributionDetail() {
           <div className="grid-cols-2 gap-6 p-10 rounded-lg shadow-lg h-[250px] overflow-y-scroll md:overflow-auto grid md:h-auto md:grid-cols-5">
             {detailData?.files?.map((file, index) => (
               <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" key={index} onClick={() => handleDownloadFile(file)}>
-                <img src={file?.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
+                <img src={file?.extension === ".doc" || file.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
                 <div className="text-center">{file?.name}</div>
                 <div className="flex items-center justify-center gap-2">
                 </div>
