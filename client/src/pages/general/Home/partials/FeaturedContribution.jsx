@@ -9,7 +9,6 @@ import React from 'react'
 export default function FeaturedContribution() {
   const { profile } = useAppContext()
   const { data, isLoading } = useQuery({ queryKey: ['featured-contributions'], queryFn: Contributions.getFeaturedContributions, enabled: profile.roles !== Roles.Guest })
-  console.log(isLoading, data)
   if (!data) return <></>
   return (
     <section className="my-4">

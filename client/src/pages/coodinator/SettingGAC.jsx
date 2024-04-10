@@ -172,10 +172,11 @@ export default function SettingGAC() {
       ).toString()
     })
   }, 300)
+
   const { mutate } = useMutation({
     mutationFn: (body) => Contributions.MCAllowGuest(body)
   })
-  let currentData = data && data?.data?.responseData
+
   // let results = currentData?.results?.map((item) => ({ ...item, publicDate: formatDate(item.publicDate) }))
   useEffect(() => {
     setTableData(data && data?.data?.responseData?.results?.map((item) => ({ ...item, publicDate: formatDate(item.publicDate) })) || []);
@@ -183,8 +184,10 @@ export default function SettingGAC() {
   const [selectedRow, setSelectedRow] = useState({})
   const handleApproveArticle = () => {
     let ids = []
-    selectedRow && selectedRow?.length > 0 && selectedRow?.forEach((item) => {
-      ids.push(item.id)
+    tableData && tableData?.forEach((item) => {
+      if (item.guestAllowed) {
+        ids.push(item.id)
+      }
     });
 
     Swal.fire({
@@ -207,11 +210,33 @@ export default function SettingGAC() {
       }
     });
   }
-
+  console.log(tableData, selectedRow);
   return (
     <AdminLayout links={MC_OPTIONS}>
+
+      {!isLoading && (
+        <>
+          <CustomTable
+            columns={columns}
+            data={tableData}
+            path={'/coodinator-manage/setting-guest'}
+            // queryConfig={queryConfig}
+            // pageCount={currentData?.pageCount}
+            selectedRows={setSelectedRow}
+          ></CustomTable>
+        </>
+      )}
+      {isLoading && (
+        <div className='flex justify-center min-h-screen mt-10'>
+          <Spinner></Spinner>
+        </div>
+      )}
+
+      {!isLoading && tableData?.length < 0 && (
+        <div className='my-10 text-3xl font-semibold text-center '>No Data</div>
+      )}
       <div className='flex flex-wrap items-center gap-3 my-5'>
-        <div
+        {/* <div
           className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}
         >
           <Icon
@@ -228,30 +253,9 @@ export default function SettingGAC() {
               handleInputChange(e.target.value)
             }}
           />
-        </div>
-        {selectedRow?.length > 0 && <Button onClick={handleApproveArticle}>Add selection</Button>}
+        </div> */}
+        <Button onClick={handleApproveArticle} className="w-full">Update</Button>
       </div>
-      {!isLoading && (
-        <>
-          <CustomTable
-            columns={columns}
-            data={tableData}
-            path={'/coodinator-manage/setting-guest'}
-            queryConfig={queryConfig}
-            pageCount={currentData?.pageCount}
-            selectedRows={setSelectedRow}
-          ></CustomTable>
-        </>
-      )}
-      {isLoading && (
-        <div className='flex justify-center min-h-screen mt-10'>
-          <Spinner></Spinner>
-        </div>
-      )}
-
-      {!isLoading && tableData?.length < 0 && (
-        <div className='my-10 text-3xl font-semibold text-center '>No Data</div>
-      )}
     </AdminLayout>
   )
 }

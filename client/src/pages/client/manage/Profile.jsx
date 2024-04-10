@@ -1,26 +1,22 @@
 import DatePickerCustom from '@/components/DatePickerCustom';
-import DateSelect from '@/components/DateSelect';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
-import { ADMIN_OPTIONS, STUDENT_OPTIONS } from '@/constant/menuSidebar'
+import { ADMIN_OPTIONS, MC_OPTIONS, STUDENT_OPTIONS } from '@/constant/menuSidebar'
 import AdminLayout from '@/layouts/AdminLayout'
 import { Label } from '@radix-ui/react-dropdown-menu';
 import React, { useEffect, useState } from 'react'
-import { useDropzone } from 'react-dropzone';
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Auth } from '@/services/client';
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form';
-import Spinner from '@/components/Spinner';
 import { formatDate } from '@/utils/helper';
 import { PHONE_REG } from '@/utils/regex';
-import { format } from 'date-fns';
 import ActionSpinner from '@/components/ActionSpinner';
 import { useAppContext } from '@/hooks/useAppContext';
 import { Roles } from '@/constant/roles';
+
 export default function Profile() {
   const [date, setDate] = useState()
   const [currentThumbnail, setCurrentThumbnail] = useState()
@@ -54,7 +50,7 @@ export default function Profile() {
     queryKey: ['profile'],
     queryFn: Auth.profile
   })
-
+  const queryClient = useQueryClient()
 
   let detailData = data && data?.data?.responseData
   useEffect(() => {
@@ -106,6 +102,7 @@ export default function Profile() {
     updateMutation.mutate(formData, {
       onSuccess(data) {
         toast.success("Update Profile Successfully!")
+        queryClient.invalidateQueries(['profile'])
       },
       onError(err) {
         console.log(err)
@@ -113,9 +110,9 @@ export default function Profile() {
     })
   }
   const { profile } = useAppContext()
-
+  const links = profile?.roles === Roles?.Student ? STUDENT_OPTIONS : profile.roles === Roles?.Coordinator ? MC_OPTIONS : ADMIN_OPTIONS
   return (
-    <AdminLayout links={STUDENT_OPTIONS}>
+    <AdminLayout links={links}>
       {isLoading || updateMutation.isLoading && <ActionSpinner></ActionSpinner>}
       <div className="sm:p-10 rounded-lg shadow-2xl min-h-[80vh]">
         <label htmlFor="image" className='mx-auto cursor-pointer '>

@@ -7,5 +7,6 @@ export const useFaculty = () => {
   const { profile } = useAppContext()
   return useQuery({
     queryKey: ['faculty'], queryFn: Contributions.getAllFaculties,
+    enabled: profile && profile?.roles !== Roles.Guest
   })
 }

@@ -102,13 +102,13 @@ export function CustomTable({
           </TableBody>
         </Table>
       </div>
-      <div className='flex items-center justify-end py-4 space-x-2'>
+      {queryConfig && <div className='flex items-center justify-end py-4 space-x-2'>
         <PaginationCustom
           path={path}
           queryConfig={queryConfig}
           totalPage={pageCount}
         ></PaginationCustom>
-      </div>
+      </div>}
     </div>
   )
 }

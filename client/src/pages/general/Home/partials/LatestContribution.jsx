@@ -14,7 +14,6 @@ export default function LatestContribution() {
     queryFn: Contributions.getLatestContribution,
     enabled: profile.roles !== Roles.Guest
   })
-  console.log(profile.roles)
   if (!data) return <></>
   return (
     <section className="my-4">

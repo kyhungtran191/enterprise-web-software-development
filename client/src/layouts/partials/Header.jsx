@@ -18,10 +18,10 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useQueryClient } from "@tanstack/react-query"
-
+import { Clock } from "lucide-react"
 export default function Header() {
   const queryClient = useQueryClient()
-  const { isAuthenticated, profile, setProfile, setIsAuthenticated } = useAppContext()
+  const { isAuthenticated, profile, setProfile, setIsAuthenticated, avatar } = useAppContext()
   const ability = useContext(AbilityContext)
   let navigate = useNavigate()
   const handleLogout = () => {
@@ -32,7 +32,6 @@ export default function Header() {
     toast.success("Logout successfully!")
     navigate('/login')
   }
-
   return (
     <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black'>
       <nav className='container h-full flex justify-between items-center leading-[72px] relative'>
@@ -49,13 +48,13 @@ export default function Header() {
           </Link>
         </div>
         <div className='items-center hidden ml-8 lg:flex absolute left-[50%] -transition-x-1/2'>
-
-          <Link className='mx-4 font-semibold hover:text-blue-500' to="/contributions">
+          {profile?.roles !== Roles.Guest && <Link className='mx-4 font-semibold hover:text-blue-500' to="/contributions">
             Contribution Lists
           </Link>
-          <Can I={PERMISSIONS.View.Dashboard.index} a={PERMISSIONS.View.Dashboard.value}>
+          }
+          {/* <Can I={PERMISSIONS.View.Dashboard.index} a={PERMISSIONS.View.Dashboard.value}>
             <button>Add</button>
-          </Can>
+          </Can> */}
         </div>
         <div className='flex items-center gap-x-5'>
           <Switch />
@@ -63,7 +62,7 @@ export default function Header() {
             <PopoverTrigger asChild className='cursor-pointer'>
               <Avatar>
                 <AvatarImage
-                  src={`${profile?.avatar || "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`}
+                  src={`${avatar || "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`}
                   className='object-cover'
                 ></AvatarImage>
                 <AvatarFallback>CN</AvatarFallback>
@@ -80,11 +79,11 @@ export default function Header() {
                 <div className='gap-2 text-slate-700'>
                   {profile && profile.roles === Roles.Student && <>
                     <Link to="/student-manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                      <Icon icon='mage:user-fill'></Icon>Recent Post
+                      <Clock></Clock>Recent Post
                     </Link>
-                    <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                    <Link to="/student-manage/favorites" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                       <Icon icon='icon-park-solid:like'></Icon>Liked Contribution
-                    </div>
+                    </Link>
                   </>}
 
                   {profile && profile.roles === Roles.Admin && <>
@@ -99,7 +98,9 @@ export default function Header() {
                       <Icon icon='mage:user-fill'></Icon>Coodinator Manage
                     </Link>
                   }
-
+                  {profile && profile.roles !== Roles?.Guest && <Link to="/profile" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                    <Icon icon='mage:user-fill'></Icon>Profile
+                  </Link>}
                   <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3' onClick={handleLogout}>
                     <Icon icon='solar:logout-2-bold'></Icon>Logout
                   </div>

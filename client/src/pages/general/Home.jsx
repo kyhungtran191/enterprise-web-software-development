@@ -5,6 +5,7 @@ import Faculty from './Home/partials/Faculty'
 import TopContributors from './Home/partials/TopContributors'
 import FeaturedContribution from './Home/partials/FeaturedContribution'
 import LatestContribution from './Home/partials/LatestContribution'
+import GuestContribution from './Home/partials/guestContribution'
 export default function Home() {
 
   return (<div>
@@ -45,9 +46,9 @@ export default function Home() {
       <TopContributors></TopContributors>
       {/* Featured */}
       <FeaturedContribution></FeaturedContribution>
-
       {/* Latest */}
       <LatestContribution></LatestContribution>
+      <GuestContribution></GuestContribution>
     </div>
 
   </div>)

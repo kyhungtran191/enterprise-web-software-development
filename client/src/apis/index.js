@@ -67,7 +67,8 @@ export const getUserByIdAPI = `${URL}${adminAPI}/Users`
 export const createUserAPI = `${URL}${adminAPI}/Users`
 export const updateUserAPI = `${URL}${adminAPI}/Users`
 export const deleteUserAPI = `${URL}${adminAPI}/Users`
-
+// Guest
+export const guestAPI = `${URL}${clientAPI}/PublicContribution/guest/paging`
 // Faculty
 export const createFacultyAPI = `${URL}${adminAPI}/Faculties`
 export const getAllFacultiesAPI = `${URL}${adminAPI}/Faculties`

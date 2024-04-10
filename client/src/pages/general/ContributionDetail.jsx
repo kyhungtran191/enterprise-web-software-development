@@ -20,6 +20,8 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { useLikeMutation } from '@/query/useLikeMutation'
+import { useAppContext } from '@/hooks/useAppContext'
+import { Roles } from '@/constant/roles'
 export default function ContributionDetail() {
   const schema = yup
     .object({
@@ -34,9 +36,10 @@ export default function ContributionDetail() {
   const commentMutation = useMutation({
     mutationFn: (data) => Contributions.commentPublic(data)
   })
-  
+
   const queryClient = useQueryClient()
   const { id } = useParams()
+  const { profile } = useAppContext()
   const { data, isLoading } = useQueryContributionDetail(id)
   const detailData = data && data?.data?.responseData
   const likeMutation = useLikeMutation(detailData?.id)
@@ -97,7 +100,7 @@ export default function ContributionDetail() {
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <Badge variant="destructive">{detailData?.facultyName}</Badge>
-              <Button className={`bg-transparent hover:bg-red-500 hover:text-white hover:border-white  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `} onClick={(e) => handleToggleLike(e, detailData)}><Heart></Heart></Button>
+              {profile?.roles !== Roles?.Guest && <Button className={`bg-transparent hover:bg-red-500 hover:text-white hover:border-white  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `} onClick={(e) => handleToggleLike(e, detailData)}><Heart></Heart></Button>}
             </div>
             <h2 className="mt-3 text-2xl font-semibold text-ellipsis line-clamp-4 medium:text-4xl">{detailData?.title} </h2>
             <div className="flex flex-wrap items-center justify-between my-6 text-xs font-semibold text-gray-600 md:text-sm medium:text-base">
