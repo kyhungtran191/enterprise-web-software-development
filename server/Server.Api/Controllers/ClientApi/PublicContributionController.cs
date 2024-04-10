@@ -52,6 +52,7 @@ public class PublicContributionController : ClientApiController
     {
         var query = _mapper.Map<GetAllPublicContributionPagingQuery>(request);
         query.FacultyName = User.GetFacultyName();
+        query.GuestAllowed = true;
         var result = await _mediatorSender.Send(query);
         return result.Match(success => Ok(success), errors => Problem(errors));
     }
