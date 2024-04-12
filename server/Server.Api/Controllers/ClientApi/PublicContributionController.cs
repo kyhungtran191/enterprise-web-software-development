@@ -156,6 +156,7 @@ public class PublicContributionController : ClientApiController
     }
     [HttpPost]
     [Route("comment/{ContributionId}")]
+    [Authorize]
     public async Task<IActionResult> Comment([FromRoute] Guid ContributionId, CreateCommentRequest request)
     {
         var command = _mapper.Map<CreatePublicCommentCommand>(request);
@@ -167,6 +168,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpPost]
     [Route("{ContributionId}/rate")]
+    [Authorize]
     public async Task<IActionResult> RateContribution([FromRoute] Guid ContributionId,RateContributionRequest request)
     {
         var command = _mapper.Map<RateContributionCommand>(request);
