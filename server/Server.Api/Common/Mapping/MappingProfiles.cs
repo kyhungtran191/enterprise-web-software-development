@@ -47,6 +47,7 @@ using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
+using Server.Application.Features.PublicContributionApp.Commands.RateContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
 using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
 using Server.Application.Features.PublicContributionApp.Queries.DownSingleFile;
@@ -186,5 +187,7 @@ public class MappingProfiles : Profile
         CreateMap<CreateCommentRequest, CreatePublicCommentCommand>();
         CreateMap<ContributionDto, ContributionWithCommentDto>();
         CreateMap<PublicContributionDetailDto, PublicContributionWithCommentDto>();
+        // rating
+        CreateMap<RateContributionRequest, RateContributionCommand>();
     }    
 }

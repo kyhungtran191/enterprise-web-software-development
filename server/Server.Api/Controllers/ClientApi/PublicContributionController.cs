@@ -21,6 +21,7 @@ using Server.Contracts.PublicContributions.Like;
 using Server.Contracts.PublicContributions.ReadLater;
 using Server.Domain.Common.Constants;
 using System.Security;
+using Server.Application.Features.PublicContributionApp.Commands.RateContribution;
 using Server.Contracts.Contributions;
 
 namespace Server.Api.Controllers.ClientApi;
@@ -158,6 +159,17 @@ public class PublicContributionController : ClientApiController
     public async Task<IActionResult> Comment([FromRoute] Guid ContributionId, CreateCommentRequest request)
     {
         var command = _mapper.Map<CreatePublicCommentCommand>(request);
+        command.ContributionId = ContributionId;
+        command.UserId = User.GetUserId();
+        var result = await _mediatorSender.Send(command);
+        return result.Match(result => Ok(result), errors => Problem(errors));
+    }
+
+    [HttpPost]
+    [Route("{ContributionId}/rate")]
+    public async Task<IActionResult> RateContribution([FromRoute] Guid ContributionId,RateContributionRequest request)
+    {
+        var command = _mapper.Map<RateContributionCommand>(request);
         command.ContributionId = ContributionId;
         command.UserId = User.GetUserId();
         var result = await _mediatorSender.Send(command);

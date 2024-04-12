@@ -52,6 +52,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Files = files.Where(f => f.ContributionId == query.c.Id && f.Type == FileType.File)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
                 AllowedGuest = query.c.AllowedGuest,
+                AverageRating = query.c.AverageRating,
             };
             return result;
         }
@@ -85,7 +86,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
             }).ToList();
             return publicContribution;
         }
@@ -201,7 +203,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
             }).ToList();
             return new PagedResult<PublicContributionInListDto>
             {
@@ -241,7 +244,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
             }).ToList();
             return publicContribution;
         }
