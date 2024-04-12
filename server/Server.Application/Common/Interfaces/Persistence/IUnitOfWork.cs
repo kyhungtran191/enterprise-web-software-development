@@ -13,5 +13,7 @@ public interface IUnitOfWork : IDisposable
     ILikeRepository LikeRepository { get; }
     ICommentRepository CommentRepository { get; }
     IPublicCommentRepository PublicCommentRepository { get; }
+    IRatingRepository RatingRepository { get; }
+    
 }
 
