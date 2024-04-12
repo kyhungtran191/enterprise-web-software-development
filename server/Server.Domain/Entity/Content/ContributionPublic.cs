@@ -45,6 +45,6 @@ namespace Server.Domain.Entity.Content
         public string Content { get; set; }
         public string ShortDescription { get; set; }
         public bool AllowedGuest { get; set; } = false;
-        public float AvarageRating { get; set; } = 0;
+        public double AverageRating { get; set; } = 0;
     }
 }

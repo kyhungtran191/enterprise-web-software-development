@@ -7,6 +7,6 @@ namespace Server.Domain.Entity.Content
     {
         public Guid ContributionPublicId { get; set; }
         public Guid UserId { get; set; }
-        public float Rating { get; set; } = 0;
+        public double Rating { get; set; } = 0;
     }
 }
