@@ -144,7 +144,7 @@ export default function AddContribution() {
             <label className="text-2xl font-semibold">Write your content here </label>
             <Editor
               onInit={(evt, editor) => editorRef.current = editor}
-              apiKey='574fp9fplywzbz45xdnqnmxdfpflkpljtav7czrto0idn25z'
+              apiKey='q5aoxp13m2dcptoecyfwqgnukvmt9e3iacit3eesvhni8o7x'
               initialValue=''
               init={{
                 height: 400,
