@@ -1,8 +1,7 @@
 namespace Server.Contracts.Contributions.report;
 
-public class PercentageTotalContributionsPerFacultyPerAcademicYearData
+public class TotalContributorsPerFacultyData
 {
     public String? Faculty { get; set; }
     public int Data { get; set; }
 }
-

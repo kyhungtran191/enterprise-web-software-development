@@ -81,7 +81,14 @@ namespace Server.Api.Controllers.AdminApi
             var result = await _contributionService.GetContributionsWithinEachFacultyForEachAcademicYearReport();
             return Ok(result);
         }
-
+        
+        [HttpGet("report-total-contributors-per-each-faculties-for-each-academic-years")]
+        [Authorize(Permissions.Contributions.View)]
+        public async Task<IActionResult> GetTotalContributorsPerEachFactultiesForEachAcademicYearsReport()
+        {
+            var result = await _contributionService.GetTotalContributorsPerEachFacultiesPerEachAcademicYearsDto();
+            return Ok(result);
+        }
         
         [HttpGet]
         [Route("report-percentages-contributions-within-each-faculty-by-academic-year/{academicYearName}")]

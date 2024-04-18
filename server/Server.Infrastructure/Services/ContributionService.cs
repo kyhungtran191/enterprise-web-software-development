@@ -81,4 +81,29 @@ public class ContributionService : IContributionService
 
         return _contributionReportMapper.MapToPercentageTotalContributionsPerFacultyPerAcademicYearReportChartResponse(items.AsList());
     }
+
+    public async Task<ReportChartResponse<TotalContributorsPerFacultyData>> GetTotalContributorsPerEachFacultiesPerEachAcademicYearsDto()
+    {
+        using var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+
+        if (conn.State == ConnectionState.Open)
+        {
+            await conn.OpenAsync();
+        }
+
+        var sql = @"
+               SELECT ay.Name AS AcademicYear,
+                    f.Name AS Faculty,	   	   
+                    COALESCE(count(distinct c.UserId), 0) AS Contributors	   
+                FROM AcademicYears ay
+                CROSS JOIN Faculties f
+                LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id AND c.FacultyId = f.Id
+                GROUP BY ay.Name, f.Name
+                ORDER BY ay.Name, f.Name;
+            ";
+
+        var items = await conn.QueryAsync<TotalContributorsPerEachFacultiesPerEachAcademicYearsDto>(sql: sql);
+
+        return await _contributionReportMapper.MapToTotalContributorsPerEachFacultiesPerEachAcademicYearsResponse(items.AsList());
+    }
 }

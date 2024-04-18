@@ -61,8 +61,36 @@ public class ContributionReportMapper : IContributionReportMapper
 
             reportChartResponseWrapper.DataSets.Add(contributionsAndFaculty);
         }
-        
+
         result.Response.Add(reportChartResponseWrapper);
+
+        return result;
+    }
+
+    public async Task<ReportChartResponse<TotalContributorsPerFacultyData>> MapToTotalContributorsPerEachFacultiesPerEachAcademicYearsResponse(List<TotalContributorsPerEachFacultiesPerEachAcademicYearsDto> data)
+    {
+        var sumFaculties = await _facultyRepository.Count();
+        var totalData = data.Count();
+
+        var result = new ReportChartResponse<TotalContributorsPerFacultyData>();
+
+        for (var i = 0; i < totalData; i += sumFaculties)
+        {
+            var reportChartResponseWrapper = new ReportChartResponseWrapper<TotalContributorsPerFacultyData>();
+
+            reportChartResponseWrapper.AcademicYear = data[i].AcademicYear;
+
+            for (var j = i; j < i + sumFaculties; ++j)
+            {
+                var contributorsWithFaculty = new TotalContributorsPerFacultyData();
+                contributorsWithFaculty.Faculty = data[j].Faculty;
+                contributorsWithFaculty.Data = data[j].Contributors;
+
+                reportChartResponseWrapper.DataSets.Add(contributorsWithFaculty);
+            }
+
+            result.Response.Add(reportChartResponseWrapper);
+        }
 
         return result;
     }
