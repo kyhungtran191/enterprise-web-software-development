@@ -16,6 +16,8 @@ using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
+using Server.Infrastructure.Mapper;
+using Server.Infrastructure.Mapper.Impl;
 using Server.Infrastructure.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
 using Server.Infrastructure.Services;
@@ -32,6 +34,9 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped(typeof(IRepository<,>), typeof(RepositoryBase<,>));
         services.AddRepositories();
+        services.AddScoped<IContributionService, ContributionService>();
+        services.AddScoped<IContributionReportMapper, ContributionReportMapper>();
+        
         // email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
         services.AddTransient<IEmailService, EmailService>();

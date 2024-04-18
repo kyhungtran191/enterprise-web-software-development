@@ -12,7 +12,7 @@ using Server.Domain.Common.Constants;
 namespace Server.Api.Controllers.ClientApi
 {
     [Authorize]
-   public class ContributionsController : ClientApiController
+    public class ContributionsController : ClientApiController
     {
         private readonly IMapper _mapper;
 
@@ -23,7 +23,7 @@ namespace Server.Api.Controllers.ClientApi
         }
 
         [HttpPost]
-        [FileValidationFilter(5*1024*1024)]
+        [FileValidationFilter(5 * 1024 * 1024)]
         [Authorize(Permissions.Contributions.Create)]
         public async Task<IActionResult> CreateContribution([FromForm] CreateContributionRequest createContributionRequest)
         {
@@ -42,14 +42,14 @@ namespace Server.Api.Controllers.ClientApi
         public async Task<IActionResult> UpdateContribution([FromForm] UpdateContributionRequest updateContributionRequest)
         {
             var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
-            command.UserId = User.GetUserId(); 
+            command.UserId = User.GetUserId();
             command.FacultyId = User.GetFacultyId();
             command.Slug = updateContributionRequest.Title.Slugify();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
 
-        
+
 
 
     }

@@ -20,5 +20,6 @@ namespace Server.Application.Common.Interfaces.Persistence
         Task Reject(Contribution contribution,Guid userId, string note);
         Task<string> GetRejectReason(Contribution contribution);
         Task<List<ActivityLogDto>> GetActivityLogs(Contribution contribution);
+
     }
 }

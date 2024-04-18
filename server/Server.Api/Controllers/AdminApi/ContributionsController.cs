@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
 using Server.Application.Features.ContributionApp.Queries.DownloadFile;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
@@ -15,9 +16,13 @@ namespace Server.Api.Controllers.AdminApi
     public class ContributionsController : AdminApiController
     {
         private readonly IMapper _mapper;
-        public ContributionsController(ISender _mediator,IMapper mapper) : base(_mediator)
+        private readonly IContributionService _contributionService;
+        public ContributionsController(ISender _mediator,
+                                    IMapper mapper,
+                                    IContributionService contributionService) : base(_mediator)
         {
             _mapper = mapper;
+            _contributionService = contributionService;
         }
 
         [HttpGet]
@@ -41,7 +46,7 @@ namespace Server.Api.Controllers.AdminApi
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
 
-      
+
         [HttpDelete]
         [Authorize(Permissions.Contributions.Delete)]
         public async Task<IActionResult> DeleteContribution(DeleteContributionRequest deleteContributionRequest)
@@ -52,7 +57,6 @@ namespace Server.Api.Controllers.AdminApi
 
         }
 
-     
         [HttpGet("download-file/{ContributionId}")]
         [Authorize(Permissions.Contributions.Approve)]
         public async Task<IActionResult> DownloadFile([FromRoute] DownloadFileRequest request)
@@ -64,6 +68,13 @@ namespace Server.Api.Controllers.AdminApi
 
         }
 
+        [HttpGet("report-contributions-within-each-faculty-for-each-academic-year")]
+        [Authorize(Permissions.Contributions.View)]
+        public async Task<IActionResult> GetContributionsWithinEachFacultyForEachAcademicYearsReport()
+        {
+            var result = await _contributionService.GetContributionsWithinEachFacultyForEachAcademicYearReport();
+            return Ok(result);
+        }
 
     }
 }
