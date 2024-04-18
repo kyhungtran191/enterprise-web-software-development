@@ -16,5 +16,6 @@
         public string? Avatar { get; set; }
         public string? ShortDescription { get; set; }
         public double AverageRating { get; set; } = 0.0;
+        public string? WhoApproved { get; set; }
     }
 }

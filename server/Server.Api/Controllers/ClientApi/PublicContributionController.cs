@@ -3,11 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Application.Common.Extensions;
-using Server.Application.Features.CommentApp.Commands;
 using Server.Application.Features.ContributionApp.Queries.GetTopContributors;
 using Server.Application.Features.PublicCommentApp.Commands.CreateComment;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
+using Server.Application.Features.PublicContributionApp.Commands.RateContribution;
 using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
 using Server.Application.Features.PublicContributionApp.Queries.DownSingleFile;
 using Server.Application.Features.PublicContributionApp.Queries.GetAllPublicContributionPaging;
@@ -16,13 +16,11 @@ using Server.Application.Features.PublicContributionApp.Queries.GetListUserLiked
 using Server.Application.Features.PublicContributionApp.Queries.GetTop4Contributions;
 using Server.Application.Features.PublicContributionApp.Queries.GetTopContribution;
 using Server.Contracts.Comment;
+using Server.Contracts.Contributions;
 using Server.Contracts.PublicContributions;
 using Server.Contracts.PublicContributions.Like;
 using Server.Contracts.PublicContributions.ReadLater;
 using Server.Domain.Common.Constants;
-using System.Security;
-using Server.Application.Features.PublicContributionApp.Commands.RateContribution;
-using Server.Contracts.Contributions;
 
 namespace Server.Api.Controllers.ClientApi;
 
