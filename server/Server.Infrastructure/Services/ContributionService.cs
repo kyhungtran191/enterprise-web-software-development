@@ -2,7 +2,7 @@ using System.Data;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Server.Application.Common.Dtos.Contributions;
+using Server.Application.Common.Dtos.Contributions.report;
 using Server.Application.Common.Interfaces.Services;
 using Server.Contracts.Common.report;
 using Server.Contracts.Contributions.report;
@@ -46,7 +46,39 @@ public class ContributionService : IContributionService
         return await _contributionReportMapper.MapToContributionsWithinEachFacultyForEachAcademicYear(items.AsList());
     }
 
+    public async Task<ReportChartResponse<PercentageTotalContributionsPerFacultyPerAcademicYearData>> GetPercentageTotalContributionsPerFacultyPerAcademicYearReport(string academicYearName)
+    {
+        using var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
+        if (conn.State == ConnectionState.Open)
+        {
+            await conn.OpenAsync();
+        }
 
+        var sql = @"
+                SELECT ay.Name AS AcademicYear,
+                    f.Name AS Faculty,
+                    cast((count(c.Id) * 1.0 / total_count.total * 100) as int)  AS Percentages
+                FROM AcademicYears ay
+                CROSS JOIN Faculties f
+                LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id AND c.FacultyId = f.Id
+                LEFT JOIN (
+                    SELECT COUNT(*) AS total
+                    FROM Contributions c2
+                    left join AcademicYears ay2 on c2.AcademicYearId = ay2.Id
+                    where ay2.Name = @academicYearName
+                    group by ay2.Name
+                ) AS total_count ON 1=1
+                GROUP BY ay.Name, f.Name, total_count.total
+                having ay.Name = @academicYearName
+                ORDER BY ay.Name, f.Name;
+            ";
 
+        var items = await conn.QueryAsync<PercentagesContributionsWithinEachFacultyForEachAcademicYearDto>(sql: sql, param: new
+        {
+            academicYearName
+        });
+
+        return _contributionReportMapper.MapToPercentageTotalContributionsPerFacultyPerAcademicYearReportChartResponse(items.AsList());
+    }
 }
