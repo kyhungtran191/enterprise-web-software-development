@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
 using Server.Application.Features.ContributionApp.Queries.DownloadFile;
@@ -9,20 +11,24 @@ using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPag
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
+using Server.Domain.Common.Errors;
 
 namespace Server.Api.Controllers.AdminApi
 {
-
     public class ContributionsController : AdminApiController
     {
         private readonly IMapper _mapper;
         private readonly IContributionService _contributionService;
+        private readonly IAcademicYearRepository _academicYearRepository;
+
         public ContributionsController(ISender _mediator,
                                     IMapper mapper,
-                                    IContributionService contributionService) : base(_mediator)
+                                    IContributionService contributionService,
+                                    IAcademicYearRepository academicYearRepository) : base(_mediator)
         {
             _mapper = mapper;
             _contributionService = contributionService;
+            _academicYearRepository = academicYearRepository;
         }
 
         [HttpGet]
@@ -76,5 +82,22 @@ namespace Server.Api.Controllers.AdminApi
             return Ok(result);
         }
 
+        
+        [HttpGet]
+        [Route("report-percentages-contributions-within-each-faculty-by-academic-year/{academicYearName}")]
+        [Authorize(Permissions.Contributions.View)]
+        public async Task<IActionResult> GetPercentagesContributionsWithinEachFacultyByAcademicYearReport([FromRoute] string academicYearName)
+        {
+            if (await _academicYearRepository.GetAcademicYearByName(academicYearName) is null)
+            {
+                return ProblemWithError(Errors.AcademicYear.NotFound);
+            }
+
+            var result = await _contributionService.GetPercentageTotalContributionsPerFacultyPerAcademicYearReport(academicYearName);
+            return Ok(result);
+        }
+
+        private IActionResult ProblemWithError(Error error)
+            => Problem(new List<Error> { error });
     }
 }
