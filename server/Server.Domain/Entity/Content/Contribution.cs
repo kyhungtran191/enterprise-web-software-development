@@ -39,4 +39,10 @@ public enum ContributionStatus
     Reject
 
 }
-
+public static class ContributionStatusHelper
+{
+    public static List<string> GetAllStatuses()
+    {
+        return Enum.GetNames(typeof(ContributionStatus)).ToList();
+    }
+}

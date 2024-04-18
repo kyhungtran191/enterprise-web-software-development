@@ -21,6 +21,47 @@ public class ContributionService : IContributionService
         _contributionReportMapper = contributionReportMapper;
     }
 
+    public async Task<ReportChartResponse<TotalContributionFollowingStatusDataSet>> GetContributionsFollowingStatusForEachAcademicYearOfCurrentUserReport(Guid currentUserId)
+    {
+        using var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+
+        if (conn.State == ConnectionState.Open)
+        {
+            await conn.OpenAsync();
+        }
+
+        var sql = @"SELECT 
+                    ay.Name AS AcademicYear,
+                    CASE cs.Status
+                        WHEN 0 THEN 'Pending'
+                        WHEN 1 THEN 'Approve'
+                        WHEN 2 THEN 'Reject'
+                    END AS Status,
+                    COUNT(*) AS Data
+                FROM 
+                    [WebEnterpriseSubjectDb].[dbo].Contributions AS cs
+                INNER JOIN 
+                    [WebEnterpriseSubjectDb].[dbo].AcademicYears AS ay ON cs.AcademicYearId = ay.Id
+                WHERE 
+                    cs.UserId = @currentUserId
+                GROUP BY 
+                    ay.Name, 
+                    CASE cs.Status
+                        WHEN 0 THEN 'Pending'
+                        WHEN 1 THEN 'Approve'
+                        WHEN 2 THEN 'Reject'
+                    END
+                ORDER BY 
+                    ay.Name, 
+                    CASE cs.Status
+                        WHEN 0 THEN 'Pending'
+                        WHEN 1 THEN 'Approve'
+                        WHEN 2 THEN 'Reject'
+                    END;";
+        var items = await conn.QueryAsync<TotalContributionFollowingStatusData>(sql: sql,param: new{currentUserId});
+        return await _contributionReportMapper.MapToTotalContributionFollowingStatusDataResponse(items.AsList());
+    }
+
     public async Task<ReportChartResponse<TotalContributionsPerFacultyData>> GetContributionsWithinEachFacultyForEachAcademicYearReport()
     {
         using var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
