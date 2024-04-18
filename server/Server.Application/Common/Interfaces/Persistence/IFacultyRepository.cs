@@ -8,5 +8,7 @@ public interface IFacultyRepository : IRepository<Faculty, Guid>
 {
     Task<Faculty> GetFacultyByName(string facultyName);
 
-    Task<PagedResult<FacultyDto>> GetAllFacultiesPaging(string? keyword, int pageIndex = 1, int pageSize = 10);
+    Task<PagedResult<FacultyDto>> GetAllFacultiesPaging(string? keyword, int pageIndex = 1, int pageSize = 10);    
+
+    Task<int> Count();
 }

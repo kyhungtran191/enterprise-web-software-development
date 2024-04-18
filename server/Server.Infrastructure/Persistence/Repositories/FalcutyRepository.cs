@@ -17,6 +17,11 @@ public class FalcutyRepository : RepositoryBase<Faculty, Guid>, IFacultyReposito
         _mapper = mapper;
     }
 
+    public async Task<int> Count()
+    {
+        return await _dbContext.Faculties.CountAsync();
+    }
+
     public async Task<PagedResult<FacultyDto>> GetAllFacultiesPaging(string? keyword, int pageIndex = 1, int pageSize = 10)
     {
         var query = _dbContext.Faculties.AsQueryable();
