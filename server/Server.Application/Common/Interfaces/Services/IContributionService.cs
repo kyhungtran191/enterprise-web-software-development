@@ -8,4 +8,6 @@ public interface IContributionService
     Task<ReportChartResponse<TotalContributionsPerFacultyData>> GetContributionsWithinEachFacultyForEachAcademicYearReport();
 
     Task<ReportChartResponse<PercentageTotalContributionsPerFacultyPerAcademicYearData>> GetPercentageTotalContributionsPerFacultyPerAcademicYearReport(string academicYearName);
+
+    Task<ReportChartResponse<TotalContributorsPerFacultyData>> GetTotalContributorsPerEachFacultiesPerEachAcademicYearsDto();
 }

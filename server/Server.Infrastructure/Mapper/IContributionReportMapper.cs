@@ -9,5 +9,7 @@ public interface IContributionReportMapper
     Task<ReportChartResponse<TotalContributionsPerFacultyData>> MapToContributionsWithinEachFacultyForEachAcademicYear(List<ContributionsWithinEachFacultyForEachAcademicYearDto> data);
 
     ReportChartResponse<PercentageTotalContributionsPerFacultyPerAcademicYearData> MapToPercentageTotalContributionsPerFacultyPerAcademicYearReportChartResponse(List<PercentagesContributionsWithinEachFacultyForEachAcademicYearDto> data);
+
+    Task<ReportChartResponse<TotalContributorsPerFacultyData>>  MapToTotalContributorsPerEachFacultiesPerEachAcademicYearsResponse(List<TotalContributorsPerEachFacultiesPerEachAcademicYearsDto> data);
 }
 
