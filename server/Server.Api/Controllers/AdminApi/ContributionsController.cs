@@ -2,7 +2,9 @@
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
@@ -12,6 +14,7 @@ using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle
 using Server.Contracts.Contributions;
 using Server.Domain.Common.Constants;
 using Server.Domain.Common.Errors;
+using Server.Domain.Entity.Identity;
 
 namespace Server.Api.Controllers.AdminApi
 {
@@ -20,15 +23,17 @@ namespace Server.Api.Controllers.AdminApi
         private readonly IMapper _mapper;
         private readonly IContributionService _contributionService;
         private readonly IAcademicYearRepository _academicYearRepository;
+        private readonly UserManager<AppUser> _userManager;
 
         public ContributionsController(ISender _mediator,
                                     IMapper mapper,
                                     IContributionService contributionService,
-                                    IAcademicYearRepository academicYearRepository) : base(_mediator)
+                                    IAcademicYearRepository academicYearRepository, UserManager<AppUser> userManager) : base(_mediator)
         {
             _mapper = mapper;
             _contributionService = contributionService;
             _academicYearRepository = academicYearRepository;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -104,6 +109,21 @@ namespace Server.Api.Controllers.AdminApi
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("report-total-contributions-following-status-for-each-academic-years")]
+        public async Task<IActionResult> GetContributionsFollowingStatusForEachAcademicYearReport()
+        {
+            var userId = User.GetUserId();
+            if (await _userManager.FindByIdAsync(userId.ToString()) is null)
+            {
+                return ProblemWithError(Errors.User.CannotFound);
+            }
+
+            var result =
+                await _contributionService
+                    .GetContributionsFollowingStatusForEachAcademicYearOfCurrentUserReport(userId);
+            return Ok(result);
+        }
         private IActionResult ProblemWithError(Error error)
             => Problem(new List<Error> { error });
     }
