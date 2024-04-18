@@ -146,7 +146,7 @@ public class RolesController : AdminApiController
 
         var totalRow = await query.CountAsync();
 
-        var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageIndex;
+        var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageSize;
 
         query =
             query

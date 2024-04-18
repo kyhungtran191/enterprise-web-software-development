@@ -1,12 +1,15 @@
 import Article from '@/components/article'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Roles } from '@/constant/roles'
+import { useAppContext } from '@/hooks/useAppContext'
 import { Contributions } from '@/services/client'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 
 export default function FeaturedContribution() {
-  const { data, isLoading } = useQuery({ queryKey: ['featured-contributions'], queryFn: Contributions.getFeaturedContributions })
-  console.log(data)
+  const { profile } = useAppContext()
+  const { data, isLoading } = useQuery({ queryKey: ['featured-contributions'], queryFn: Contributions.getFeaturedContributions, enabled: profile.roles !== Roles.Guest })
+  if (!data) return <></>
   return (
     <section className="my-4">
       <h2 className='my-2 text-2xl font-bold'>Featured Article</h2>
@@ -49,7 +52,7 @@ export default function FeaturedContribution() {
         {data && data?.data?.responseData && data?.data?.responseData.length > 0 &&
           <>
             <div className="col-span-12 row-span-3 medium:col-span-6">
-              <Article article={data?.data?.responseData[0]}></Article>
+              <Article article={data?.data?.responseData[0]} classImageCustom={"md:h-[600px]"}></Article>
             </div>
             {data?.data?.responseData.slice(1).map((item, index) => (
               <div className="col-span-12 row-span-1 medium:col-span-6" key={item.id}>

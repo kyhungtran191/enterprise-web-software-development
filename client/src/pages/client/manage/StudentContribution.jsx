@@ -2,35 +2,26 @@ import Search from '@/components/Search'
 import { Button } from '@/components/ui/button'
 import AdminLayout from '@/layouts/AdminLayout'
 import { ArrowDown10Icon, Plus } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious
-} from '@/components/ui/pagination'
-import Contributor from '@/components/contributor'
+
 import Article from '@/components/article'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { QueryClient, useQuery } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import { Contributions } from '@/services/client'
 import { isUndefined, omitBy, omit, debounce } from 'lodash'
 import { Icon } from '@iconify/react'
 import PaginationCustom from '@/components/PaginationCustom'
 import Spinner from '@/components/Spinner'
+import { STUDENT_OPTIONS } from '@/constant/menuSidebar'
 export default function StudentContribution() {
   const [position, setPosition] = React.useState('')
   const navigate = useNavigate()
@@ -53,48 +44,60 @@ export default function StudentContribution() {
     queryFn: (_) => Contributions.getCurrentContribution(queryConfig)
   })
 
-  useEffect(() => {
-    if (position != "") {
+  const handleNavigateStatus = (status) => {
+    setPosition(status)
+    if (!status != undefined) {
       navigate({
-        pathname: "/manage/recent",
+        pathname: "/student-manage/recent",
         search: createSearchParams(omitBy({
           ...queryConfig,
-          status: position
+          status: status
         }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
       });
     } else {
       return navigate({
-        pathname: "/manage/recent",
+        pathname: "/student-manage/recent",
         search: createSearchParams(omit({ ...queryConfig }, ['status'])).toString()
       });
     }
-
-  }, [position])
-
-  const handleInputChange = debounce((value) => {
-    if (!value) {
-      return navigate({
-        pathname: "/manage/recent",
-        search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
-      });
+  }
+  const inputRef = useRef(null)
+  useEffect(() => {
+    if (queryParams['status']) {
+      setPosition(queryParams['status'])
     }
+    inputRef?.current.focus()
+  }, [queryParams])
 
-    navigate({
-      pathname: "/manage/recent",
-      search: createSearchParams(omitBy({
-        ...queryConfig,
-        keyword: value
-      }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
-    });
-  }, 300);
+  const handleInputChange = useCallback(
+    debounce((value) => {
+      if (!value) {
+        return navigate({
+          pathname: "/student-manage/recent",
+          search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
+        });
+      }
+      navigate({
+        pathname: "/student-manage/recent",
+        search: createSearchParams(omitBy({
+          ...queryConfig,
+          keyword: value
+        }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
+      });
+    }, 300),
+    [navigate]
+  );
+
 
   const currentData = data && data?.data?.responseData;
+  console.log(position)
   return (
-    <AdminLayout isAdmin={false}>
+    <AdminLayout links={STUDENT_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
-        <div className={`flex items-center w-full px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}>
+        <div className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}>
           <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
           <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
+            ref={inputRef}
             // onChange={handleChange}
             // onKeyPress={handleKeyPress} 
             defaultValue={queryParams["keyword"]}
@@ -105,7 +108,7 @@ export default function StudentContribution() {
           />
         </div>
         <div className='flex flex-wrap items-center gap-2'>
-          <Button className='flex-1 py-7' onClick={() => navigate("/manage/add-contribution")}>
+          <Button className='flex-1 py-7' onClick={() => navigate("/student-manage/add-contribution")}>
             <Plus></Plus>
             Add new Article
           </Button>
@@ -122,20 +125,19 @@ export default function StudentContribution() {
               <DropdownMenuContent className='w-56'>
                 <DropdownMenuRadioGroup
                   value={position}
-                  onValueChange={setPosition}
                 >
-                  {position != "" && <DropdownMenuRadioItem value=''>
+                  {position != "" && <DropdownMenuRadioItem value='' onClick={() => handleNavigateStatus(undefined)}>
                     All
                   </DropdownMenuRadioItem>}
-                  <DropdownMenuRadioItem value='PENDING'>
+                  <DropdownMenuRadioItem value='PENDING' onClick={() => handleNavigateStatus("PENDING")}>
                     Pending
                   </DropdownMenuRadioItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuRadioItem value='APPROVE'>
+                  <DropdownMenuRadioItem value='APPROVE' onClick={() => handleNavigateStatus("APPROVE")} >
                     Approve
                   </DropdownMenuRadioItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuRadioItem value='REJECT'>
+                  <DropdownMenuRadioItem value='REJECT' onClick={() => handleNavigateStatus("REJECT")}>
                     Reject
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
@@ -150,12 +152,12 @@ export default function StudentContribution() {
             <Article key={index} isRevert={true} status={article?.status} className={'my-4'}
               article={article}></Article>
           ))}
-        <PaginationCustom path={"/manage/recent"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
+        <PaginationCustom path={"/student-manage/recent"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>
       </>}
       {isLoading && <div className="flex justify-center min-h-screen mt-10">
         <Spinner></Spinner>
       </div>}
-      {!currentData?.results?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
+      {!isLoading && !currentData?.results?.length > 0 && <div className="my-10 text-3xl font-semibold text-center ">No Data</div>}
     </AdminLayout>
   )
 }

@@ -14,12 +14,25 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { UserDialog } from './UserDialog'
 import { useState } from 'react'
+import useParamsVariables from '@/hooks/useParams'
+import { Users } from '@/services/admin'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import Spinner from './Spinner'
+import { format } from 'date-fns'
+import { isUndefined, omitBy } from 'lodash'
+import { EditUserDialog } from './EditUserDialog'
+// import { EditUserDialog } from './EditUserDialog'
 
 export function UsersTable() {
   const [isOpenViewUser, setIsOpenViewUser] = useState(false)
+  const [isOpenEditUser, setIsOpenEditUser] = useState(false)
   const [viewUser, setViewUser] = useState({})
   const handleViewUser = (user) => {
     setIsOpenViewUser(true)
+    setViewUser(user)
+  }
+  const handleEditUser = (user) => {
+    setIsOpenEditUser(true)
     setViewUser(user)
   }
   const columns = [
@@ -47,21 +60,36 @@ export function UsersTable() {
       enableHiding: false
     },
     {
-      accessorKey: 'displayName',
+      accessorKey: 'firstName',
       header: ({ column }) => {
         return (
           <Button
             variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Display Name
+            First Name
             <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
       }
     },
     {
-      accessorKey: 'username',
+      accessorKey: 'lastName',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Last Name
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+
+    {
+      accessorKey: 'userName',
       header: ({ column }) => {
         return (
           <Button
@@ -89,14 +117,43 @@ export function UsersTable() {
       }
     },
     {
-      accessorKey: 'type',
+      accessorKey: 'phoneNumber',
       header: ({ column }) => {
         return (
           <Button
             variant='ghost'
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            User Type
+            Phone Number
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'dob',
+
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Date of Birth
+            <ArrowUpDown className='w-4 h-4 ml-2' />
+          </Button>
+        )
+      }
+    },
+    {
+      accessorKey: 'role',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant='ghost'
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Role
             <ArrowUpDown className='w-4 h-4 ml-2' />
           </Button>
         )
@@ -144,7 +201,7 @@ export function UsersTable() {
                   <User className='w-4 h-4 mr-2' />
                   <span>View User</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleEditUser(row.original)}>
                   <Pencil className='w-4 h-4 mr-2' />
                   <span>Edit user</span>
                 </DropdownMenuItem>
@@ -159,45 +216,72 @@ export function UsersTable() {
       }
     }
   ]
-  const data = [
+  const queryParams = useParamsVariables()
+  const queryConfig = omitBy(
     {
-      id: '728ed52f',
-      username: 'khang1233',
-      displayName: 'Nguyen Minh Khang',
-      gender: 'Male',
-      status: 'Active',
-      type: 'Student',
-      email: 'khang@gmail.com',
-      dob: '2003-22-03',
-      faculty: 'IT'
+      pageindex: queryParams.pageindex || '1',
+      pagesize: queryParams.pagesize || '10'
     },
-    {
-      id: '728ed52f',
-      username: 'hung1233',
-      displayName: 'Tran Ky Hung',
-      type: 'Student',
-      gender: 'Male',
-      dob: '2003-22-03',
-      email: 'hung@gmail.com',
-      status: 'Inactive',
-      faculty: 'IT'
-    }
-  ]
-
+    isUndefined
+  )
+  const { data, isLoading } = useQuery({
+    queryKey: ['adminUsers', queryConfig],
+    queryFn: (_) => Users.getAllUsers(queryConfig),
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000
+  })
+  const users = data
+    ? data?.data?.responseData?.results?.map((user) => {
+        return {
+          ...user,
+          dob: format(new Date(user.dob), 'MM-dd-yyyy'),
+          status: user.isActive ? 'Active' : 'Inactive',
+          role: user.roles[0]
+        }
+      })
+    : []
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedRow, setSelectedRow] = useState({})
+  const closeDialog = () => setIsOpenEditUser(false)
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
         <NewUserDialog />
       </div>
-      <div className='h-full px-4 py-6 lg:px-8'>
-        <CustomTable columns={columns} data={data} />
-      </div>
+      {isLoading && (
+        <div className='container flex items-center justify-center min-h-screen'>
+          <Spinner className={'border-blue-500'}></Spinner>
+        </div>
+      )}
+      {!isLoading && (
+        <div className='h-full px-4 py-6 lg:px-8'>
+          <CustomTable
+            columns={columns}
+            data={users}
+            path={'/admin/users'}
+            queryConfig={queryConfig}
+            pageCount={data?.data?.responseData.pageCount || 1}
+            selectedRows={setSelectedRow}
+          />
+        </div>
+      )}
       <UserDialog
         isOpen={isOpenViewUser}
         handleOpenChange={setIsOpenViewUser}
         user={viewUser}
       />
+      {Object.keys(viewUser).length > 0 && isOpenEditUser && (
+        <EditUserDialog
+          isOpen={isOpenEditUser}
+          handleOpenChange={setIsOpenEditUser}
+          data={viewUser}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+          closeDialog={closeDialog}
+        />
+      )}
     </div>
   )
 }

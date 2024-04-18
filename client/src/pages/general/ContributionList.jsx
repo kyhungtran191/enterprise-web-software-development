@@ -1,6 +1,6 @@
 import Article from '@/components/article'
 import GeneralLayout from '@/layouts'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,8 @@ import { useAcademicYear } from '@/query/useAcademicYear'
 import { Icon } from '@iconify/react'
 import Spinner from '@/components/Spinner'
 import PaginationCustom from '@/components/PaginationCustom'
+import { useAppContext } from '@/hooks/useAppContext'
+import { Roles } from '@/constant/roles'
 export default function ContributionList() {
   // State
   const [faculty, setFaculty] = useState("")
@@ -32,7 +34,7 @@ export default function ContributionList() {
   const { data: falcultiesData } = useFaculty()
   //
   const { data: academicData } = useAcademicYear()
-
+  const { profile } = useAppContext()
 
   const queryParams = useParamsVariables()
   const queryConfig = omitBy(
@@ -50,8 +52,17 @@ export default function ContributionList() {
   const { data, isLoading } = useQuery({
     queryKey: ['contributions', queryConfig], queryFn: (_) => Contributions.getAllPublicContribution(queryConfig),
     keepPreviousData: true, staleTime: 1000
+    // disabled: role == guest
   })
+
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ['contributions', { }], queryFn: (_) => Contributions.getAllPublicContribution(queryConfig),
+  //   keepPreviousData: true, staleTime: 1000
+  //   // disabled: role == guest
+  // })
+
   const navigate = useNavigate()
+  const inputRef = useRef(null)
 
   useEffect(() => {
     if (queryParams["facultyname"]) {
@@ -60,7 +71,7 @@ export default function ContributionList() {
     if (queryParams["year"]) {
       setAcademic(queryParams["year"])
     }
-
+    inputRef?.current.focus()
   }, [queryParams])
 
 
@@ -85,22 +96,25 @@ export default function ContributionList() {
     })
   }
 
-  const handleInputChange = debounce((value) => {
-    if (!value) {
-      return navigate({
+  const handleInputChange = useCallback(
+    debounce((value) => {
+      if (!value) {
+        return navigate({
+          pathname: "/contributions",
+          search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
+        });
+      }
+      navigate({
         pathname: "/contributions",
-        search: createSearchParams(omit({ ...queryConfig }, ['keyword'])).toString()
+        search: createSearchParams(omitBy({
+          ...queryConfig,
+          keyword: value
+        }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
       });
-    }
+    }, 300),
+    [navigate]
+  );
 
-    navigate({
-      pathname: "/contributions",
-      search: createSearchParams(omitBy({
-        ...queryConfig,
-        keyword: value
-      }, (value, key) => key === 'pageindex' || key === 'pagesize' || isUndefined(value))).toString()
-    });
-  }, 300);
 
   const listData = data && data?.data?.responseData?.results
   const listFaculties = falcultiesData && falcultiesData?.data?.responseData?.results
@@ -108,7 +122,7 @@ export default function ContributionList() {
 
   return (
     <GeneralLayout>
-      <div className="container">
+      <div className="container py-5">
         <DynamicBreadcrumb></DynamicBreadcrumb>
         <div className="flex flex-wrap items-center justify-between md:gap-5">
           <div className={`flex items-center w-full px-5 py-4 border rounded-lg gap-x-2 w-1/2`}>
@@ -116,17 +130,18 @@ export default function ContributionList() {
             <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
               // onChange={handleChange}
               // onKeyPress={handleKeyPress} 
-              defaultValue={queryParams["keyword"]}
+              defaultValue={queryParams['keyword']}
+              ref={inputRef}
               onChange={(e) => {
-                setInputValue(e.target.value)
-                handleInputChange(e.target.value);
+                setInputValue(e.target.value);
+                handleInputChange(e.target.value)
               }}
             />
           </div>
-          <div className="flex items-center gap-5 py-5 ">
-            <DropdownMenu >
+          <div className="flex flex-wrap items-center gap-2 py-5 md:gap-5 ">
+            <DropdownMenu>
               <DropdownMenuTrigger asChild disabled={isLoading}>
-                <Button variant="default" className="min-w-[200px] outline-none shadow-inner text-lg font-bold p-6">{faculty || "Filter Faculty"}
+                <Button variant="default" className=" md:min-w-[200px] outline-none shadow-inner text-md md:text-lg font-bold md:p-6">{faculty || "Filter Faculty"}
                   <ArrowDown></ArrowDown>
                 </Button>
               </DropdownMenuTrigger>
@@ -142,7 +157,7 @@ export default function ContributionList() {
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild disabled={isLoading}>
-                <Button variant="default" className="min-w-[200px] outline-none shadow-inner text-lg font-bold p-6">{academic || "Filter Academic"}
+                <Button variant="default" className="md:min-w-[200px] outline-none shadow-inner text-md md:text-lg font-bold md:p-6">{academic || "Filter Academic"}
                   <ArrowDown></ArrowDown>
                 </Button>
               </DropdownMenuTrigger>
@@ -161,7 +176,7 @@ export default function ContributionList() {
         {listData && listData.length > 0 && <>
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 xl:gap-4">
             {listData.map((article) => (
-              <Article article={article} key={article.id}></Article>
+              <Article article={article} key={article.id} classImageCustom="!h-[300px]"></Article>
             ))}
           </div>
           <PaginationCustom path={"/contributions"} queryConfig={queryConfig} totalPage={data?.data?.responseData.pageCount || 1}></PaginationCustom>

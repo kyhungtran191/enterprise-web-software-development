@@ -25,8 +25,6 @@ export default function DownloadAllButton({ files }) {
   };
 
 
-
-
   return (
     <Button className="bg-blue-500" onClick={handleDownloadAll}>Download all</Button>
   )

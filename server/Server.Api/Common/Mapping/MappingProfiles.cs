@@ -13,6 +13,7 @@ using Server.Application.Features.AcademicYearApp.Queries.GetAcademicYearById;
 using Server.Application.Features.AcademicYearApp.Queries.GetAllAcademicYearPaging;
 using Server.Application.Features.AcademicYearApp.Queries.InactiveYear;
 using Server.Application.Features.Authentication;
+using Server.Application.Features.CommentApp.Commands;
 using Server.Application.Features.ContributionApp.Commands.ApproveContributions;
 using Server.Application.Features.ContributionApp.Commands.CreateContribution;
 using Server.Application.Features.ContributionApp.Commands.DeleteContribution;
@@ -22,6 +23,7 @@ using Server.Application.Features.ContributionApp.Queries.DownloadFile;
 using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
 using Server.Application.Features.ContributionApp.Queries.GetContributionByTitle;
+using Server.Application.Features.ContributionApp.Queries.GetCoordinatorContribution;
 using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
 using Server.Application.Features.ContributionApp.Queries.GetUserContribution;
 using Server.Application.Features.FacultyApp.Commands.CreateFaculty;
@@ -40,9 +42,12 @@ using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
 using Server.Application.Features.Identity.Users.Queries.ValidateForgotToken;
+using Server.Application.Features.PublicCommentApp.Commands.CreateComment;
+using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
 using Server.Application.Features.PublicContributionApp.Commands.CreateFavorite;
 using Server.Application.Features.PublicContributionApp.Commands.CreateReadLater;
 using Server.Application.Features.PublicContributionApp.Commands.LikeContribution;
+using Server.Application.Features.PublicContributionApp.Commands.RateContribution;
 using Server.Application.Features.PublicContributionApp.Commands.ViewContribution;
 using Server.Application.Features.PublicContributionApp.Queries.DownAllFile;
 using Server.Application.Features.PublicContributionApp.Queries.DownSingleFile;
@@ -57,6 +62,7 @@ using Server.Application.Features.TagApp.Queries.GetTagById;
 using Server.Contracts.AcademicYears;
 using Server.Contracts.Authentication;
 using Server.Contracts.Authentication.Requests;
+using Server.Contracts.Comment;
 using Server.Contracts.Contributions;
 using Server.Contracts.Faculties;
 using Server.Contracts.Identity.Tokens;
@@ -153,9 +159,12 @@ public class MappingProfiles : Profile
         CreateMap<GetRejectReasonRequest, GetRejectReasonQuery>();
         CreateMap<DownloadFileRequest, DownloadFileQuery>();
         CreateMap<GetContributionBySlugRequest, GetUserContributionQuery>();
+        CreateMap<GetContributionBySlugRequest, GetCoordinatorContributionQuery>();
+        CreateMap<AllowGuestRequest, AllowGuestCommand>();
         // public contribution
         CreateMap<Contribution, ContributionPublic>();
         CreateMap<GetAllPublicContributionPagingRequest, GetAllPublicContributionPagingQuery>();
+        CreateMap<GetGuestContributionRequest, GetAllPublicContributionPagingQuery>();
         CreateMap<LikeContributionRequest, LikeContributionCommand>();
         CreateMap<ViewContributionRequest, ViewContributionCommand>();
         CreateMap<ReadLaterRequest, CreateReadLaterCommand>();
@@ -173,5 +182,12 @@ public class MappingProfiles : Profile
         CreateMap<ForgotPasswordRequest, ForgotPasswordCommand>();
         CreateMap<ResetPasswordRequest, ResetPasswordCommand>();
         CreateMap<ValidateForgotTokenRequest, ValidateForgotTokenQuery>();
+        // comment
+        CreateMap<CreateCommentRequest, CreateCommentCommand>();
+        CreateMap<CreateCommentRequest, CreatePublicCommentCommand>();
+        CreateMap<ContributionDto, ContributionWithCommentDto>();
+        CreateMap<PublicContributionDetailDto, PublicContributionWithCommentDto>();
+        // rating
+        CreateMap<RateContributionRequest, RateContributionCommand>();
     }    
 }

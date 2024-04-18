@@ -7,16 +7,42 @@ import { Download, Eye, Heart, LinkedinIcon, ViewIcon } from 'lucide-react'
 import React, { useEffect } from 'react'
 import DOMPurify from 'dompurify';
 import { useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Contributions } from '@/services/client'
 import { formatDate } from '@/utils/helper'
 import Spinner from '@/components/Spinner'
 import DownloadAllButton from '@/components/DownloadAllButton'
 import { useQueryContributionDetail } from '@/query/useQueryContributionDetail'
+import { useLikedContribution } from '@/query/useLikedContribution'
+import Comment from '@/components/Comment'
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import { useLikeMutation } from '@/query/useLikeMutation'
+import { useAppContext } from '@/hooks/useAppContext'
+import { Roles } from '@/constant/roles'
 export default function ContributionDetail() {
+  const schema = yup
+    .object({
+      comment: yup.string().required("Please provide comment"),
+    })
+    .required()
+
+  const { register, handleSubmit, formState: { errors }, setError, reset } = useForm({
+    resolver: yupResolver(schema)
+  })
+
+  const commentMutation = useMutation({
+    mutationFn: (data) => Contributions.commentPublic(data)
+  })
+
+  const queryClient = useQueryClient()
   const { id } = useParams()
+  const { profile } = useAppContext()
   const { data, isLoading } = useQueryContributionDetail(id)
   const detailData = data && data?.data?.responseData
+  const likeMutation = useLikeMutation(detailData?.id)
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
   const handleDownloadFile = (file) => {
     fetch(file?.path)
@@ -35,6 +61,32 @@ export default function ContributionDetail() {
         console.error('Error downloading file:', error);
       });
   };
+  const isFavorite = useLikedContribution(detailData?.id)
+  const onSubmit = ({ comment }) => {
+    commentMutation.mutate({ id: detailData.id, body: { content: comment } }, {
+      onSuccess() {
+        toast.success("Comment Post Successfully!")
+        reset()
+        queryClient.invalidateQueries('preview')
+      },
+      onError() {
+        toast.error("Error when posting comment")
+      }
+    })
+  }
+
+  const handleToggleLike = (e, id) => {
+    e.stopPropagation()
+    likeMutation.mutate(id, {
+      onSuccess() {
+        toast.success("Toggle Like Successfully!")
+        queryClient.invalidateQueries(['favorite-list'])
+      },
+      onError(err) {
+        console.log(err)
+      }
+    })
+  }
   return (
     <GeneralLayout>
       {isLoading && <div className="container flex items-center justify-center min-h-screen"><Spinner className={"border-blue-500"}></Spinner></div>}
@@ -47,7 +99,7 @@ export default function ContributionDetail() {
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <Badge variant="destructive">{detailData?.facultyName}</Badge>
-              <Button className="bg-transparent border border-black text-black-500 hover:bg-red-500 hover:text-white hover:border-white"><Heart></Heart></Button>
+              {profile?.roles !== Roles?.Guest && <Button className={`bg-transparent hover:bg-red-500 hover:text-white hover:border-white  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `} onClick={(e) => handleToggleLike(e, detailData)}><Heart></Heart></Button>}
             </div>
             <h2 className="mt-3 text-2xl font-semibold text-ellipsis line-clamp-4 medium:text-4xl">{detailData?.title} </h2>
             <div className="flex flex-wrap items-center justify-between my-6 text-xs font-semibold text-gray-600 md:text-sm medium:text-base">
@@ -78,12 +130,26 @@ export default function ContributionDetail() {
           <div className="grid-cols-2 gap-6 p-10 rounded-lg shadow-lg h-[250px] overflow-y-scroll md:overflow-auto grid md:h-auto md:grid-cols-5">
             {detailData?.files?.map((file, index) => (
               <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" key={index} onClick={() => handleDownloadFile(file)}>
-                <img src={file?.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
+                <img src={file?.extension === ".doc" || file.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
                 <div className="text-center">{file?.name}</div>
                 <div className="flex items-center justify-center gap-2">
                 </div>
               </div>
             ))}
+
+          </div>
+          <div className='mt-5'>
+            <h2 className='font-bold'>Comments</h2>
+            <form className='flex items-center gap-2 p-5 border rounded-lg' onSubmit={handleSubmit(onSubmit)}>
+              <input type="text" placeholder='Write something here...' className={`flex-1 flex-shrink-0 font-semibold text-black outline-none ${commentMutation.isLoading ? "disabled bg-opacity-70" : ""}`} {...register('comment')} />
+              <Button className={`${commentMutation.isLoading ? "disabled pointer-events-none" : ""} w-[150px] bg-blue-600`} type="submit">Post</Button>
+            </form>
+            <div className="my-3 font-semibold text-red-500">{errors && errors?.comment?.message}</div>
+            {detailData?.comments?.length > 0 && <div className='mt-4'>
+              {detailData?.comments.map((item, index) => (
+                <Comment key={index} comment={item}></Comment>
+              ))}
+            </div>}
 
           </div>
         </div>

@@ -11,5 +11,9 @@ public interface IUnitOfWork : IDisposable
     IFileRepository FileRepository { get; }
     IPublicContributionRepository PublicContributionRepository { get; }
     ILikeRepository LikeRepository { get; }
+    ICommentRepository CommentRepository { get; }
+    IPublicCommentRepository PublicCommentRepository { get; }
+    IRatingRepository RatingRepository { get; }
+    
 }
 

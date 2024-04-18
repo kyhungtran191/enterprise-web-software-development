@@ -12,11 +12,13 @@ import { Auth } from '@/services/client'
 import Spinner from '@/components/Spinner'
 export default function ForgotPassword() {
   const [isSuccess, setIsSuccess] = useState(false);
+  
   const schema = yup
     .object({
       email: yup.string().matches(EMAIL_REG, 'Please provide correct email type').required('Please provide your email'),
     })
     .required()
+    
   const { handleSubmit, control, formState: { errors }, setError } = useForm({
     resolver: yupResolver(schema)
   })

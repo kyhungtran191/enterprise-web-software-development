@@ -1,10 +1,4 @@
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  getPaginationRowModel
-} from '@tanstack/react-table'
+import { flexRender, getSortedRowModel } from '@tanstack/react-table'
 
 import {
   Table,
@@ -14,25 +8,51 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { Button } from './ui/button'
-import { useState } from 'react'
-export function CustomTable({ columns, data }) {
+import {
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable
+} from '@tanstack/react-table'
+import PaginationCustom from './PaginationCustom'
+import { useEffect, useState } from 'react'
+export function CustomTable({
+  columns,
+  data,
+  path,
+  queryConfig,
+  pageCount,
+  selectedRows
+}) {
+  const [rowSelection, setRowSelection] = useState({})
   const [sorting, setSorting] = useState([])
   const table = useReactTable({
     data,
     columns,
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {
-      sorting
+      sorting,
+      rowSelection
     },
+    onSortingChange: setSorting,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel()
   })
+  useEffect(() => {
+    if (selectedRows) {
+      const selected = table
+        .getSelectedRowModel()
+        .rows.map(({ original }) => original)
 
+      selectedRows(selected)
+    }
+  }, [selectedRows, rowSelection, table])
   return (
     <div>
-      <div className='rounded-md border'>
+      <div className='border rounded-md'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -43,9 +63,9 @@ export function CustomTable({ columns, data }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
@@ -53,8 +73,8 @@ export function CustomTable({ columns, data }) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+            {table?.getRowModel()?.rows?.length ? (
+              table?.getRowModel()?.rows?.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
@@ -72,7 +92,7 @@ export function CustomTable({ columns, data }) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns?.length}
                   className='h-24 text-center'
                 >
                   No results.
@@ -82,24 +102,13 @@ export function CustomTable({ columns, data }) {
           </TableBody>
         </Table>
       </div>
-      <div className='flex items-center justify-end space-x-2 py-4'>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
+      {queryConfig && <div className='flex items-center justify-end py-4 space-x-2'>
+        <PaginationCustom
+          path={path}
+          queryConfig={queryConfig}
+          totalPage={pageCount}
+        ></PaginationCustom>
+      </div>}
     </div>
   )
 }

@@ -2,15 +2,18 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Server.Api.Common.Filters;
 using Server.Application.Common.Extensions;
+using Server.Application.Features.CommentApp.Commands;
 using Server.Application.Features.ContributionApp.Commands.ApproveContributions;
 using Server.Application.Features.ContributionApp.Commands.RejectContribution;
-using Server.Application.Features.ContributionApp.Commands.UpdateContribution;
 using Server.Application.Features.ContributionApp.Queries.GetActivityLog;
 using Server.Application.Features.ContributionApp.Queries.GetAllContributionsPaging;
+using Server.Application.Features.ContributionApp.Queries.GetCoordinatorContribution;
 using Server.Application.Features.ContributionApp.Queries.GetRejectReason;
+using Server.Application.Features.PublicContributionApp.Commands.AllowGuest;
+using Server.Contracts.Comment;
 using Server.Contracts.Contributions;
+using Server.Contracts.PublicContributions;
 using Server.Domain.Common.Constants;
 
 namespace Server.Api.Controllers.CoordinatorApi
@@ -72,15 +75,36 @@ namespace Server.Api.Controllers.CoordinatorApi
             return result.Match(result => Ok(result), errors => Problem(errors));
 
         }
-        [HttpPut]
-        [FileValidationFilter(5 * 1024 * 1024)]
-        [Authorize(Permissions.Contributions.Edit)]
-        public async Task<IActionResult> UpdateContribution([FromForm] UpdateContributionRequest updateContributionRequest)
+        [HttpGet]
+        [Route("preview-contribution/{Slug}")]
+        [Authorize(Permissions.Contributions.View)]
+        public async Task<IActionResult> GetContributionBySlug([FromRoute] GetContributionBySlugRequest getContributionBySlugRequest)
         {
-            var command = _mapper.Map<UpdateContributionCommand>(updateContributionRequest);
-            command.UserId = User.GetUserId();
+            var query = _mapper.Map<GetCoordinatorContributionQuery>(getContributionBySlugRequest);
+            query.FacultyName = User.GetFacultyName();
+            query.UserId = User.GetUserId();
+            var result = await _mediatorSender.Send(query);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+
+        }
+
+        [HttpPost]
+        [Route("allow-guest")]
+        public async Task<IActionResult> AllowGuest(AllowGuestRequest request)
+        {
+            var command = _mapper.Map<AllowGuestCommand>(request);
             command.FacultyId = User.GetFacultyId();
-            command.Slug = updateContributionRequest.Title.Slugify();
+            var result = await _mediatorSender.Send(command);
+            return result.Match(result => Ok(result), errors => Problem(errors));
+        }
+
+        [HttpPost]
+        [Route("comment/{ContributionId}")]
+        public async Task<IActionResult> Comment([FromRoute]Guid ContributionId, CreateCommentRequest request )
+        {
+            var command = _mapper.Map<CreateCommentCommand>(request);
+            command.ContributionId = ContributionId;
+            command.UserId = User.GetUserId();
             var result = await _mediatorSender.Send(command);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }

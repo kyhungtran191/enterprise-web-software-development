@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using AutoMapper;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Infrastructure.Persistence.Repositories;
@@ -24,6 +23,9 @@ public class UnitOfWork : IUnitOfWork
   public IFileRepository FileRepository => new FilesRepository(_context,_mapper);
   public IPublicContributionRepository PublicContributionRepository => new PublicContributionRepository(_context,_mapper);
   public ILikeRepository LikeRepository => new LikeRepository(_context);
+  public ICommentRepository CommentRepository => new CommentRepository(_context);
+  public IPublicCommentRepository PublicCommentRepository => new PublicCommentRepository(_context);
+  public IRatingRepository RatingRepository => new RatingRepository(_context);
   public async Task<int> CompleteAsync()
   => await _context.SaveChangesAsync();
 

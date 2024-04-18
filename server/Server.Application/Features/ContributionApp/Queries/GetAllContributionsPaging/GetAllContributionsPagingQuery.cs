@@ -13,5 +13,6 @@ namespace Server.Application.Features.ContributionApp.Queries.GetAllContribution
         public string? FacultyName { get; set; }
         public Guid? UserId { get; set; }
         public string? Status { get; set; }
+        public bool? GuestAllowed { get; set; }
     }
 }

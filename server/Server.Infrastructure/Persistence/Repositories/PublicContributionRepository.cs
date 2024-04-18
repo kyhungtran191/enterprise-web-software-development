@@ -51,6 +51,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
                 Files = files.Where(f => f.ContributionId == query.c.Id && f.Type == FileType.File)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
+                AllowedGuest = query.c.AllowedGuest,
+                AverageRating = query.c.AverageRating,
             };
             return result;
         }
@@ -62,7 +64,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
                 select new { c, a };
             var contributions = await query
-                .OrderBy(x => x.c.LikeQuantity)
+                .OrderByDescending(x => x.c.LikeQuantity)
                 .Take(4)
                 .ToListAsync();
             var contributionIds = contributions.Select(x => x.c.Id).ToList();
@@ -84,7 +86,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
             }).ToList();
             return publicContribution;
         }
@@ -129,7 +132,7 @@ namespace Server.Infrastructure.Persistence.Repositories
         }
 
 
-        public async Task<PagedResult<PublicContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, string? status, int pageIndex = 1, int pageSize = 10)
+        public async Task<PagedResult<PublicContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, string? status, int pageIndex = 1, int pageSize = 10, bool? GuestAllowed = false)
         {
             var query = from c in _dbContext.ContributionPublics
                 where c.DateDeleted == null
@@ -166,6 +169,11 @@ namespace Server.Infrastructure.Persistence.Repositories
 
 
             }
+
+            if (GuestAllowed is true)
+            {
+                query = query.Where(x => x.c.AllowedGuest == true);
+            }
             var totalRow = await query.CountAsync();
 
             var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageSize;
@@ -195,7 +203,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
             }).ToList();
             return new PagedResult<PublicContributionInListDto>
             {
@@ -235,7 +244,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
             }).ToList();
             return publicContribution;
         }

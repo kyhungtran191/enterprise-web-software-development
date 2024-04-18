@@ -1,9 +1,6 @@
-﻿using System.Data;
+using System.Data;
 using AutoMapper;
-using Dapper;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Common.Dtos.Tags;
@@ -16,7 +13,7 @@ using Server.Domain.Entity.Content;
 
 namespace Server.Infrastructure.Persistence.Repositories
 {
-    internal class ContributionRepository : RepositoryBase<Contribution, Guid>, IContributionRepository
+    public class ContributionRepository : RepositoryBase<Contribution, Guid>, IContributionRepository
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -40,7 +37,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             var contribution = GetByIdAsync(contributionId).GetAwaiter().GetResult();
             return contribution.IsConfirmed;
         }
-        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10)
+        public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10, bool? GuestAllowed = false)
         {
             var query = from c in _dbContext.Contributions
                         where c.DateDeleted == null
@@ -75,6 +72,11 @@ namespace Server.Infrastructure.Persistence.Repositories
                 if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var statusEnum))
                 {
                     query = query.Where(x => x.c.Status == statusEnum);
+                    if (statusEnum == ContributionStatus.Approve)
+                    {
+                        query = query.OrderByDescending(x => x.c.PublicDate);
+                    }
+                    
                 }
                 else
                 {
@@ -82,6 +84,10 @@ namespace Server.Infrastructure.Persistence.Repositories
                 }
 
 
+            }
+            if (GuestAllowed is true)
+            {
+                query = query.Where(x => x.c.AllowedGuest == true);
             }
             var totalRow = await query.CountAsync();
 
@@ -105,12 +111,16 @@ namespace Server.Infrastructure.Persistence.Repositories
                 FacultyName = x.f.Name,
                 AcademicYear = x.a.Name,
                 SubmissionDate = x.c.SubmissionDate,
+                PublicDate = x.c.PublicDate,
                 Slug = x.c.Slug,
                 Status = x.c.Status.ToStringValue(),
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 Files = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
+                RejectedReason = GetRejectReason(x.c).GetAwaiter().GetResult(),
+                ShortDescription = x.c.ShortDescription,
+                GuestAllowed = x.c.AllowedGuest
             }).ToList();
 
 
@@ -134,6 +144,60 @@ namespace Server.Infrastructure.Persistence.Repositories
                         select t;
             return await _mapper.ProjectTo<TagDto>(query).ToListAsync();
         }
+        public async Task<ContributionDto> GetContributionOfFaculty(string slug, string facultyName)
+        {
+            var query = from c in _dbContext.Contributions
+                where c.Slug == slug && c.DateDeleted == null
+                join u in _dbContext.Users on c.UserId equals u.Id
+                join f in _dbContext.Faculties on c.FacultyId equals f.Id
+                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                where f.Name == facultyName
+                select new
+                {
+                    c,
+                    u,
+                    f,
+                    a
+                };
+
+          
+
+            if (!string.IsNullOrEmpty(facultyName))
+            {
+                query = query.Where(x => x.f.Name == facultyName);
+            }
+
+            var contributionDetail = await query.FirstOrDefaultAsync();
+            if (contributionDetail == null)
+            {
+                return null;
+            }
+
+            var files = await _dbContext.Files.Where(f => f.ContributionId == contributionDetail.c.Id).ToListAsync();
+            var result = new ContributionDto
+            {
+                Id = contributionDetail.c.Id,
+                Title = contributionDetail.c.Title,
+                Slug = contributionDetail.c.Slug,
+                Status = contributionDetail.c.Status.ToStringValue(),
+                UserName = contributionDetail.u.UserName,
+                FacultyName = contributionDetail.f.Name,
+                AcademicYear = contributionDetail.a.Name,
+                SubmissionDate = contributionDetail.c.SubmissionDate,
+                PublicDate = contributionDetail.c.PublicDate,
+                DateEdited = contributionDetail.c.DateEdited,
+                Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
+                Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
+                ShortDescription = contributionDetail.c.ShortDescription,
+                Content = contributionDetail.c.Content
+            };
+
+
+            return result;
+        }
+
         public async Task<ContributionDto> GetContributionOfUser(string slug, Guid userId)
         {
             var contributionDetail = await (from c in _dbContext.Contributions
@@ -169,9 +233,11 @@ namespace Server.Infrastructure.Persistence.Repositories
                 PublicDate = contributionDetail.c.PublicDate,
                 DateEdited = contributionDetail.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
                 Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
+                ShortDescription = contributionDetail.c.ShortDescription,
+                Content = contributionDetail.c.Content,
             };
 
 
@@ -213,9 +279,11 @@ namespace Server.Infrastructure.Persistence.Repositories
                 PublicDate = contributionDetail.c.PublicDate,
                 DateEdited = contributionDetail.c.DateEdited,
                 Thumbnails = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.Thumbnail)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 Files = files.Where(f => f.ContributionId == contributionDetail.c.Id && f.Type == FileType.File)
-                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name }).ToList(),
+                    .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
+                ShortDescription = contributionDetail.c.ShortDescription,
+                Content = contributionDetail.c.Content,
             };
 
             return result;

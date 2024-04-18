@@ -1,12 +1,20 @@
 import Article from '@/components/article'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Roles } from '@/constant/roles'
+import { useAppContext } from '@/hooks/useAppContext'
 import { Contributions } from '@/services/client'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
 export default function LatestContribution() {
-  const { data, isLoading } = useQuery({ queryKey: ['lastest-contributions'], queryFn: Contributions.getLatestContribution })
+  const { profile } = useAppContext()
+  const { data, isLoading } = useQuery({
+    queryKey: ['lastest-contributions'],
+    queryFn: Contributions.getLatestContribution,
+    enabled: profile.roles !== Roles.Guest
+  })
+  if (!data) return <></>
   return (
     <section className="my-4">
       <div className="flex items-center justify-between">

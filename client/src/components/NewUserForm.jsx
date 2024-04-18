@@ -30,51 +30,144 @@ import {
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
+import { Faculties, Roles, Users } from '@/services/admin'
+import { toast } from 'react-toastify'
+import useParamsVariables from '@/hooks/useParams'
+import DatePickerCustom from './DatePickerCustom'
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 6 characters.'
-  }),
-  displayName: z.string({ required_error: 'A display name is required.' }),
-  gender: z.enum(['male', 'female']),
-  email: z.string().email(),
-  dob: z.date({
-    required_error: 'A date of birth is required.'
-  }),
-  type: z.enum(['student', 'marketingCoordiantor', 'marketingManager']),
-  faculty: z.enum(['marketing', 'business', 'design', 'it'])
-})
-
-export function NewUserForm() {
+export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
   const [userType, setUserType] = useState('')
-
+  const queryClient = useQueryClient()
+  const { isLoading, mutate } = useMutation({
+    mutationFn: (data) => Users.createUser(data)
+  })
+  const queryParams = useParamsVariables()
+  const { data: facultiesData, isLoading: isFacultiesLoading } = useQuery({
+    queryKey: ['adminFaculties', queryParams],
+    queryFn: (_) => Faculties.getAllFacultiesPaging(queryParams),
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000
+  })
+  const { data: rolesData, isLoading: isRolesLoading } = useQuery({
+    queryKey: ['adminRoles', queryParams],
+    queryFn: (_) => Roles.getAllRoles(),
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000
+  })
+  const faculties = facultiesData
+    ? facultiesData?.data?.responseData.results
+    : []
+  const roles = rolesData ? rolesData?.data?.responseData : []
+  const formSchema = z.object({
+    firstName: z.string().min(2, {
+      message: 'First name must be at least 2 characters.'
+    }),
+    lastName: z.string().min(2, {
+      message: 'Last name must be at least 2 characters.'
+    }),
+    phoneNumber: z.string().min(10, {
+      message: 'Phone number must be at least 10 characters.'
+    }),
+    username: z.string().min(2, {
+      message: 'Username must be at least 6 characters.'
+    }),
+    email: z.string().email(),
+    dob: z.date({
+      message: 'A date of birth is required.'
+    }),
+    roleId: z.enum(
+      roles.map((role) => role.id),
+      {
+        message: 'User type must be chosen'
+      }
+    ),
+    facultyId: z.enum(
+      faculties.map((faculty) => faculty.id),
+      {
+        message: 'Faculty must be chosen'
+      }
+    )
+  })
   const form = useForm({
+    mode: 'all',
+    reValidateMode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: {
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
       username: '',
-      displayName: '',
-      type: '',
-      gender: '',
+      role: '',
       email: '',
       dob: '',
       faculty: ''
     }
   })
-
-  function onSubmit(values) {
-    console.log(values)
+  async function getImageAsBinaryString() {
+    const response = await fetch('/client/public/avatar.png')
+    if (!response.ok) {
+      throw new Error('Failed to fetch default avatar')
+    }
+    const blob = await response.blob()
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result)
+      reader.onerror = reject
+      reader.readAsBinaryString(blob)
+    })
+  }
+  async function onSubmit(formData) {
+    setIsSubmitting(true)
+    try {
+      const avatarBinaryString = await getImageAsBinaryString()
+      const payload = {
+        ...formData,
+        avatar: btoa(avatarBinaryString),
+        isActive: true
+      }
+      mutate(payload, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['adminUsers'] })
+          setIsSubmitting(false)
+          toast.success('User created successfully!')
+          form.reset()
+          closeDialog()
+        },
+        onError: (error) => {
+          const errorMessage = error?.response?.data?.title
+          toast.error(errorMessage)
+          setIsSubmitting(false)
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 w-full'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full space-y-4'>
         <FormField
           control={form.control}
-          name='displayName'
+          name='firstName'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Display Name</FormLabel>
+              <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input placeholder='Display Name' {...field} />
+                <Input placeholder='First Name' {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='lastName'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input placeholder='Last Name' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,6 +186,23 @@ export function NewUserForm() {
             </FormItem>
           )}
         />
+        {/* <FormField
+          control={form.control}
+          name='password'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  type='password'
+                  placeholder='Enter the password'
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
 
         <FormField
           control={form.control}
@@ -109,29 +219,12 @@ export function NewUserForm() {
         />
         <FormField
           control={form.control}
-          name='gender'
+          name='phoneNumber'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Gender</FormLabel>
+              <FormLabel>Phone number</FormLabel>
               <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className='flex flex-col space-y-1'
-                >
-                  <FormItem className='flex items-center space-x-3 space-y-0'>
-                    <FormControl>
-                      <RadioGroupItem value='male' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>Male</FormLabel>
-                  </FormItem>
-                  <FormItem className='flex items-center space-x-3 space-y-0'>
-                    <FormControl>
-                      <RadioGroupItem value='female' />
-                    </FormControl>
-                    <FormLabel className='font-normal'>Female</FormLabel>
-                  </FormItem>
-                </RadioGroup>
+                <Input type='tel' placeholder='Phone number' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -158,19 +251,22 @@ export function NewUserForm() {
                       ) : (
                         <span>Pick a date</span>
                       )}
-                      <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                      <CalendarIcon className='w-4 h-4 ml-auto opacity-50' />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className='w-auto p-0' align='start'>
-                  <Calendar
+                  <DatePickerCustom
                     mode='single'
+                    captionLayout='dropdown-buttons'
                     selected={field.value}
-                    onSelect={field.onChange}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
+                    onSelect={(date) => {
+                      field.onChange(date)
+                    }}
+                    disabled={(date) => date < new Date('2000-01-01')}
                     initialFocus
+                    fromYear={1960}
+                    toYear={new Date().getFullYear()}
                   />
                 </PopoverContent>
               </Popover>
@@ -180,28 +276,21 @@ export function NewUserForm() {
         />
         <FormField
           control={form.control}
-          name='type'
+          name='roleId'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>User Type</FormLabel>
+              <FormLabel>User Roles</FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={(value) => {
-                    setUserType(value)
-                    field.onChange(value)
-                  }}
-                >
+                <Select onValueChange={field.onChange}>
                   <SelectTrigger className='w-min-[180px] w-full'>
-                    <SelectValue placeholder='Select user type' />
+                    <SelectValue placeholder='Select role' />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='student'>Student</SelectItem>
-                    <SelectItem value='marketingCoordinator'>
-                      Marketing Coordinator
-                    </SelectItem>
-                    <SelectItem value='marketingManager'>
-                      Marketing Manager
-                    </SelectItem>
+                    {roles?.map((role) => (
+                      <SelectItem key={role.id} value={role.id}>
+                        {role.displayName}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -212,7 +301,7 @@ export function NewUserForm() {
         {userType !== 'marketingManager' && (
           <FormField
             control={form.control}
-            name='faculty'
+            name='facultyId'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Faculty</FormLabel>
@@ -222,10 +311,11 @@ export function NewUserForm() {
                       <SelectValue placeholder='Select faculty' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='it'>IT</SelectItem>
-                      <SelectItem value='business'>Business</SelectItem>
-                      <SelectItem value='design'>Design</SelectItem>
-                      <SelectItem value='marketing'>Marketing</SelectItem>
+                      {faculties?.map((faculty) => (
+                        <SelectItem key={faculty.id} value={faculty.id}>
+                          {faculty.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -235,9 +325,14 @@ export function NewUserForm() {
           />
         )}
         <DialogFooter>
-          <DialogClose disabled={!form.formState.isValid}>
-            <Button type='submit'>Submit</Button>
-          </DialogClose>
+          <Button
+            type='submit'
+            disabled={
+              Object.keys(form.formState.errors).length > 0 || isSubmitting
+            }
+          >
+            Submit
+          </Button>
         </DialogFooter>
       </form>
     </Form>

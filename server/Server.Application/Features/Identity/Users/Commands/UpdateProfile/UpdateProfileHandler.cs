@@ -40,7 +40,7 @@ namespace Server.Application.Features.Identity.Users.Commands.UpdateProfile
            
             userFromDb.FirstName = request.FirstName;
             userFromDb.LastName = request.LastName;
-            userFromDb.Email = request.Email;
+            //userFromDb.Email = request.Email;
             userFromDb.PhoneNumber = request.PhoneNumber;
             userFromDb.Dob = request.Dob;
           
@@ -48,26 +48,31 @@ namespace Server.Application.Features.Identity.Users.Commands.UpdateProfile
             if (request.Avatar is not null)
             {
                 // remove
-                var existingFiles = userFromDb.Avatar;
-                if (existingFiles is null)
-                {
-                    return Errors.User.NoAvatarFound;
-                }
+                //var existingFiles = userFromDb.AvatarPublicId;
+                //if (existingFiles is not null)
+                //{
+                //    var removeFilePaths = new List<string>();
+                //    var removeFileTypes = new List<string>();
 
-                var removeFilePaths = new List<string>
-                {
-                    existingFiles
-                };
-                await _mediaService.RemoveFile(removeFilePaths);
+
+                //    removeFilePaths.Add(existingFiles);
+                //    removeFileTypes.Add("Image");
+
+
+
+                //    await _mediaService.RemoveFromCloudinary(removeFilePaths, removeFileTypes);
+                //}
+                
                 // update
                 var newAvatarList = new List<IFormFile>
                 {
                     request.Avatar,
                 };
-                var infos = await _mediaService.UploadFiles(newAvatarList, FileType.Avatar);
+                var infos = await _mediaService.UploadFileCloudinary(newAvatarList, FileType.Avatar, userFromDb.Id);
                 foreach (var info in infos)
                 {
                     userFromDb.Avatar = info.Path;
+                    userFromDb.AvatarPublicId = info.PublicId;
                 }
 
             }

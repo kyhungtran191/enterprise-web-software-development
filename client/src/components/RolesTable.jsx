@@ -5,7 +5,16 @@ import { AuthorizeDialog } from '@/components/AuthorizeDialog'
 import { ArrowUpDown } from 'lucide-react'
 import DynamicBreadcrumb from './DynamicBreadcrumbs'
 import { NewRoleDialog } from './NewRoleDialog'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import useParamsVariables from '@/hooks/useParams'
+import { Roles } from '@/services/admin'
+import Spinner from './Spinner'
+import { isUndefined, omitBy } from 'lodash'
+
+import { useState } from 'react'
+
 export function RolesTable() {
+  const queryClient = useQueryClient()
   const columns = [
     {
       id: 'select',
@@ -61,54 +70,49 @@ export function RolesTable() {
     {
       id: 'actions',
       cell: ({ row }) => {
-        return (
-          <AuthorizeDialog
-            role={row.original.displayName}
-            permissions={permissionList}
-          />
-        )
+        return <AuthorizeDialog role={row.original} />
       }
     }
   ]
-  const data = [
+  const queryParams = useParamsVariables()
+  const queryConfig = omitBy(
     {
-      id: '728ed52f',
-      name: 'Admin',
-      displayName: 'Administrator'
+      pageindex: queryParams.pageindex || '1',
+      pagesize: queryParams.pagesize || '10'
     },
-    {
-      id: '728ed52f',
-      name: 'Student',
-      displayName: 'Student'
-    }
-  ]
-  const permissionList = [
-    {
-      id: '1',
-      name: 'View contribution'
-    },
-    {
-      id: '2',
-      name: 'Create contribution'
-    },
-    {
-      id: '3',
-      name: 'Edit contribution'
-    },
-    {
-      id: '4',
-      name: 'Delete contribution'
-    }
-  ]
+    isUndefined
+  )
+  let { data, isLoadingRoles } = useQuery({
+    queryKey: ['adminRoles', queryConfig],
+    queryFn: (_) => Roles.getAllRolesPaging(queryConfig),
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000
+  })
+  const rolesData = data ? data?.data?.responseData.results : []
+  const [selectedRow, setSelectedRow] = useState({})
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
         <NewRoleDialog />
       </div>
-      <div className='h-full px-4 py-6 lg:px-8'>
-        <CustomTable columns={columns} data={data} />
-      </div>
+      {isLoadingRoles && (
+        <div className='container flex items-center justify-center min-h-screen'>
+          <Spinner className={'border-blue-500'}></Spinner>
+        </div>
+      )}
+      {!isLoadingRoles && (
+        <div className='h-full px-4 py-6 lg:px-8'>
+          <CustomTable
+            columns={columns}
+            data={rolesData}
+            path={'/admin/roles'}
+            queryConfig={queryConfig}
+            pageCount={data?.data?.responseData.pageCount || 1}
+            selectedRows={setSelectedRow}
+          />
+        </div>
+      )}
     </div>
   )
 }

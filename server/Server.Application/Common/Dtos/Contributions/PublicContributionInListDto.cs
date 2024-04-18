@@ -15,5 +15,6 @@
         public int View { get; set; } = 0;
         public string? Avatar { get; set; }
         public string? ShortDescription { get; set; }
+        public double AverageRating { get; set; } = 0.0;
     }
 }

@@ -7,9 +7,10 @@ namespace Server.Application.Common.Interfaces.Persistence
 {
     public interface IContributionRepository : IRepository<Contribution,Guid>
     {
-        Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10);
+        Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10,bool? GuestAllowed = false);
         bool IsConfirmed(Guid contributionId);
         Task<ContributionDto> GetContributionBySlug(string slug);
+        Task<ContributionDto> GetContributionOfFaculty(string slug, string facultyName);
         Task<ContributionDto> GetContributionOfUser(string slug, Guid userId);
 
         Task<List<TagDto>> GetAllTags(Guid contributionId);

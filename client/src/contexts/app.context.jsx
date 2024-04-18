@@ -1,12 +1,14 @@
 import { getAccessTokenFromLS, getUserFromLS } from '@/utils/auth'
-import React, { useState } from 'react'
-
+import React, { useEffect, useState } from 'react'
+import { useQuery } from "@tanstack/react-query"
+import { Auth } from '@/services/client'
 
 const initialAppContext = {
   isAuthenticated: Boolean(getAccessTokenFromLS()),
   setIsAuthenticated: () => { },
   profile: getUserFromLS(),
-  setProfile: () => { }
+  setProfile: () => { },
+  roles: [],
 }
 
 export const AppContext = React.createContext(initialAppContext)
@@ -14,8 +16,19 @@ export const AppContext = React.createContext(initialAppContext)
 export const AppProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(initialAppContext.isAuthenticated)
   const [profile, setProfile] = useState(initialAppContext.profile)
+  const [avatar, setAvatar] = useState("")
+  const { isLoading, data } = useQuery({
+    queryKey: ['profile'],
+    queryFn: Auth.profile,
+    enabled: !!isAuthenticated
+  })
+  let detailData = data && data?.data?.responseData
+  useEffect(() => {
+    setAvatar(detailData?.avatar)
+  }, [detailData])
+
   return (
-    <AppContext.Provider value={{ profile, setProfile, isAuthenticated, setIsAuthenticated }}>
+    <AppContext.Provider value={{ profile, setProfile, isAuthenticated, setIsAuthenticated, avatar, setAvatar }}>
       {children}
     </AppContext.Provider>
   )
