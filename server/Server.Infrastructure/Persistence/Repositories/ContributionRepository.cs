@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Data;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos;
@@ -17,13 +17,12 @@ namespace Server.Infrastructure.Persistence.Repositories
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
-      
 
-        public ContributionRepository(AppDbContext context , IMapper mapper) : base(context)
+        public ContributionRepository(AppDbContext context,
+                                      IMapper mapper) : base(context)
         {
             _dbContext = context;
             _mapper = mapper;
-          
         }
         public async Task<bool> IsSlugAlreadyExisted(string slug, Guid? id = null)
         {
@@ -31,21 +30,21 @@ namespace Server.Infrastructure.Persistence.Repositories
             {
                 return await _dbContext.Contributions.AnyAsync(c => c.Slug == slug && c.Id != id.Value);
             }
-            return await _dbContext.Contributions.AnyAsync(c=>c.Slug == slug);
+            return await _dbContext.Contributions.AnyAsync(c => c.Slug == slug);
         }
-        public  bool IsConfirmed(Guid contributionId)
+        public bool IsConfirmed(Guid contributionId)
         {
-            var contribution =  GetByIdAsync(contributionId).GetAwaiter().GetResult();
+            var contribution = GetByIdAsync(contributionId).GetAwaiter().GetResult();
             return contribution.IsConfirmed;
         }
         public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10, bool? GuestAllowed = false)
         {
             var query = from c in _dbContext.Contributions
-                where c.DateDeleted == null
-                join u in _dbContext.Users on c.UserId equals u.Id
-                join f in _dbContext.Faculties on c.FacultyId equals f.Id
-                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
-                select new { c, u, f, a };
+                        where c.DateDeleted == null
+                        join u in _dbContext.Users on c.UserId equals u.Id
+                        join f in _dbContext.Faculties on c.FacultyId equals f.Id
+                        join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                        select new { c, u, f, a };
 
             if (!string.IsNullOrEmpty(keyword))
             {
@@ -69,8 +68,8 @@ namespace Server.Infrastructure.Persistence.Repositories
 
             if (!string.IsNullOrEmpty(status))
             {
-                
-                if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var statusEnum)) 
+
+                if (Enum.TryParse<ContributionStatus>(status.ToUpperInvariant(), true, out var statusEnum))
                 {
                     query = query.Where(x => x.c.Status == statusEnum);
                     if (statusEnum == ContributionStatus.Approve)
@@ -83,7 +82,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 {
                     throw new Exception("Invalid Status");
                 }
-                
+
 
             }
             if (GuestAllowed is true)
@@ -139,10 +138,10 @@ namespace Server.Infrastructure.Persistence.Repositories
         public async Task<List<TagDto>> GetAllTags(Guid contributionId)
         {
             var query = from p in _dbContext.ContributionTags
-                join t in _dbContext.Tags
-                    on p.TagId equals t.Id
-                where t.Id == contributionId
-                select t;
+                        join t in _dbContext.Tags
+                            on p.TagId equals t.Id
+                        where t.Id == contributionId
+                        select t;
             return await _mapper.ProjectTo<TagDto>(query).ToListAsync();
         }
         public async Task<ContributionDto> GetContributionOfFaculty(string slug, string facultyName)
@@ -214,7 +213,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                                                 a
                                             }).FirstOrDefaultAsync();
 
-          
+
             if (contributionDetail == null)
             {
                 return null;
@@ -241,7 +240,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Content = contributionDetail.c.Content,
             };
 
-           
+
             return result;
         }
 
@@ -254,16 +253,19 @@ namespace Server.Infrastructure.Persistence.Repositories
                                             join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
                                             select new
                                             {
-                                               c,u,f,a
+                                                c,
+                                                u,
+                                                f,
+                                                a
                                             }).FirstOrDefaultAsync();
 
             if (contributionDetail == null)
             {
                 return null;
             }
-            var files = await _dbContext.Files.Where(f=>f.ContributionId==contributionDetail.c.Id).ToListAsync();
+            var files = await _dbContext.Files.Where(f => f.ContributionId == contributionDetail.c.Id).ToListAsync();
 
-            
+
             var result = new ContributionDto
             {
                 Id = contributionDetail.c.Id,
@@ -316,7 +318,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             });
             contribution.Status = ContributionStatus.Pending;
             _dbContext.Contributions.Update(contribution);
-            
+
         }
         public async Task Approve(Contribution contribution, Guid userId)
         {
@@ -354,13 +356,13 @@ namespace Server.Infrastructure.Persistence.Repositories
             publicContribution.UserName = contributionOwner.UserName;
             publicContribution.FacultyName = faculty.Name;
             publicContribution.DateCreated = DateTime.UtcNow;
-            
+
             await _dbContext.ContributionPublics.AddAsync(publicContribution);
-           
+
         }
         public async Task<string> GetRejectReason(Contribution contribution)
         {
-           
+
             var activity = await _dbContext.ContributionActivityLogs
                 .Where(pal => pal.ContributionId == contribution.Id && pal.ToStatus == ContributionStatus.Reject)
                 .OrderByDescending(pal => pal.DateCreated)
@@ -368,7 +370,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             return activity?.Description ?? string.Empty;
         }
 
-      
+
         public async Task Reject(Contribution contribution, Guid userId, string note)
         {
             var user = await _dbContext.Users.FindAsync(userId);
@@ -394,7 +396,7 @@ namespace Server.Infrastructure.Persistence.Repositories
 
         public async Task<List<ActivityLogDto>> GetActivityLogs(Contribution contribution)
         {
-            var items = await _dbContext.ContributionActivityLogs.Where(x => x.ContributionId == contribution.Id).OrderByDescending(x=>x.DateCreated).ToListAsync();
+            var items = await _dbContext.ContributionActivityLogs.Where(x => x.ContributionId == contribution.Id).OrderByDescending(x => x.DateCreated).ToListAsync();
             var results = new List<ActivityLogDto>();
             foreach (var item in items)
             {
@@ -407,6 +409,7 @@ namespace Server.Infrastructure.Persistence.Repositories
 
             return results;
         }
-      
+
+
     }
 }
