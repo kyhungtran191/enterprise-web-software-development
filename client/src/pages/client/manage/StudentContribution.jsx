@@ -94,7 +94,7 @@ export default function StudentContribution() {
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
-        <div className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}>
+        <div className={`flex items-center w-full px-3 py-2 medium:px-5 medium:py-4 border rounded-lg gap-x-2 medium:w-[50vw]`}>
           <Icon icon="ic:outline-search" className="flex-shrink-0 w-6 h-6 text-slate-700"></Icon>
           <input type="text" className='flex-1 border-none outline-none' placeholder="What you're looking for ?"
             ref={inputRef}
@@ -108,7 +108,7 @@ export default function StudentContribution() {
           />
         </div>
         <div className='flex flex-wrap items-center gap-2'>
-          <Button className='flex-1 py-7' onClick={() => navigate("/student-manage/add-contribution")}>
+          <Button className='flex-1 py-4' onClick={() => navigate("/student-manage/add-contribution")}>
             <Plus></Plus>
             Add new Article
           </Button>
@@ -117,7 +117,7 @@ export default function StudentContribution() {
               <DropdownMenuTrigger asChild className='w-full'>
                 <Button
                   variant='default'
-                  className='gap-4 border-none outline-none py-7 min-w-[145px]'
+                  className='gap-4 border-none outline-none py-4 min-w-[145px]'
                 >
                   {position.toUpperCase() || "Filter Status"} <ArrowDown10Icon></ArrowDown10Icon>
                 </Button>

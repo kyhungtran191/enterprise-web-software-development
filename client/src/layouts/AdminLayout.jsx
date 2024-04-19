@@ -21,7 +21,7 @@ const AdminLayout = ({ children, isAdmin = true, links = ADMIN_OPTIONS }) => {
         <div className='flex flex-row'>
           <Sidebar
             links={links}
-            className={'min-w-1/4 w-1/5 hidden lg:block'}
+            className={'block min-w-1/4 w-[60px] overflow-hidden medium:w-1/5 '}
           />
           <Separator orientation='vertical' />
           {/* Replace with correct tablle */}
