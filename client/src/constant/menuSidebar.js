@@ -9,7 +9,8 @@ import {
   User,
   MoreHorizontal,
   ArrowUpDown,
-  Clock
+  Clock,
+  BarChart
 } from 'lucide-react'
 
 export const ADMIN_OPTIONS = [
@@ -46,6 +47,11 @@ export const ADMIN_OPTIONS = [
 ]
 export const STUDENT_OPTIONS = [
   {
+    title: 'My Dashboard',
+    icon: BarChart,
+    href: '/student-manage/dashboard'
+  },
+  {
     title: 'Recents Posts',
     icon: CircleGauge,
     href: '/student-manage/recent'
@@ -65,11 +71,7 @@ export const STUDENT_OPTIONS = [
     icon: Heart,
     href: '/student-manage/favorites'
   },
-  {
-    title: 'Settings',
-    icon: Settings,
-    href: '/student-manage/settings'
-  }
+
 ]
 
 export const MC_OPTIONS = [

@@ -28,6 +28,7 @@ import { Roles } from './constant/roles'
 import ViewFile from './pages/general/ViewFile'
 import Dashboard from './components/Dashboard'
 import ReadLaterContribution from './pages/client/manage/contribution/ReadLaterContribution'
+import StudentDashboard from './pages/client/manage/contribution/StudentDashboard'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -130,6 +131,7 @@ function App() {
           />
           <Route element={<IsGuestAccount />} path=''>
             <Route path='/student-manage'>
+              <Route index element={<StudentDashboard></StudentDashboard>}></Route>
               <Route
                 path='/student-manage/recent'
                 element={<StudentContribution></StudentContribution>}
@@ -150,6 +152,7 @@ function App() {
                 path='/student-manage/read-later'
                 element={<ReadLaterContribution></ReadLaterContribution>}
               ></Route>
+              <Route path="/student-manage/dashboard" element={<StudentDashboard></StudentDashboard>}></Route>
             </Route>
           </Route>
 
