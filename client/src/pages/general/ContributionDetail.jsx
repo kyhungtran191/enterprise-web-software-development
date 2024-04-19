@@ -51,7 +51,6 @@ export default function ContributionDetail() {
   const likeMutation = useLikeMutation(detailData?.id)
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
   const handleDownloadFile = (e, file) => {
-
     e.stopPropagation()
     e.preventDefault()
     fetch(file?.path)
@@ -84,22 +83,23 @@ export default function ContributionDetail() {
       }
     })
   }
-
   const handleToggleLike = (e, id) => {
     e.stopPropagation()
     likeMutation.mutate(id, {
       onSuccess() {
         toast.success("Toggle Like Successfully!")
-        queryClient.invalidateQueries(['favorite-list'])
       },
       onError(err) {
         console.log(err)
-      }
+      },
+      onSettled() {
+        queryClient.invalidateQueries(['favorite-list']);
+        queryClient.invalidateQueries(['detail-contributions']);
+      },
     })
   }
-
+  console.log(detailData)
   return (
-
 
     <GeneralLayout>
       {isLoading && <div className="container flex items-center justify-center min-h-screen"><Spinner className={"border-blue-500"}></Spinner></div>}
@@ -108,8 +108,9 @@ export default function ContributionDetail() {
         <DynamicBreadcrumb></DynamicBreadcrumb>
         {/* Top post */}
         <div className='flex flex-col items-center gap-6 my-5 medium:flex-row'>
-          <img src={`${detailData?.thumbnails?.length > 0 && detailData?.thumbnails[0]?.path || 'https://plus.unsplash.com/premium_photo-1686149758342-9f0f249f2989?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8'}`} alt="" className='rounded-lg w-full xl:h-[500px] medium:w-[60%] xl:w-auto object-cover flex-shrink-0' />
+          <img src={`${detailData?.thumbnails?.length > 0 && detailData?.thumbnails[0]?.path || 'https://plus.unsplash.com/premium_photo-1686149758342-9f0f249f2989?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8'}`} alt="" className='rounded-lg w-full xl:h-[500px] medium:w-[60%] xl:w-auto object-cover flex-shrink-0 ' />
           <div className="w-full md:flex-1">
+            <div className="flex items-end font-bold justify-center text-white bg-yellow-500 rounded-sm w-[150px] py-3 px-2 ml-auto my-4 gap-2">{detailData?.averageRating} <Star width={20}></Star></div>
             <div className="flex items-center justify-between">
               <Badge variant="destructive">{detailData?.facultyName}</Badge>
               {profile?.roles !== Roles?.Guest && <Button className={`bg-transparent hover:bg-red-500 hover:text-white hover:border-white  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `} onClick={(e) => handleToggleLike(e, detailData)}><Heart></Heart></Button>}
@@ -166,11 +167,11 @@ export default function ContributionDetail() {
               </TooltipProvider>
             ))}
           </div>
-          <div className={` fixed right-0 top-1/2 -translate-y-1/2 ${openOptions ? "translate-x-0" : "translate-x-full"} bg-black text-white shadow-lg min-h-[100px] rounded-lg flex flex-col items-center justify-center z-30 transition-all duration-300 p-5`}>
+          <div className={`md:min-w-[300px] fixed right-0 top-1/2 -translate-y-1/2 ${openOptions ? "translate-x-0" : "translate-x-full"} bg-black text-white shadow-lg min-h-[100px] rounded-lg flex flex-col items-center justify-center z-30 transition-all duration-300 p-5`}>
             <div className="absolute inline-block cursor-pointer left-5 top-2" onClick={() => { setOpenOptions(false) }} >
               <CircleX />
             </div>
-            <Ratings></Ratings>
+            <Ratings id={detailData?.id} currentRating={detailData?.myRating}></Ratings>
           </div>
           {!openOptions && <div className="fixed right-0 -translate-y-1/2 top-1/2 w-[50px]  shadow-lg h-[50px] rounded-lg flex  flex-col items-center justify-center z-30 cursor-pointer bg-black text-white transition-all duration-300" onClick={() => setOpenOptions(true)}>
             <Star height={30} width={30} />

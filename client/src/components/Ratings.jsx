@@ -1,21 +1,48 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from './ui/button';
+import { toast } from 'react-toastify'
+import { useMutation } from '@tanstack/react-query';
+import { Contributions } from '@/services/client';
+import { useQueryClient } from '@tanstack/react-query';
+export default function Ratings({ id, currentRating }) {
 
-export default function Ratings() {
+
   const [selectedStar, setSelectedStar] = useState(0);
+  const queryClient = useQueryClient()
+  const { mutate } = useMutation({
+    mutationFn: (data) => Contributions.ratePublic(data)
+  })
 
+  const handleSubmitRate = () => {
+    if (selectedStar == 0) {
+      toast.error("Please provide rate star")
+      return 0;
+    } else {
+      mutate({ id, rating: selectedStar }, {
+        onSuccess() {
+          toast.success("Submit new Rate successfully!")
+        },
+        onSettled() {
+          queryClient.invalidateQueries(['detail-contributions']);
+        }
+      })
+    }
+  }
   const handleStarHover = (value) => {
     setSelectedStar(value);
   };
 
   const handleStarLeave = () => {
-    setSelectedStar(0)
+    // setSelectedStar(0)
   };
 
   const handleStarClick = (value) => {
     setSelectedStar(value);
     // Gửi dữ liệu đánh giá (value) đến server hoặc xử lý dữ liệu tại đây
   };
+  useEffect(() => {
+    setSelectedStar(currentRating || 0)
+  }, [currentRating])
 
   return (
     <>
@@ -36,6 +63,7 @@ export default function Ratings() {
           </span>
         ))}
       </div>
+      <Button className="w-full px-2 py-3 mt-4 bg-cyan-500 hover:bg-cyan-600" onClick={handleSubmitRate}>Submit</Button>
     </>
   )
 }
