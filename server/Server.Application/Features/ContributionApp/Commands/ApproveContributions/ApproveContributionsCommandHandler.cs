@@ -55,9 +55,14 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
                 }
 
                
-                await _unitOfWork.ContributionRepository.Approve(contribution,request.UserId);
                 var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
+                var coordinator = await _userManager.FindByIdAsync(request.UserId.ToString());
+                if (student.FacultyId != coordinator.FacultyId)
+                {
+                    return Errors.Contribution.NotBelongFaculty;
+                }
                 var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)student?.FacultyId!);
+                await _unitOfWork.ContributionRepository.Approve(contribution,request.UserId);
                 _emailService.SendEmail(new MailRequest
                 {
                     ToEmail = student.Email,
