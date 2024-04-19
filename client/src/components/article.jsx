@@ -73,6 +73,7 @@ export default function Article({ isRevert = false, className, status, classImag
       onSuccess() {
         toast.success("Toggle Like Successfully!")
         queryClient.invalidateQueries(['favorite-list'])
+        queryClient.invalidateQueries(['detail-contributions']);
       },
       onError(err) {
         console.log(err)
@@ -97,9 +98,9 @@ export default function Article({ isRevert = false, className, status, classImag
   const isFavorite = useLikedContribution(article?.id)
   const isReadLater = useReadLaterContribution(article?.id)
   return (
-    <div onClick={handleOnClickNavigate}>
+    <div className='mb-4'>
       {isLoading && <ActionSpinner></ActionSpinner>}
-      <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg `}>
+      <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg bg-white shadow-xl`} onClick={handleOnClickNavigate}>
 
         <img src={`${article?.thumbnails?.length > 0 ? article?.thumbnails[0].path : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`} alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : `w-full h-[300px] ${classImageCustom}`}  object-cover rounded-md `} />
         <div className="w-full p-2 md:flex-1">
@@ -137,16 +138,17 @@ export default function Article({ isRevert = false, className, status, classImag
               <h3 className='text-sm font-semibold medium:text-base'>{article?.userName}</h3>
             </div>
             <div className='flex flex-row flex-wrap gap-2'>
-              <div className="flex items-center text-base font-semibold">
+              {article?.status === "APPROVED" && <div className="flex items-center text-base font-semibold">
                 <span>{article?.averageRating}</span>
                 ⭐
-              </div>
+              </div>}
+
               <div> {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-red-500"} font-semibold`} >{status}</Badge>}
                 <Badge variant="outline">{article?.facultyName}</Badge></div>
             </div>
           </div>
           <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">{article?.title}</h2>
-          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base md:h-[66px]'>{article.shortDescription}</p>
+          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base h-[64px] medium:h-[67px]'>{article.shortDescription}</p>
           <div className='flex flex-wrap items-center justify-between mt-2'>
             <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
             {article?.whoApproved && <p className="mt-2 text-xs medium:text-base">Accepted By: <span className="font-bold">{article?.whoApproved}</span></p>}
