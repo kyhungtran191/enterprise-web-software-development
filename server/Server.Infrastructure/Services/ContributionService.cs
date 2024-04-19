@@ -39,9 +39,9 @@ public class ContributionService : IContributionService
                     END AS Status,
                     COUNT(*) AS Data
                 FROM 
-                    [WebEnterpriseSubjectDb].[dbo].Contributions AS cs
+                    Contributions AS cs
                 INNER JOIN 
-                    [WebEnterpriseSubjectDb].[dbo].AcademicYears AS ay ON cs.AcademicYearId = ay.Id
+                    AcademicYears AS ay ON cs.AcademicYearId = ay.Id
                 WHERE 
                     cs.UserId = @currentUserId
                 GROUP BY 
