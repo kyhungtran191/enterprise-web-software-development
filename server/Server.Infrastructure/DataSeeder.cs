@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos;
+using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Domain.Common.Constants;
@@ -93,7 +95,7 @@ public static class DataSeeder
         }
     }
 
-    public static async Task SeedContribution(AppDbContext context, RoleManager<AppRole> roleManager, IContributionRepository contributionRepository)
+    public static async Task SeedContribution(AppDbContext context, RoleManager<AppRole> roleManager, IContributionRepository contributionRepository,IRatingRepository ratingRepository)
     {
         var allFaculties = new List<string>
         {
@@ -1254,7 +1256,6 @@ public static class DataSeeder
                 });
             }
         }
-
         // approve
         if (!context.ContributionPublics.Any())
         {
@@ -1283,6 +1284,170 @@ public static class DataSeeder
             await context.SaveChangesAsync();
         }
         // seed comment
+        if (!context.ContributionPublicComments.Any())
+        {
+            for (var i = 0;i<=9;i++)
+            {
+                context.ContributionPublicComments.Add(new ContributionPublicComment()
+                {
+                    Content = $"test comment {i}",
+                    ContributionId = listContribution[i].Id,
+                    UserId = studentList[1].Id,
+                });
+                context.ContributionPublicComments.Add(new ContributionPublicComment()
+                {
+                    Content = $"test comment {i}",
+                    ContributionId = listContribution[i].Id,
+                    UserId = studentList[2].Id,
+                });
+                context.ContributionPublicComments.Add(new ContributionPublicComment()
+                {
+                    Content = $"test comment {i}",
+                    ContributionId = listContribution[i].Id,
+                    UserId = studentList[3].Id,
+                });
+                
+            }
+            for (var i = 10; i <= 19; i++)
+            {
+                context.ContributionPublicComments.Add(new ContributionPublicComment()
+                {
+                    Content = $"test comment {i}",
+                    ContributionId = listContribution[i].Id,
+                    UserId = studentList[0].Id,
+                });
+                context.ContributionPublicComments.Add(new ContributionPublicComment()
+                {
+                    Content = $"test comment {i}",
+                    ContributionId = listContribution[i].Id,
+                    UserId = studentList[2].Id,
+                });
+                context.ContributionPublicComments.Add(new ContributionPublicComment()
+                {
+                    Content = $"test comment {i}",
+                    ContributionId = listContribution[i].Id,
+                    UserId = studentList[3].Id,
+                });
+            }
+            await context.SaveChangesAsync();
+        }
+        // seed like
+        if (!context.Likes.Any())
+        {
+            for (var i = 0; i <= 9; i++)
+            {
+                var contribution = await context.ContributionPublics.FindAsync(listContribution[i].Id);
+                context.Likes.Add(new Like()
+                {
+                    
+                    UserId = studentList[1].Id,
+                    ContributionPublicId = listContribution[i].Id
+                });
+                contribution.LikeQuantity += 1;
+                context.Likes.Add(new Like()
+                {
+
+                    UserId = studentList[2].Id,
+                    ContributionPublicId = listContribution[i].Id
+                });
+                contribution.LikeQuantity += 1;
+                context.Likes.Add(new Like()
+                {
+
+                    UserId = studentList[3].Id,
+                    ContributionPublicId = listContribution[i].Id
+                });
+                contribution.LikeQuantity += 1;
+            }
+            for (var i = 10; i <= 19; i++)
+            {
+                var contribution = await context.ContributionPublics.FindAsync(listContribution[i].Id);
+                context.Likes.Add(new Like()
+                {
+
+                    UserId = studentList[0].Id,
+                    ContributionPublicId = listContribution[i].Id
+                });
+                contribution.LikeQuantity += 1;
+                context.Likes.Add(new Like()
+                {
+
+                    UserId = studentList[2].Id,
+                    ContributionPublicId = listContribution[i].Id
+                });
+                contribution.LikeQuantity += 1;
+                context.Likes.Add(new Like()
+                {
+
+                    UserId = studentList[3].Id,
+                    ContributionPublicId = listContribution[i].Id
+                });
+                contribution.LikeQuantity += 1;
+            }
+            await context.SaveChangesAsync();
+        }
+        // seed rating
+        if (!context.ContributionPublicRatings.Any())
+        {
+            for (var i = 0; i <= 9; i++)
+            {
+                var contribution = await context.ContributionPublics.FindAsync(listContribution[i].Id);
+                
+                context.ContributionPublicRatings.Add(new ContributionPublicRating()
+                {
+
+                    UserId = studentList[1].Id,
+                    ContributionPublicId = listContribution[i].Id,
+                    Rating = 5
+                });
+                context.ContributionPublicRatings.Add(new ContributionPublicRating()
+                {
+
+                    UserId = studentList[2].Id,
+                    ContributionPublicId = listContribution[i].Id,
+                    Rating = 4
+                });
+                context.ContributionPublicRatings.Add(new ContributionPublicRating()
+                {
+
+                    UserId = studentList[3].Id,
+                    ContributionPublicId = listContribution[i].Id,
+                    Rating = 5
+                });
+                await context.SaveChangesAsync();
+                contribution.AverageRating = await ratingRepository.GetAverageRatingAsync(contribution.Id);
+                await context.SaveChangesAsync();
+            }
+            for (var i = 10; i <= 19; i++)
+            {
+                var contribution = await context.ContributionPublics.FindAsync(listContribution[i].Id);
+                context.ContributionPublicRatings.Add(new ContributionPublicRating()
+                {
+
+                    UserId = studentList[1].Id,
+                    ContributionPublicId = listContribution[i].Id,
+                    Rating = 5
+                });
+                context.ContributionPublicRatings.Add(new ContributionPublicRating()
+                {
+
+                    UserId = studentList[2].Id,
+                    ContributionPublicId = listContribution[i].Id,
+                    Rating = 4
+                });
+                context.ContributionPublicRatings.Add(new ContributionPublicRating()
+                {
+
+                    UserId = studentList[3].Id,
+                    ContributionPublicId = listContribution[i].Id,
+                    Rating = 5
+                });
+                await context.SaveChangesAsync();
+                contribution.AverageRating = await ratingRepository.GetAverageRatingAsync(contribution.Id);
+                await context.SaveChangesAsync();
+            }
+           
+        }
         //if (!context.ContributionComments.Any())
         //{
         //    foreach (var item in listContribution)
