@@ -41,6 +41,14 @@ public enum ContributionStatus
 }
 public static class ContributionStatusHelper
 {
+    public static string GetStatusByIndex(int index)
+    {
+        if (index < 0 || index >= Enum.GetValues(typeof(ContributionStatus)).Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), "No status found.");
+        }
+        return Enum.GetNames(typeof(ContributionStatus))[index];
+    }
     public static List<string> GetAllStatuses()
     {
         return Enum.GetNames(typeof(ContributionStatus)).ToList();

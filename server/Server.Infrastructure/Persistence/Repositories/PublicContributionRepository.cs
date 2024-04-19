@@ -241,7 +241,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
                 select new { c, a };
             var contributions = await query
-                .OrderBy(x => x.c.DateCreated)
+                .OrderByDescending(x => x.c.PublicDate)
                 .Take(quantity)
                 .ToListAsync();
             var contributionIds = contributions.Select(x => x.c.Id).ToList();

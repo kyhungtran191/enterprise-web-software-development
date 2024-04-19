@@ -1,4 +1,6 @@
-﻿namespace Server.Application.Common.Dtos.Contributions
+﻿using Server.Domain.Entity.Content;
+
+namespace Server.Application.Common.Dtos.Contributions
 {
     public class PublicContributionInListDto
     {
@@ -18,5 +20,8 @@
         public double AverageRating { get; set; } = 0.0;
         public double MyRating { get; set; } = 0.0;
         public string? WhoApproved { get; set; }
+
+        public string? Status { get; set; } =
+            ContributionStatusHelper.GetStatusByIndex((int)ContributionStatus.Approve);
     }
 }
