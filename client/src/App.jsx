@@ -29,6 +29,7 @@ import ViewFile from './pages/general/ViewFile'
 import Dashboard from './components/Dashboard'
 import ReadLaterContribution from './pages/client/manage/contribution/ReadLaterContribution'
 import StudentDashboard from './pages/client/manage/contribution/StudentDashboard'
+import ChatPage from './pages/ChatPage'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -155,7 +156,8 @@ function App() {
               <Route path="/student-manage/dashboard" element={<StudentDashboard></StudentDashboard>}></Route>
             </Route>
           </Route>
-
+          {/* Chat */}
+          <Route path="/message" element={<ChatPage></ChatPage>}></Route>
           <Route
             path='/coodinator-manage/contributions'
             element={<ManageContributions></ManageContributions>}

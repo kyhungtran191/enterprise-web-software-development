@@ -142,7 +142,6 @@ export default function Article({ isRevert = false, className, status, classImag
                 <span>{article?.averageRating}</span>
                 ⭐
               </div>}
-
               <div> {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-red-500"} font-semibold`} >{status}</Badge>}
                 <Badge variant="outline">{article?.facultyName}</Badge></div>
             </div>

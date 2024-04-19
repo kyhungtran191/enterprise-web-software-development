@@ -9,8 +9,19 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import BarChart from './BarChart'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const Dashboard = () => {
+
   const [isStacked, setIsStacked] = useState(false)
   const options = {
     responsive: true,
@@ -59,7 +70,7 @@ const Dashboard = () => {
         <DynamicBreadcrumb />
         {/* <NewRoleDialog /> */}
       </div>
-      <div className='flex flex-row space-x-2 my-4'>
+      <div className='flex flex-row my-4 space-x-2'>
         <Select>
           <SelectTrigger className='w-[280px]'>
             <SelectValue placeholder='Select charts' />
