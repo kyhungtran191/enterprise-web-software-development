@@ -1,4 +1,5 @@
-﻿using Server.Domain.Entity.Content;
+﻿using Server.Application.Common.Extensions;
+using Server.Domain.Entity.Content;
 
 namespace Server.Application.Common.Dtos.Contributions
 {
@@ -21,7 +22,6 @@ namespace Server.Application.Common.Dtos.Contributions
         public double MyRating { get; set; } = 0.0;
         public string? WhoApproved { get; set; }
 
-        public string? Status { get; set; } =
-            ContributionStatusHelper.GetStatusByIndex((int)ContributionStatus.Approve);
+        public string? Status { get; set; } = ContributionStatus.Approve.ToStringValue();
     }
 }
