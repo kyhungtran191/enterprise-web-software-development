@@ -44,6 +44,7 @@ public class ContributionService : IContributionService
                     AcademicYears AS ay ON cs.AcademicYearId = ay.Id
                 WHERE 
                     cs.UserId = @currentUserId
+                AND cs.DateDeleted is null
                 GROUP BY 
                     ay.Name, 
                     CASE cs.Status
@@ -78,6 +79,7 @@ public class ContributionService : IContributionService
                 FROM AcademicYears ay
                 CROSS JOIN Faculties f
                 LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id AND c.FacultyId = f.Id
+                WHERE c.DateDeleted is null
                 GROUP BY ay.Name, f.Name
                 ORDER BY ay.Name, f.Name;
             ";
