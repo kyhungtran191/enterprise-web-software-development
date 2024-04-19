@@ -21,7 +21,7 @@ public class ContributionService : IContributionService
         _contributionReportMapper = contributionReportMapper;
     }
 
-    public async Task<ReportChartResponse<TotalContributionFollowingStatusDataSet>> GetContributionsFollowingStatusForEachAcademicYearOfCurrentUserReport(Guid currentUserId)
+    public async Task<CombineChartResponse<TotalContributionFollowingStatusDataSet>> GetContributionsFollowingStatusForEachAcademicYearOfCurrentUserReport(Guid currentUserId)
     {
         using var conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
@@ -30,35 +30,60 @@ public class ContributionService : IContributionService
             await conn.OpenAsync();
         }
 
-        var sql = @"SELECT 
-                    ay.Name AS AcademicYear,
-                    CASE cs.Status
-                        WHEN 0 THEN 'Pending'
-                        WHEN 1 THEN 'Approve'
-                        WHEN 2 THEN 'Reject'
-                    END AS Status,
-                    COUNT(*) AS Data
-                FROM 
-                    Contributions AS cs
-                INNER JOIN 
-                    AcademicYears AS ay ON cs.AcademicYearId = ay.Id
-                WHERE 
-                    cs.UserId = @currentUserId
-                AND cs.DateDeleted is null
-                GROUP BY 
-                    ay.Name, 
-                    CASE cs.Status
-                        WHEN 0 THEN 'Pending'
-                        WHEN 1 THEN 'Approve'
-                        WHEN 2 THEN 'Reject'
-                    END
-                ORDER BY 
-                    ay.Name, 
-                    CASE cs.Status
-                        WHEN 0 THEN 'Pending'
-                        WHEN 1 THEN 'Approve'
-                        WHEN 2 THEN 'Reject'
-                    END;";
+        var sql = @"WITH StatusData AS (
+                        SELECT
+                            ay.Name AS AcademicYear,
+                            cs.Status,
+                            COUNT(*) AS Data
+                        FROM
+                            Contributions AS cs
+                        INNER JOIN
+                            AcademicYears AS ay ON cs.AcademicYearId = ay.Id
+                        WHERE
+                            cs.UserId = @currentUserId AND cs.DateDeleted IS NULL
+                        GROUP BY
+                            ay.Name, cs.Status
+                    ), InteractionData AS (
+                        SELECT
+                            ay.Name AS AcademicYear,
+                            COALESCE(SUM(cp.Views), 0) AS TotalView,
+                            COALESCE(COUNT(DISTINCT l.Id), 0) AS TotalLike,
+                            COALESCE(CAST(AVG(cpr.Rating) AS DECIMAL(10, 2)), 0) AS AverageRating,
+                            COALESCE(COUNT(DISTINCT cpc.Id), 0) AS TotalComment
+                        FROM
+                            AcademicYears ay
+                        LEFT JOIN
+                            ContributionPublics cp ON ay.Id = cp.AcademicYearId
+                        LEFT JOIN
+                            Likes l ON cp.Id = l.ContributionPublicId
+                        LEFT JOIN
+                            ContributionPublicRatings cpr ON cp.Id = cpr.ContributionPublicId
+                        LEFT JOIN
+                            ContributionPublicComments cpc ON cp.Id = cpc.ContributionId
+                        WHERE
+                            cp.UserId = @currentUserId AND cp.DateDeleted IS NULL
+                        GROUP BY
+                            ay.Name
+                    )
+                    SELECT
+                        i.AcademicYear,
+                        i.TotalLike,
+                        i.TotalComment,
+                        COALESCE(s1.Data, 0) AS TotalContributionApproved,
+                        i.AverageRating,
+                        COALESCE(s0.Data, 0) AS Pending,
+                        COALESCE(s1.Data, 0) AS Approve,
+                        COALESCE(s2.Data, 0) AS Reject
+                    FROM
+                        InteractionData i
+                    LEFT JOIN
+                        StatusData s0 ON i.AcademicYear = s0.AcademicYear AND s0.Status = 0
+                    LEFT JOIN
+                        StatusData s1 ON i.AcademicYear = s1.AcademicYear AND s1.Status = 1
+                    LEFT JOIN
+                        StatusData s2 ON i.AcademicYear = s2.AcademicYear AND s2.Status = 2
+                    ORDER BY
+                        i.AcademicYear;";
         var items = await conn.QueryAsync<TotalContributionFollowingStatusData>(sql: sql, param: new { currentUserId });
         return await _contributionReportMapper.MapToTotalContributionFollowingStatusDataResponse(items.AsList());
     }
