@@ -3,8 +3,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import GeneralLayout from '@/layouts'
-import { Download, Eye, Heart, LinkedinIcon, ViewIcon } from 'lucide-react'
-import React, { useEffect } from 'react'
+import { CircleX, Download, Eye, Heart, LinkedinIcon, Ratio, Star, ViewIcon } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 import DOMPurify from 'dompurify';
 import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -23,10 +23,12 @@ import { useLikeMutation } from '@/query/useLikeMutation'
 import { useAppContext } from '@/hooks/useAppContext'
 import { Roles } from '@/constant/roles'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import Ratings from '@/components/Ratings'
 
 
 
 export default function ContributionDetail() {
+  const [openOptions, setOpenOptions] = useState(true)
   const schema = yup
     .object({
       comment: yup.string().required("Please provide comment"),
@@ -107,7 +109,7 @@ export default function ContributionDetail() {
         {/* Top post */}
         <div className='flex flex-col items-center gap-6 my-5 medium:flex-row'>
           <img src={`${detailData?.thumbnails?.length > 0 && detailData?.thumbnails[0]?.path || 'https://plus.unsplash.com/premium_photo-1686149758342-9f0f249f2989?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8'}`} alt="" className='rounded-lg w-full xl:h-[500px] medium:w-[60%] xl:w-auto object-cover flex-shrink-0' />
-          <div className="flex-1">
+          <div className="w-full md:flex-1">
             <div className="flex items-center justify-between">
               <Badge variant="destructive">{detailData?.facultyName}</Badge>
               {profile?.roles !== Roles?.Guest && <Button className={`bg-transparent hover:bg-red-500 hover:text-white hover:border-white  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `} onClick={(e) => handleToggleLike(e, detailData)}><Heart></Heart></Button>}
@@ -164,6 +166,15 @@ export default function ContributionDetail() {
               </TooltipProvider>
             ))}
           </div>
+          <div className={` fixed right-0 top-1/2 -translate-y-1/2 ${openOptions ? "translate-x-0" : "translate-x-full"} bg-black text-white shadow-lg min-h-[100px] rounded-lg flex flex-col items-center justify-center z-30 transition-all duration-300 p-5`}>
+            <div className="absolute inline-block cursor-pointer left-5 top-2" onClick={() => { setOpenOptions(false) }} >
+              <CircleX />
+            </div>
+            <Ratings></Ratings>
+          </div>
+          {!openOptions && <div className="fixed right-0 -translate-y-1/2 top-1/2 w-[50px]  shadow-lg h-[50px] rounded-lg flex  flex-col items-center justify-center z-30 cursor-pointer bg-black text-white transition-all duration-300" onClick={() => setOpenOptions(true)}>
+            <Star height={30} width={30} />
+          </div>}
           <div className='mt-5'>
             <h2 className='font-bold'>Comments</h2>
             <form className='flex items-center gap-2 p-5 border rounded-lg' onSubmit={handleSubmit(onSubmit)}>
