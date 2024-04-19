@@ -26,6 +26,7 @@ import FavoriteContribution from './pages/client/manage/contribution/FavoriteCon
 import { FacultiesTable } from './components/FacultiesTable'
 import { Roles } from './constant/roles'
 import ViewFile from './pages/general/ViewFile'
+import Dashboard from './components/Dashboard'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -42,16 +43,18 @@ function App() {
 
   const { isAuthenticated, profile } = useContext(AppContext)
   function RequireAuth() {
-
     return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/login' />
   }
 
   function RejectedRoute() {
-
     return !isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
   }
   function IsGuestAccount() {
-    return profile.roles === Roles.Guest ? <Navigate to='/' /> : <Outlet></Outlet>
+    return profile.roles === Roles.Guest ? (
+      <Navigate to='/' />
+    ) : (
+      <Outlet></Outlet>
+    )
   }
 
   return (
@@ -116,8 +119,16 @@ function App() {
               </AdminLayout>
             }
           />
-          <Route element={<IsGuestAccount />} path="">
-            <Route path="/student-manage">
+          <Route
+            path='/admin/dashboard'
+            element={
+              <AdminLayout>
+                <Dashboard/>
+              </AdminLayout>
+            }
+          />
+          <Route element={<IsGuestAccount />} path=''>
+            <Route path='/student-manage'>
               <Route
                 path='/student-manage/recent'
                 element={<StudentContribution></StudentContribution>}
@@ -160,7 +171,7 @@ function App() {
             path='/contributions/:id'
             element={<ContributionDetail></ContributionDetail>}
           ></Route>
-          <Route path="/view-file" element={<ViewFile></ViewFile>}></Route>
+          <Route path='/view-file' element={<ViewFile></ViewFile>}></Route>
         </Route>
         <Route path='' element={<RejectedRoute></RejectedRoute>}>
           <Route path='/login' element={<Login></Login>} index></Route>
@@ -174,7 +185,7 @@ function App() {
           ></Route>
         </Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
-      </Routes >
+      </Routes>
     </>
   )
 }
