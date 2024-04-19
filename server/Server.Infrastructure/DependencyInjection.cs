@@ -36,6 +36,7 @@ public static class DependencyInjection
         services.AddRepositories();
         services.AddScoped<IContributionService, ContributionService>();
         services.AddScoped<IContributionReportMapper, ContributionReportMapper>();
+        services.AddScoped<IUserService, UserService>();
         
         // email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));

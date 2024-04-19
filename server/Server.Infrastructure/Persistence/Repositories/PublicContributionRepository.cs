@@ -4,10 +4,10 @@ using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Common.Dtos.Users;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers.PagedResult;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
-using System.Text.RegularExpressions;
 
 namespace Server.Infrastructure.Persistence.Repositories
 {
@@ -15,13 +15,22 @@ namespace Server.Infrastructure.Persistence.Repositories
     {
         private readonly AppDbContext _dbContext;
         private readonly IMapper _mapper;
-        public PublicContributionRepository(AppDbContext dbContext,IMapper mapper) : base(dbContext)
+        private readonly IUserService _userService;
+        public PublicContributionRepository(AppDbContext dbContext,IMapper mapper,IUserService userService) : base(dbContext)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _userService = userService;
                 
         }
 
+        private async Task<double> GetMyRating(Guid publicContributionId)
+        {
+            var userId = _userService.UserId;
+            var rating = await _dbContext.ContributionPublicRatings.Where(x => x.UserId == userId & x.ContributionPublicId == publicContributionId).FirstOrDefaultAsync();
+            return rating != null ? rating.Rating : 0.0;
+
+        }
         public async Task<PublicContributionDetailDto> GetBySlug(string slug)
         {
             var query = await (from c in _dbContext.ContributionPublics
@@ -56,6 +65,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 AllowedGuest = query.c.AllowedGuest,
                 AverageRating = query.c.AverageRating,
                 WhoApproved = logs.Where(l => l.ContributionId == query.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
+                MyRating =  GetMyRating(query.c.Id).GetAwaiter().GetResult(),
             };
             return result;
         }
@@ -94,6 +104,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 View = x.c.Views,
                 AverageRating = x.c.AverageRating,
                 WhoApproved = logs.Where(l => l.ContributionId == x.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
+                MyRating = GetMyRating(x.c.Id).GetAwaiter().GetResult(),
             }).ToList();
             return publicContribution;
         }
@@ -213,6 +224,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 View = x.c.Views,
                 AverageRating = x.c.AverageRating,
                 WhoApproved = logs.Where(l => l.ContributionId == x.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
+                MyRating = GetMyRating(x.c.Id).GetAwaiter().GetResult(),
             }).ToList();
             return new PagedResult<PublicContributionInListDto>
             {
@@ -256,6 +268,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 View = x.c.Views,
                 AverageRating = x.c.AverageRating,
                 WhoApproved = logs.Where(l => l.ContributionId == x.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
+                MyRating = GetMyRating(x.c.Id).GetAwaiter().GetResult(),
             }).ToList();
             return publicContribution;
         }
@@ -352,7 +365,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
+                MyRating = GetMyRating(x.c.Id).GetAwaiter().GetResult(),
             }).ToList();
 
             return likedContribution;
@@ -392,7 +407,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
+                MyRating = GetMyRating(x.c.Id).GetAwaiter().GetResult(),
             }).ToList();
 
             return publicContribution;
@@ -432,7 +449,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Thumbnails = files.Where(f => f.ContributionId == x.c.Id && f.Type == FileType.Thumbnail)
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension }).ToList(),
                 Like = x.c.LikeQuantity,
-                View = x.c.Views
+                View = x.c.Views,
+                AverageRating = x.c.AverageRating,
+                MyRating = GetMyRating(x.c.Id).GetAwaiter().GetResult(),
             }).ToList();
 
             return publicContribution;
