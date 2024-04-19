@@ -14,7 +14,9 @@ import Ability from './components/casl/Ability.js'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      staleTime: 60000,
+      cacheTime: 600000,
     }
   }
 })
