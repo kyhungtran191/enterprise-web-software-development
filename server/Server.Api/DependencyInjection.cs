@@ -111,12 +111,13 @@ public static class MigrationManager
         using var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
         var contributionRepository = scope.ServiceProvider.GetRequiredService<IContributionRepository>();
+        var ratingRepository = scope.ServiceProvider.GetRequiredService<IRatingRepository>();
         //var facultyRepository = scope.ServiceProvider.GetRequiredService<IFacultyRepository>();
         //var academicYearRepository = scope.ServiceProvider.GetService<IAcademicYearRepository>();
         // applying update-database command
         appDbContext.Database.Migrate();
         // DataSeeder.SeedAsync(appDbContext, roleManager).GetAwaiter().GetResult();
-        DataSeeder.SeedContribution(appDbContext,roleManager,contributionRepository).GetAwaiter().GetResult();
+        DataSeeder.SeedContribution(appDbContext,roleManager,contributionRepository,ratingRepository).GetAwaiter().GetResult();
         //DataSeeder.SeedFaculty(appDbContext, facultyRepository).GetAwaiter().GetResult();
         //DataSeeder.SeedAcademicYear(appDbContext, academicYearRepository).GetAwaiter().GetResult();
         return app;
