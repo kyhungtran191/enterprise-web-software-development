@@ -24,6 +24,7 @@ import { useLikeMutation } from '@/query/useLikeMutation'
 
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
+  console.log(article)
   const navigate = useNavigate()
   const { mutate, isLoading } = useMutateApprove()
   const { profile } = useAppContext()
@@ -125,8 +126,12 @@ export default function Article({ isRevert = false, className, status, classImag
             </div>
           </div>
           <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">{article?.title}</h2>
-          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base md:h-[65px]'>{article.shortDescription}</p>
-          <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
+          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base md:h-[68px]'>{article.shortDescription}</p>
+          <div className='flex flex-wrap items-center justify-between mt-2'>
+            <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
+            {article?.whoApproved && <p className="mt-2 text-xs medium:text-base">Accepted By: <span className="font-bold">{article?.whoApproved}</span></p>}
+          </div>
+
           {profile && profile?.roles == Roles.Coordinator && status && status == "PENDING" && <div className="flex items-center gap-10 my-10">
             <Button className="w-[150px] bg-green-600 shadow-lg" onClick={(e) => handleApproveArticle(e, article.id)}>Approve this</Button>
             <Button className="!bg-none p-0" onClick={(e) => { e.stopPropagation() }}>

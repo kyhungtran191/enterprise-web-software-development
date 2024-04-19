@@ -11,7 +11,7 @@ import { useAppContext } from '@/hooks/useAppContext'
 import { MC_OPTIONS, STUDENT_OPTIONS } from '@/constant/menuSidebar'
 import { usePreviewContribution } from '@/query/usePreviewContribution'
 import Comment from '@/components/Comment'
-import { Ratio, CircleX } from 'lucide-react';
+import { Ratio, CircleX, Download } from 'lucide-react';
 import Swal from 'sweetalert2'
 import { useMutateApprove } from '@/query/useMutateApprove'
 import { toast } from 'react-toastify'
@@ -24,6 +24,7 @@ import { Contributions } from '@/services/coodinator'
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Roles } from '@/constant/roles'
 import CustomRejectComponent from '@/components/CustomRejectComponent'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function PreviewContribution() {
   const [openOptions, setOpenOptions] = useState(true)
@@ -55,7 +56,9 @@ export default function PreviewContribution() {
 
 
 
-  const handleDownloadFile = (file) => {
+  const handleDownloadFile = (e, file) => {
+    e.preventDefault()
+    e.stopPropagation()
     fetch(file?.path)
       .then(response => response.blob())
       .then(blob => {
@@ -146,7 +149,8 @@ export default function PreviewContribution() {
                 <div className='w-1 h-1 bg-gray-600 rounded-full md:w-2 md:h-2'></div>
                 <div>{detailData?.userName}</div>
               </div>
-              <Button><Link to={`/student-manage/edit-contribution/${detailData.slug}`} className='w-full'>Edit now</Link></Button>
+              {detailData?.status === "PENDING" && <Button><Link to={`/student-manage/edit-contribution/${detailData.slug}`} className='w-full'>Edit now</Link></Button>}
+
             </div>
             <div>{detailData?.shortDescription}</div>
           </div>
@@ -159,12 +163,28 @@ export default function PreviewContribution() {
           </div>
           <div className="grid-cols-2 gap-6 p-10 rounded-lg shadow-lg h-[250px] overflow-y-scroll md:overflow-auto grid md:h-auto md:grid-cols-5">
             {detailData?.files?.map((file, index) => (
-              <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" key={index} onClick={() => handleDownloadFile(file)}>
-                <img src={file?.extension == ".docx" || "doc" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
-                <div className="text-center">{file?.name}</div>
-                <div className="flex items-center justify-center gap-2">
-                </div>
-              </div>
+              <TooltipProvider key={file}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Link
+                      to={`/view-file?path=${file?.path}&ext=${file?.extension?.split('.')[1]}`}
+                      target='_blank'
+                      className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100"
+                      key={index}
+                    >
+                      <img src={file?.extension === ".doc" || file.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
+                      <div className="text-center">{file?.name}</div>
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center w-10 h-10 mt-2 text-white bg-blue-500 rounded-lg">
+                          <Download onClick={(e) => handleDownloadFile(e, file)}></Download>
+                        </div>
+                      </div>
+                    </Link></TooltipTrigger>
+                  <TooltipContent>
+                    <p>View Directly</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             ))}
 
           </div>

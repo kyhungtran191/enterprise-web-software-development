@@ -89,3 +89,9 @@ picture,
   object-cover: center;
   margin: 20px auto;
 }
+.document-container {
+  width: 80% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center;
+}

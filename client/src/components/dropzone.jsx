@@ -85,7 +85,7 @@ function Dropzone({ open, className, files, setFiles }) {
         <div className="flex flex-col items-center ">
           {
             isDragActive ?
-              <div className="flex flex-col items-center justify-center w-full h-full gap-2">
+            <div className="flex flex-col items-center justify-center w-full h-full gap-2">
                 <div className="text-blue-600">
                   <ArrowDown className="transition-all translate-x-3 repeat-infinite animate-down overflow" width={40} height={40}></ArrowDown>
                 </div>
