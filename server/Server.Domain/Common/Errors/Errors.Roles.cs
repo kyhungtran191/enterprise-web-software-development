@@ -11,6 +11,11 @@ public static partial class Errors
                 code: "Roles.NameDuplicated",
                 description: "Role name is duplicated. Please create other role name."
             );
+        public static Error DisplayNameDuplicated =>
+            Error.Validation(
+                code: "Roles.DisplayNameDuplicated",
+                description: "Role display name is duplicated. Please create other role display name."
+            );
 
         public static Error DeleteFailed =>
             Error.Validation(
