@@ -12,6 +12,8 @@ using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Identity;
 using Server.Application.Common.Interfaces.Services;
 using Server.Contracts.Common;
+using static Server.Domain.Common.Errors.Errors;
+using Microsoft.Extensions.Configuration;
 
 namespace Server.Application.Features.Identity.Users.Commands.CreateUser;
 
@@ -24,12 +26,12 @@ public class CreateUserCommandHandler
     private readonly IMapper _mapper;
     private readonly IMediaService _mediaService;
     private readonly IEmailService _emailService;
-
+    private readonly IConfiguration _configuration;
     public CreateUserCommandHandler(UserManager<AppUser> userManager,
                                     RoleManager<AppRole> roleManager,
                                     IMapper mapper,
                                     IEmailService emailService,
-                                    IUnitOfWork unitOfWork, IMediaService mediaService)
+                                    IUnitOfWork unitOfWork, IMediaService mediaService, IConfiguration configuration)
     {
         _userManager = userManager;
         _mapper = mapper;
@@ -37,6 +39,7 @@ public class CreateUserCommandHandler
         _roleManager = roleManager;
         _mediaService = mediaService;
         _emailService = emailService;
+        _configuration = configuration;
     }
 
     public async Task<ErrorOr<IResponseWrapper>> Handle(CreateUserCommand request,
@@ -99,11 +102,14 @@ public class CreateUserCommandHandler
         }
 
         // send mail
+        var token = await _userManager.GeneratePasswordResetTokenAsync(newUser);
+        var resetPasswordBaseUrl = _configuration["ApplicationSettings:ResetPasswordBaseUrl"];
+        var resetPasswordUrl = $"{resetPasswordBaseUrl}/{Uri.EscapeDataString(token)}";
         _emailService.SendEmail(new MailRequest 
         {
             ToEmail = request.Email,
             Subject = "University Provide Password",
-            Body = $"Email: <h1>{request.Email}</h1>, Password: <h1>{randomPassword}</h1>"
+            Body = $"Email: <h1>{request.Email}</h1>, Password: <h1>{randomPassword}</h1>.<br> If you want to reset your password, click the link below: <br> {resetPasswordUrl} "
         });
 
         return new ResponseWrapper

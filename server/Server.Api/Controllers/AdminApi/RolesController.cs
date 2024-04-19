@@ -38,13 +38,28 @@ public class RolesController : AdminApiController
     public async Task<IActionResult> CreateRole([FromBody] CreateUpdateRoleRequest createUpdateRoleRequest)
     {
         var roleExists = await _roleManager.FindByNameAsync(createUpdateRoleRequest.Name);
-
+        var isDisplayNameExists = await _roleManager.Roles
+            .Where(r => r.DisplayName == createUpdateRoleRequest.DisplayName).FirstOrDefaultAsync();
+        var result = IdentityResult.Success;
+        if (isDisplayNameExists is not null)
+        {
+            return ProblemWithError(Errors.Roles.DisplayNameDuplicated);
+        }
         if (roleExists is not null)
         {
-            return ProblemWithError(Errors.Roles.NameDuplicated);
+            if (roleExists.DisplayName == createUpdateRoleRequest.DisplayName)
+            {
+                return ProblemWithError(Errors.Roles.DisplayNameDuplicated);
+            }
+            roleExists.DisplayName = createUpdateRoleRequest.DisplayName;
+            result = await _roleManager.UpdateAsync(roleExists);
+            return result.Succeeded
+                ? Ok(ResponseWrapper.Success())
+                : Problem(result.GetIdentityResultErrorDescriptions());
+            // return ProblemWithError(Errors.Roles.NameDuplicated);
         }
-
-        var result = await _roleManager.CreateAsync(new AppRole
+        
+        result = await _roleManager.CreateAsync(new AppRole
         {
             DisplayName = createUpdateRoleRequest.DisplayName,
             Name = createUpdateRoleRequest.Name,
