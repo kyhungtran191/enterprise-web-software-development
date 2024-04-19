@@ -114,12 +114,12 @@ public class ContributionService : IContributionService
                     FROM Contributions c2
                     left join AcademicYears ay2 on c2.AcademicYearId = ay2.Id
                     left join Faculties f2 on c2.FacultyId = f2.Id
-                    where ay2.Name = '2021-2022'
+                    where ay2.Name = @academicYearName
                     and c2.DateDeleted is null
                     and f2.DateDeleted is null
                     group by ay2.Name
                 ) AS total_count ON 1=1
-                where ay.Name = '2021-2022'
+                where ay.Name = @academicYearName
                     and f.DateDeleted is null 
                     and c.DateDeleted is null
                 GROUP BY ay.Name, f.Name, total_count.total
