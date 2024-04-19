@@ -1,5 +1,6 @@
 using AutoMapper;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services;
 using Server.Infrastructure.Persistence.Repositories;
 
 namespace Server.Infrastructure.Persistence;
@@ -8,12 +9,14 @@ public class UnitOfWork : IUnitOfWork
 {
   private readonly AppDbContext _context;
   private readonly IMapper _mapper;
-  // private Dictionary<Type, object> _repositories;
+  private readonly IUserService _userService;
+    // private Dictionary<Type, object> _repositories;
 
-  public UnitOfWork(AppDbContext context, IMapper mapper)
+    public UnitOfWork(AppDbContext context, IMapper mapper,IUserService userService)
   {
     _context = context;
     _mapper = mapper;
+    _userService = userService;
   }
 
   public IFacultyRepository FacultyRepository => new FalcutyRepository(_context, _mapper);
@@ -21,7 +24,7 @@ public class UnitOfWork : IUnitOfWork
   public IAcademicYearRepository AcademicYearRepository => new AcademicYearRepository(_context, _mapper);
   public IContributionRepository ContributionRepository => new ContributionRepository(_context, _mapper);
   public IFileRepository FileRepository => new FilesRepository(_context,_mapper);
-  public IPublicContributionRepository PublicContributionRepository => new PublicContributionRepository(_context,_mapper);
+  public IPublicContributionRepository PublicContributionRepository => new PublicContributionRepository(_context,_mapper,_userService);
   public ILikeRepository LikeRepository => new LikeRepository(_context);
   public ICommentRepository CommentRepository => new CommentRepository(_context);
   public IPublicCommentRepository PublicCommentRepository => new PublicCommentRepository(_context);
