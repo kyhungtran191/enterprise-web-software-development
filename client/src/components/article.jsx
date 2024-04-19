@@ -11,7 +11,7 @@ import ActionSpinner from './ActionSpinner'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { Roles } from '@/constant/roles'
 import CustomRejectComponent from './CustomRejectComponent'
-import { Heart, BookMarked } from 'lucide-react';
+import { Heart, BookMarked, Star } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -21,6 +21,8 @@ import {
 import { Contributions } from '@/services/client'
 import { useLikedContribution } from '@/query/useLikedContribution'
 import { useLikeMutation } from '@/query/useLikeMutation'
+import { useReadLaterMutation } from '@/query/useReadLaterMutation'
+import { useReadLaterContribution } from '@/query/useReadLaterContribution'
 
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
@@ -37,6 +39,7 @@ export default function Article({ isRevert = false, className, status, classImag
     }
   }
   const likeMutation = useLikeMutation(article?.id)
+  const readLaterMutation = useReadLaterMutation(article?.id)
   const handleApproveArticle = (e, id) => {
     const ids = []
     ids.push(id);
@@ -77,14 +80,28 @@ export default function Article({ isRevert = false, className, status, classImag
     })
   }
 
+  const handleToggleReadLater = (e, id) => {
+    e.stopPropagation()
+    readLaterMutation.mutate(id, {
+      onSuccess() {
+        toast.success("Toggle Read Later Successfully!")
+        queryClient.invalidateQueries(['readlater-list'])
+      },
+      onError(err) {
+        console.log(err)
+      }
+    })
+  }
+
 
   const isFavorite = useLikedContribution(article?.id)
+  const isReadLater = useReadLaterContribution(article?.id)
   return (
     <div onClick={handleOnClickNavigate}>
       {isLoading && <ActionSpinner></ActionSpinner>}
       <div className={`flex ${isRevert ? "flex-col md:flex-row" : "flex-col"} items-start gap-3 ${className} cursor-pointer hover:bg-slate-100 p-2 rounded-lg `}>
-        <img src={`${article?.thumbnails?.length > 0 ? article?.thumbnails[0].path : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`} alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : `w-full h-[300px] ${classImageCustom}`}  object-cover rounded-md `} />
 
+        <img src={`${article?.thumbnails?.length > 0 ? article?.thumbnails[0].path : "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`} alt="" className={`${isRevert ? `w-full md:w-[35%] h-[300px] md:h-[300px] ${classImageCustom}` : `w-full h-[300px] ${classImageCustom}`}  object-cover rounded-md `} />
         <div className="w-full p-2 md:flex-1">
           {status !== "REJECTED" && status !== "PENDING" && profile?.roles !== Roles.Guest && <div className="flex flex-wrap items-center justify-end gap-2">
             <TooltipProvider>
@@ -103,12 +120,12 @@ export default function Article({ isRevert = false, className, status, classImag
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <div className={`inline-block py-2 px-5 rounded-lg shadow-lg bg-white text-black`}>
+                  <div className={`inline-block py-2 px-5 rounded-lg shadow-lg ${isReadLater ? "bg-black text-white" : "bg-white text-black "}`} onClick={(e) => handleToggleReadLater(e, article?.id)}>
                     <BookMarked />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className='font-semibold'>Add to read later list</p>
+                  <p className='font-semibold'>{isReadLater ? "Remove from Read Later list" : "Add to Read Later list"}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -119,14 +136,17 @@ export default function Article({ isRevert = false, className, status, classImag
               <img src="https://variety.com/wp-content/uploads/2021/04/Avatar.jpg" alt="" className="flex-shrink-0 object-cover w-12 h-12 rounded-full" />
               <h3 className='text-sm font-semibold medium:text-base'>{article?.userName}</h3>
             </div>
-            <div className='flex flex-col'>
+            <div className='flex flex-row flex-wrap gap-2'>
+              <div className="flex items-center text-base font-semibold">
+                <span>{article?.averageRating}</span>
+                ⭐
+              </div>
               <div> {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-red-500"} font-semibold`} >{status}</Badge>}
                 <Badge variant="outline">{article?.facultyName}</Badge></div>
-              <></>
             </div>
           </div>
           <h2 className="text-ellipsis line-clamp-2 medium:h-[65px] font-semibold text-xl medium:text-2xl mt-3">{article?.title}</h2>
-          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base md:h-[68px]'>{article.shortDescription}</p>
+          <p className='text-sm text-ellipsis line-clamp-3 text-slate-700 medium:text-base md:h-[66px]'>{article.shortDescription}</p>
           <div className='flex flex-wrap items-center justify-between mt-2'>
             <p className="mt-2 text-sm medium:text-base">{formatDate(article?.publicDate)}</p>
             {article?.whoApproved && <p className="mt-2 text-xs medium:text-base">Accepted By: <span className="font-bold">{article?.whoApproved}</span></p>}

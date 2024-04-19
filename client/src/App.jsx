@@ -27,6 +27,7 @@ import { FacultiesTable } from './components/FacultiesTable'
 import { Roles } from './constant/roles'
 import ViewFile from './pages/general/ViewFile'
 import Dashboard from './components/Dashboard'
+import ReadLaterContribution from './pages/client/manage/contribution/ReadLaterContribution'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -123,7 +124,7 @@ function App() {
             path='/admin/dashboard'
             element={
               <AdminLayout>
-                <Dashboard/>
+                <Dashboard />
               </AdminLayout>
             }
           />
@@ -144,6 +145,10 @@ function App() {
               <Route
                 path='/student-manage/favorites'
                 element={<FavoriteContribution></FavoriteContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/read-later'
+                element={<ReadLaterContribution></ReadLaterContribution>}
               ></Route>
             </Route>
           </Route>

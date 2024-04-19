@@ -29,7 +29,10 @@ export const Contributions = {
     params: queryParams
   }),
   addReadLater: async (id) => await instanceAxios.post(`${toggleReadLaterAPI}/${id}`),
-  commentPublic: async (data) => await instanceAxios.post(`${commentPublicAPI}/${data?.id}`, data?.body)
+  commentPublic: async (data) => await instanceAxios.post(`${commentPublicAPI}/${data?.id}`, data?.body),
+  ratePublic: async (data) => {
+    await instanceAxios.post(`${publicContributionAPI}/${data?.id}/rate`, { rating: data?.rating })
+  }
 }
 
 export const Auth = {
