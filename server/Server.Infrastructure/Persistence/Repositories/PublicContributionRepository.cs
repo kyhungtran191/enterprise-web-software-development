@@ -33,6 +33,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 return null;
             }
             var files = await _dbContext.Files.Where(f => f.ContributionId == query.c.Id).ToListAsync();
+            var logs = await _dbContext.ContributionActivityLogs.Where(l => l.ContributionId == query.c.Id)
+                .ToListAsync();
             var result = new PublicContributionDetailDto
             {
                 Id = query.c.Id,
@@ -53,6 +55,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                     .Select(f => new FileReturnDto { Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId}).ToList(),
                 AllowedGuest = query.c.AllowedGuest,
                 AverageRating = query.c.AverageRating,
+                WhoApproved = logs.Where(l => l.ContributionId == query.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
             };
             return result;
         }
@@ -71,6 +74,8 @@ namespace Server.Infrastructure.Persistence.Repositories
             var files = await _dbContext.Files
                 .Where(f => contributionIds.Contains(f.ContributionId))
                 .ToListAsync();
+            var logs = await _dbContext.ContributionActivityLogs.Where(l => contributionIds.Contains(l.ContributionId))
+                .ToListAsync();
             var publicContribution = contributions.Select(x => new PublicContributionInListDto
             {
                 Id = x.c.Id,
@@ -88,6 +93,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Like = x.c.LikeQuantity,
                 View = x.c.Views,
                 AverageRating = x.c.AverageRating,
+                WhoApproved = logs.Where(l => l.ContributionId == x.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
             }).ToList();
             return publicContribution;
         }
@@ -187,7 +193,8 @@ namespace Server.Infrastructure.Persistence.Repositories
             var files = await _dbContext.Files
                 .Where(f => contributionIds.Contains(f.ContributionId))
                 .ToListAsync();
-          
+            var logs = await _dbContext.ContributionActivityLogs.Where(l => contributionIds.Contains(l.ContributionId))
+                .ToListAsync();
             var publicContribution = contributions.Select(x => new PublicContributionInListDto
             {
                 Id = x.c.Id,
@@ -205,6 +212,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Like = x.c.LikeQuantity,
                 View = x.c.Views,
                 AverageRating = x.c.AverageRating,
+                WhoApproved = logs.Where(l => l.ContributionId == x.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
             }).ToList();
             return new PagedResult<PublicContributionInListDto>
             {
@@ -228,7 +236,8 @@ namespace Server.Infrastructure.Persistence.Repositories
             var files = await _dbContext.Files
                 .Where(f => contributionIds.Contains(f.ContributionId))
                 .ToListAsync();
-          
+            var logs = await _dbContext.ContributionActivityLogs.Where(l => contributionIds.Contains(l.ContributionId))
+                .ToListAsync();
             var publicContribution = contributions.Select(x => new PublicContributionInListDto
             {
                 Id = x.c.Id,
@@ -246,6 +255,7 @@ namespace Server.Infrastructure.Persistence.Repositories
                 Like = x.c.LikeQuantity,
                 View = x.c.Views,
                 AverageRating = x.c.AverageRating,
+                WhoApproved = logs.Where(l => l.ContributionId == x.c.Id).ToList().OrderByDescending(x => x.DateCreated).FirstOrDefault().UserName,
             }).ToList();
             return publicContribution;
         }

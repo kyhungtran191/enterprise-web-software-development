@@ -6,7 +6,7 @@ import GeneralLayout from '@/layouts'
 import { Download, Eye, Heart, LinkedinIcon, ViewIcon } from 'lucide-react'
 import React, { useEffect } from 'react'
 import DOMPurify from 'dompurify';
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Contributions } from '@/services/client'
 import { formatDate } from '@/utils/helper'
@@ -22,6 +22,10 @@ import { toast } from 'react-toastify'
 import { useLikeMutation } from '@/query/useLikeMutation'
 import { useAppContext } from '@/hooks/useAppContext'
 import { Roles } from '@/constant/roles'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+
+
+
 export default function ContributionDetail() {
   const schema = yup
     .object({
@@ -44,7 +48,10 @@ export default function ContributionDetail() {
   const detailData = data && data?.data?.responseData
   const likeMutation = useLikeMutation(detailData?.id)
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
-  const handleDownloadFile = (file) => {
+  const handleDownloadFile = (e, file) => {
+
+    e.stopPropagation()
+    e.preventDefault()
     fetch(file?.path)
       .then(response => response.blob())
       .then(blob => {
@@ -61,6 +68,7 @@ export default function ContributionDetail() {
         console.error('Error downloading file:', error);
       });
   };
+
   const isFavorite = useLikedContribution(detailData?.id)
   const onSubmit = ({ comment }) => {
     commentMutation.mutate({ id: detailData.id, body: { content: comment } }, {
@@ -87,7 +95,10 @@ export default function ContributionDetail() {
       }
     })
   }
+
   return (
+
+
     <GeneralLayout>
       {isLoading && <div className="container flex items-center justify-center min-h-screen"><Spinner className={"border-blue-500"}></Spinner></div>}
       {!isLoading && <div className='container py-10'>
@@ -129,14 +140,29 @@ export default function ContributionDetail() {
           </div>
           <div className="grid-cols-2 gap-6 p-10 rounded-lg shadow-lg h-[250px] overflow-y-scroll md:overflow-auto grid md:h-auto md:grid-cols-5">
             {detailData?.files?.map((file, index) => (
-              <div className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100" key={index} onClick={() => handleDownloadFile(file)}>
-                <img src={file?.extension === ".doc" || file.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
-                <div className="text-center">{file?.name}</div>
-                <div className="flex items-center justify-center gap-2">
-                </div>
-              </div>
+              <TooltipProvider key={file}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Link
+                      to={`/view-file?path=${file?.path}&ext=${file?.extension?.split('.')[1]}`}
+                      target='_blank'
+                      className="z-10 flex flex-col items-center justify-center p-4 rounded-lg cursor-pointer hover:bg-slate-100"
+                      key={index}
+                    >
+                      <img src={file?.extension === ".doc" || file.extension == ".docx" ? "../word.png" : "../pdf.png"} alt="" className="object-cover w-14 h-14 lg:h-24 lg:w-24 " />
+                      <div className="text-center">{file?.name}</div>
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center w-10 h-10 mt-2 text-white bg-blue-500 rounded-lg">
+                          <Download onClick={(e) => handleDownloadFile(e, file)}></Download>
+                        </div>
+                      </div>
+                    </Link></TooltipTrigger>
+                  <TooltipContent>
+                    <p>View Directly</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             ))}
-
           </div>
           <div className='mt-5'>
             <h2 className='font-bold'>Comments</h2>
@@ -150,10 +176,10 @@ export default function ContributionDetail() {
                 <Comment key={index} comment={item}></Comment>
               ))}
             </div>}
-
           </div>
         </div>
       </div>}
+
     </GeneralLayout>
   )
 }

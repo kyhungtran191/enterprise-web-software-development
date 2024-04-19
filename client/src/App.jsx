@@ -24,6 +24,8 @@ import PreviewContribution from './pages/general/PreviewContribution'
 import SettingGAC from './pages/coodinator/SettingGAC'
 import FavoriteContribution from './pages/client/manage/contribution/FavoriteContribution'
 import { FacultiesTable } from './components/FacultiesTable'
+import { Roles } from './constant/roles'
+import ViewFile from './pages/general/ViewFile'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -38,15 +40,20 @@ function App() {
     return () => clearTimeout(timeoutId)
   }, [location.pathname])
 
+  const { isAuthenticated, profile } = useContext(AppContext)
   function RequireAuth() {
-    const { isAuthenticated } = useContext(AppContext)
+
     return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/login' />
   }
 
   function RejectedRoute() {
-    const { isAuthenticated } = useContext(AppContext)
+
     return !isAuthenticated ? <Outlet></Outlet> : <Navigate to='/' />
   }
+  function IsGuestAccount() {
+    return profile.roles === Roles.Guest ? <Navigate to='/' /> : <Outlet></Outlet>
+  }
+
   return (
     <>
       {loading && (
@@ -109,22 +116,27 @@ function App() {
               </AdminLayout>
             }
           />
-          <Route
-            path='/student-manage/recent'
-            element={<StudentContribution></StudentContribution>}
-          ></Route>
-          <Route
-            path='/student-manage/add-contribution'
-            element={<AddContribution></AddContribution>}
-          ></Route>
-          <Route
-            path='/student-manage/edit-contribution/:slug'
-            element={<UpdateContribution></UpdateContribution>}
-          ></Route>
-          <Route
-            path='/student-manage/favorites'
-            element={<FavoriteContribution></FavoriteContribution>}
-          ></Route>
+          <Route element={<IsGuestAccount />} path="">
+            <Route path="/student-manage">
+              <Route
+                path='/student-manage/recent'
+                element={<StudentContribution></StudentContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/add-contribution'
+                element={<AddContribution></AddContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/edit-contribution/:slug'
+                element={<UpdateContribution></UpdateContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/favorites'
+                element={<FavoriteContribution></FavoriteContribution>}
+              ></Route>
+            </Route>
+          </Route>
+
           <Route
             path='/coodinator-manage/contributions'
             element={<ManageContributions></ManageContributions>}
@@ -133,22 +145,23 @@ function App() {
             path='/coodinator-manage/setting-guest'
             element={<SettingGAC></SettingGAC>}
           ></Route>
-
-          <Route
-            path='/contributions'
-            element={<ContributionList></ContributionList>}
-          ></Route>
+          <Route element={<IsGuestAccount />}>
+            <Route
+              path='/contributions'
+              element={<ContributionList></ContributionList>}
+            ></Route>
+            <Route
+              path='/preview/:slug'
+              element={<PreviewContribution></PreviewContribution>}
+            ></Route>
+            <Route path='/profile' element={<Profile></Profile>}></Route>
+          </Route>
           <Route
             path='/contributions/:id'
             element={<ContributionDetail></ContributionDetail>}
           ></Route>
-          <Route
-            path='/preview/:slug'
-            element={<PreviewContribution></PreviewContribution>}
-          ></Route>
-          <Route path='/profile' element={<Profile></Profile>}></Route>
+          <Route path="/view-file" element={<ViewFile></ViewFile>}></Route>
         </Route>
-
         <Route path='' element={<RejectedRoute></RejectedRoute>}>
           <Route path='/login' element={<Login></Login>} index></Route>
           <Route
@@ -161,7 +174,7 @@ function App() {
           ></Route>
         </Route>
         <Route path='*' element={<NotFound></NotFound>}></Route>
-      </Routes>
+      </Routes >
     </>
   )
 }
