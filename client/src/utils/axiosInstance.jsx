@@ -15,13 +15,13 @@ let refreshQueue = [];
 const AxiosInterceptor = ({ children }) => {
   const navigate = useNavigate()
   instanceAxios.interceptors.request.use(async function (config) {
+
     let accessToken = getAccessTokenFromLS();
     let refreshToken = getRefreshToken();
     if (accessToken) {
       const decoded = jwtDecode(accessToken)
       if (decoded.exp > ((Date.now() / 1000))) {
-        config.headers.authorization = ` Bearer ${accessToken}`;
-
+        config.headers.authorization = ` Bearer ${accessToken}`
         return config
       } else {
 
@@ -29,9 +29,6 @@ const AxiosInterceptor = ({ children }) => {
 
           if (!isRefreshing) {
             isRefreshing = true;
-
-            console.log("current", refreshToken);
-
             await axios
               .post(
                 refreshTokenAPI,
@@ -40,15 +37,16 @@ const AxiosInterceptor = ({ children }) => {
                 if (res && res?.data?.responseData) {
                   const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res?.data?.responseData
 
+                  if (newRefreshToken) {
+                    saveRefreshTokenToLS(newRefreshToken)
+                  }
                   if (newAccessToken) {
                     config.headers.authorization = `Bearer ${newAccessToken}`
                     saveAccessTokenToLS(newAccessToken);
                     refreshQueue.forEach((cb) => cb(newAccessToken));
                     refreshQueue = [];
-                  }
-
-                  if (newRefreshToken) {
-                    saveRefreshTokenToLS(newRefreshToken)
+                    // Check false
+                    isRefreshing = false
                   }
                   else {
                     toast.error("Không có access và refresh")
@@ -66,7 +64,7 @@ const AxiosInterceptor = ({ children }) => {
             return new Promise((resolve) => {
               refreshQueue.push((newAccessToken) => {
                 config.headers.authorization = `Bearer ${newAccessToken}`;
-                resolve(config);
+                return resolve(config);
               });
             });
           }
