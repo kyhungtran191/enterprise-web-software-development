@@ -9,7 +9,7 @@ import DOMPurify from 'dompurify';
 import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Contributions } from '@/services/client'
-import { formatDate } from '@/utils/helper'
+import { formatDate, roundToDecimal } from '@/utils/helper'
 import Spinner from '@/components/Spinner'
 import DownloadAllButton from '@/components/DownloadAllButton'
 import { useQueryContributionDetail } from '@/query/useQueryContributionDetail'
@@ -110,7 +110,7 @@ export default function ContributionDetail() {
         <div className='flex flex-col items-center gap-6 my-5 medium:flex-row'>
           <img src={`${detailData?.thumbnails?.length > 0 && detailData?.thumbnails[0]?.path || 'https://plus.unsplash.com/premium_photo-1686149758342-9f0f249f2989?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8'}`} alt="" className='rounded-lg w-full xl:h-[500px] medium:w-[60%] xl:w-auto object-cover flex-shrink-0 ' />
           <div className="w-full md:flex-1">
-            <div className="flex items-end font-bold justify-center text-white bg-yellow-500 rounded-sm w-[150px] py-3 px-2 ml-auto my-4 gap-2">{detailData?.averageRating} <Star width={20}></Star></div>
+            <div className="flex items-end font-bold justify-center text-white bg-yellow-500 rounded-sm w-[150px] py-3 px-2 ml-auto my-4 gap-2">{roundToDecimal(detailData?.averageRating, 1)} <Star width={20}></Star></div>
             <div className="flex items-center justify-between">
               <Badge variant="destructive">{detailData?.facultyName}</Badge>
               {profile?.roles !== Roles?.Guest && <Button className={`bg-transparent hover:bg-red-500 hover:text-white hover:border-white  ${isFavorite ? "bg-red-500 text-white" : "bg-white text-black"} `} onClick={(e) => handleToggleLike(e, detailData)}><Heart></Heart></Button>}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge } from './ui/badge'
-import { formatDate } from '@/utils/helper'
+import { formatDate, roundToDecimal } from '@/utils/helper'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from './ui/button'
 import { useAppContext } from '@/hooks/useAppContext'
@@ -139,7 +139,7 @@ export default function Article({ isRevert = false, className, status, classImag
             </div>
             <div className='flex flex-row flex-wrap gap-2'>
               {article?.status === "APPROVED" && <div className="flex items-center text-base font-semibold">
-                <span>{article?.averageRating}</span>
+                <span>{article?.averageRating &&roundToDecimal(article?.averageRating, 1) || 0}</span>
                 ⭐
               </div>}
               <div> {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-red-500"} font-semibold`} >{status}</Badge>}

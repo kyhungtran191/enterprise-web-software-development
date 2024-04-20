@@ -15,6 +15,7 @@ import {
 } from 'chart.js'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import StudentLineChart from './StudentLineChart'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export default function StudentDashboard() {
@@ -22,25 +23,27 @@ export default function StudentDashboard() {
   const [currentYear, setCurrentYear] = useState('2024-2025');
   const [chartData, setChartData] = useState(null);
   const [allData, setAllData] = useState(null);
+  const [currentData, setCurrentData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await instanceAxios.get('http://localhost:5272/api/admin/Contributions/report-total-contributions-following-status-for-each-academic-years');
-        console.log(response.data.response)
         setAllData(response?.data?.response);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     fetchData();
-  }, []);
+  }, [currentYear]);
 
   useEffect(() => {
     if (currentYear !== '' && allData) {
       const dataForYear = allData.find((item) => item.academicYear === currentYear);
+      setCurrentData(dataForYear)
       const chartData = processChartData(dataForYear.dataSets);
       setChartData(chartData);
+
     }
   }, [currentYear, allData]);
 
@@ -71,7 +74,6 @@ export default function StudentDashboard() {
   };
 
 
-
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
       <div className="px-3 py-6">
@@ -87,14 +89,13 @@ export default function StudentDashboard() {
           </SelectContent>
         </Select>
         <div className="grid w-full gap-10 medium:grid-cols-2">
-          <div className="p-4 rounded-lg shadow-xl drop-shadow-lg">
-
-            <div className="flex flex-wrap items-center justify-center gap-5 mt-2 sm:justify-start">
+          {currentData && <div className="p-4 rounded-lg shadow-xl drop-shadow-lg">
+            <div className="flex flex-wrap items-center justify-center gap-5 mt-2 rounded-full sm:justify-start">
               <h2 className='font-bold text-blue-500'>Average Rating of {currentYear}</h2>
-              <div className="relative flex flex-col items-center justify-center flex-shrink-0 w-full text-blue-500 h-52 w-52">
-                <span className='text-3xl font-bold'>4.5</span>
+              <div className="relative flex flex-col items-center justify-center flex-shrink-0 text-blue-500 h-52 w-52">
+                <span className='text-3xl font-bold'>{currentData?.averageRating}</span>
                 <span>of</span>
-                <span className='font-bold'> 40 Contributions</span>
+                <span className='font-bold'> {currentData?.totalContributionApproved} Contributions</span>
                 <div className="absolute inset-0 border-8 border-blue-500 rounded-full" />
               </div>
             </div>
@@ -102,7 +103,7 @@ export default function StudentDashboard() {
             <div className='grid w-full gap-2 my-5 sm:grid-cols-3'>
               <div className='flex items-center justify-around px-2 py-5 text-center text-black rounded-lg bg-yellow-400/80'>
                 <div className='flex flex-col'>
-                  <span className='text-2xl font-bold'>1</span>
+                  <span className='text-2xl font-bold'>{currentData.totalLike}</span>
                   <span className='text-sm font-medium'>Total Likes</span>
                 </div>
                 <div className='flex items-center justify-center w-10 h-10 text-white rounded-full shadow-2xl drop-shadow-2xl bg-yellow-600/60'>
@@ -113,7 +114,7 @@ export default function StudentDashboard() {
               </div>
               <div className='flex items-center justify-around px-2 py-5 text-center text-black rounded-lg bg-purple-400/80'>
                 <div className='flex flex-col'>
-                  <span className='text-2xl font-bold'>1</span>
+                  <span className='text-2xl font-bold'>{currentData?.totalComment}</span>
                   <span className='text-sm font-medium'>Total Comments</span>
                 </div>
                 <div className='flex items-center justify-center w-10 h-10 text-white rounded-full shadow-2xl drop-shadow-2xl bg-purple-600/60'>
@@ -124,7 +125,7 @@ export default function StudentDashboard() {
               </div>
               <div className='flex items-center justify-around px-2 py-5 text-center text-black rounded-lg bg-green-400/80'>
                 <div className='flex flex-col'>
-                  <span className='text-2xl font-bold'>1</span>
+                  <span className='text-2xl font-bold'>{currentData?.totalView || 1}</span>
                   <span className='text-sm font-medium'>Total Views</span>
                 </div>
                 <div className='flex items-center justify-center w-10 h-10 text-white rounded-full shadow-2xl drop-shadow-2xl bg-green-600/60'>
@@ -136,7 +137,8 @@ export default function StudentDashboard() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
+
           <div>
             {chartData && (
               <>
@@ -181,6 +183,7 @@ export default function StudentDashboard() {
         </div>
       </div>
       <Separator className="mt-4"></Separator>
+      <StudentLineChart data={allData && allData || []}></StudentLineChart>
     </AdminLayout>
   )
 }

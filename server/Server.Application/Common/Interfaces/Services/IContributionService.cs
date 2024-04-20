@@ -11,6 +11,6 @@ public interface IContributionService
 
     Task<ReportChartResponse<TotalContributorsPerFacultyData>> GetTotalContributorsPerEachFacultiesPerEachAcademicYearsDto();
 
-    Task<ReportChartResponse<TotalContributionFollowingStatusDataSet>> GetContributionsFollowingStatusForEachAcademicYearOfCurrentUserReport(Guid userId);
+    Task<CombineChartResponse<TotalContributionFollowingStatusDataSet>> GetContributionsFollowingStatusForEachAcademicYearOfCurrentUserReport(Guid userId);
 
 }

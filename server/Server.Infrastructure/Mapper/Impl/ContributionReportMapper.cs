@@ -68,11 +68,11 @@ public class ContributionReportMapper : IContributionReportMapper
         return result;
     }
 
-    public async Task<ReportChartResponse<TotalContributionFollowingStatusDataSet>> MapToTotalContributionFollowingStatusDataResponse(List<TotalContributionFollowingStatusData> data)
+    public async Task<CombineChartResponse<TotalContributionFollowingStatusDataSet>> MapToTotalContributionFollowingStatusDataResponse(List<TotalContributionFollowingStatusData> data)
     {
 
-        var result = new ReportChartResponse<TotalContributionFollowingStatusDataSet>();
-        var allStatuses = ContributionStatusHelper.GetAllStatuses();
+        var result = new CombineChartResponse<TotalContributionFollowingStatusDataSet>();
+       
 
         var groupedByYear = data.GroupBy(x => x.AcademicYear)
             .OrderBy(g => g.Key);
@@ -80,30 +80,27 @@ public class ContributionReportMapper : IContributionReportMapper
 
         foreach (var yearGroup in groupedByYear)
         {
-            var reportWrapper = new ReportChartResponseWrapper<TotalContributionFollowingStatusDataSet>
-            {
-                AcademicYear = yearGroup.Key
+            var reportWrapper = new CombineChartResponseWrapper<TotalContributionFollowingStatusDataSet>(){
+                AcademicYear = yearGroup.Key,
+                TotalLike = yearGroup.Sum(item => item.TotalLike ?? 0),
+                TotalComment = yearGroup.Sum(item => item.TotalComment ?? 0),
+                TotalContributionApproved = yearGroup.Sum(item => item.TotalContributionApproved ?? 0),
+                AverageRating = yearGroup.Average(item => item.AverageRating ?? 0)
             };
-            // default all datasets --> data : 0
-            var dataSets = allStatuses.Select(s => new TotalContributionFollowingStatusDataSet
-            {
-                Status = s,
-                Data = 0
-            }).ToList();
 
-            foreach (var item in yearGroup)
-            {
-                var statusData = dataSets.Where(s => s.Status == item.Status).ToList();
-                foreach (var status in statusData)
-                {
-                    dataSets.Remove(status);
-                    status.Data = item.Data;
-                    dataSets.Add(status);
 
-                }
-            }
+            var dataSets = new List<TotalContributionFollowingStatusDataSet>();
+
+            
+            dataSets.Add(new TotalContributionFollowingStatusDataSet { Status = "Pending", Data = yearGroup.Sum(item => item.Pending ?? 0) });
+            dataSets.Add(new TotalContributionFollowingStatusDataSet { Status = "Approve", Data = yearGroup.Sum(item => item.Approve ?? 0) });
+            dataSets.Add(new TotalContributionFollowingStatusDataSet { Status = "Reject", Data = yearGroup.Sum(item => item.Reject ?? 0) });
+
+           
             reportWrapper.DataSets.AddRange(dataSets);
-            result.Response.Add(reportWrapper);
+
+    
+            result.Response.Add(reportWrapper); ;
         }
 
         return await Task.FromResult(result);
