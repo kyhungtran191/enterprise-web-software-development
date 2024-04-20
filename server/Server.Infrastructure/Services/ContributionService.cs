@@ -59,7 +59,7 @@ public class ContributionService : IContributionService
                         WHEN 1 THEN 'Approve'
                         WHEN 2 THEN 'Reject'
                     END;";
-        var items = await conn.QueryAsync<TotalContributionFollowingStatusData>(sql: sql,param: new{currentUserId});
+        var items = await conn.QueryAsync<TotalContributionFollowingStatusData>(sql: sql, param: new { currentUserId });
         return await _contributionReportMapper.MapToTotalContributionFollowingStatusDataResponse(items.AsList());
     }
 
@@ -99,21 +99,30 @@ public class ContributionService : IContributionService
         }
 
         var sql = @"
-                SELECT ay.Name AS AcademicYear,
+                SELECT 
+                    ay.Name AS AcademicYear,
                     f.Name AS Faculty,
-                    cast((count(c.Id) * 1.0 / total_count.total * 100) as int)  AS Percentages
+                    cast((count(c.Id) * 1.0 / total_count.total * 100) as int) AS Percentages
                 FROM AcademicYears ay
                 CROSS JOIN Faculties f
-                LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id AND c.FacultyId = f.Id
+                LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id 
+                                            AND c.FacultyId = f.Id 
+                                            AND c.DateDeleted is null
+                                            AND f.DateDeleted is null							
                 LEFT JOIN (
                     SELECT COUNT(*) AS total
                     FROM Contributions c2
                     left join AcademicYears ay2 on c2.AcademicYearId = ay2.Id
+                    left join Faculties f2 on c2.FacultyId = f2.Id
                     where ay2.Name = @academicYearName
+                    and c2.DateDeleted is null
+                    and f2.DateDeleted is null
                     group by ay2.Name
                 ) AS total_count ON 1=1
+                where ay.Name = @academicYearName
+                    and f.DateDeleted is null 
+                    and c.DateDeleted is null
                 GROUP BY ay.Name, f.Name, total_count.total
-                having ay.Name = @academicYearName
                 ORDER BY ay.Name, f.Name;
             ";
 
@@ -141,6 +150,7 @@ public class ContributionService : IContributionService
                 FROM AcademicYears ay
                 CROSS JOIN Faculties f
                 LEFT JOIN Contributions c ON c.AcademicYearId = ay.Id AND c.FacultyId = f.Id
+                WHERE f.DateDeleted is null
                 GROUP BY ay.Name, f.Name
                 ORDER BY ay.Name, f.Name;
             ";
