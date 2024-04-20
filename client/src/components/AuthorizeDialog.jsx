@@ -20,7 +20,6 @@ export function AuthorizeDialog({ role }) {
   const queryClient = useQueryClient()
   const [permissions, setPermissions] = useState([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  console.log(isDialogOpen)
   const { data, isLoading } = useQuery({
     queryKey: ['adminPermissions', role],
     queryFn: () => Roles.getPermissionsForRole(role.id),
@@ -32,7 +31,7 @@ export function AuthorizeDialog({ role }) {
     onSuccess: () => {
       queryClient.invalidateQueries(['adminPermissions', role])
     },
-    onError: () => { }
+    onError: () => {}
   })
   useEffect(() => {
     if (isDialogOpen && data?.data?.responseData?.roleClaims) {
