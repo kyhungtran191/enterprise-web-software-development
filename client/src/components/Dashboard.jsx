@@ -199,7 +199,7 @@ const Dashboard = () => {
       {!isLoading && (
         <div className='h-full w-full flex justify-center px-4 py-6 lg:px-8'>
           {selectedChartType === 'percentage' ? (
-            <div className='w-[40%]'>
+            <div className='md:w-[50%] w-[80%] '>
               <PieChart data={data} options={options} />
             </div>
           ) : (

@@ -1,24 +1,30 @@
-import { getAccessTokenFromLS, getUserFromLS } from '@/utils/auth'
+import {
+  getAccessTokenFromLS,
+  getPermissions,
+  getUserFromLS
+} from '@/utils/auth'
 import React, { useEffect, useState } from 'react'
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from '@tanstack/react-query'
 import { Auth } from '@/services/client'
 
 const initialAppContext = {
   isAuthenticated: Boolean(getAccessTokenFromLS()),
-  setIsAuthenticated: () => { },
+  setIsAuthenticated: () => {},
   profile: getUserFromLS(),
-  setProfile: () => { },
+  setProfile: () => {},
   roles: [],
-  permission: [],
+  permission: []
 }
 
 export const AppContext = React.createContext(initialAppContext)
 
 export const AppProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(initialAppContext.isAuthenticated)
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    initialAppContext.isAuthenticated
+  )
   const [profile, setProfile] = useState(initialAppContext.profile)
-  const [avatar, setAvatar] = useState("")
-  const [permission, setPermission] = useState([])
+  const [avatar, setAvatar] = useState('')
+  const [permission, setPermission] = useState(getPermissions())
   const { isLoading, data } = useQuery({
     queryKey: ['profile'],
     queryFn: Auth.profile,
@@ -30,7 +36,18 @@ export const AppProvider = ({ children }) => {
   }, [detailData])
 
   return (
-    <AppContext.Provider value={{ profile, setProfile, isAuthenticated, setIsAuthenticated, avatar, setAvatar, permission, setPermission }}>
+    <AppContext.Provider
+      value={{
+        profile,
+        setProfile,
+        isAuthenticated,
+        setIsAuthenticated,
+        avatar,
+        setAvatar,
+        permission,
+        setPermission
+      }}
+    >
       {children}
     </AppContext.Provider>
   )
