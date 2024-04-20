@@ -18,7 +18,7 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useQueryClient } from "@tanstack/react-query"
-import { Clock } from "lucide-react"
+import { Clock, BellRing, MessageSquare } from "lucide-react"
 export default function Header() {
   const queryClient = useQueryClient()
   const { isAuthenticated, profile, setProfile, setIsAuthenticated, avatar } = useAppContext()
@@ -42,7 +42,7 @@ export default function Header() {
               alt='logo'
               className='flex-shrink-0 object-cover w-10 h-10 sm:h-16 sm:w-16'
             />
-            <h1 className='text-sm font-bold text-center sm:text-xl'>
+            <h1 className='hidden text-sm font-bold text-center sm:block sm:text-xl'>
               Magazine University System
             </h1>
           </Link>
@@ -56,8 +56,14 @@ export default function Header() {
             <button>Add</button>
           </Can> */}
         </div>
-        <div className='flex items-center gap-x-5'>
-          <Switch />
+        <div className='flex items-center gap-x-2'>
+          <div className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
+            <MessageSquare></MessageSquare>
+          </div>
+          <div className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
+            <BellRing></BellRing>
+          </div>
+
           <Popover>
             <PopoverTrigger asChild className='cursor-pointer'>
               <Avatar>
@@ -85,12 +91,10 @@ export default function Header() {
                       <Icon icon='icon-park-solid:like'></Icon>Liked Contribution
                     </Link>
                   </>}
-
                   {profile && profile.roles === Roles.Admin && <>
                     <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
                       <Icon icon='mage:user-fill'></Icon>Admin
                     </Link>
-
 
                   </>}
                   {profile && profile.roles === Roles.Coordinator &&
@@ -108,6 +112,7 @@ export default function Header() {
               </div>
             </PopoverContent>
           </Popover>
+
         </div>
       </nav>
     </header>

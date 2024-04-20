@@ -249,8 +249,8 @@ export function UsersTable() {
   const exportData = data?.data?.responseData?.results.map((item) => {
     return { ...item, roles: item?.roles[0] }
   })
-  console.log(exportData)
-  return (
+
+return (
     <div className='w-full p-4'>
 
       <div className='flex flex-row justify-between'>
