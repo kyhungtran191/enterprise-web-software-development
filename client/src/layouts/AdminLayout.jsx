@@ -19,10 +19,14 @@ const AdminLayout = ({ children, isAdmin = true, links = ADMIN_OPTIONS }) => {
       <Header />
       <div className='bg-background'>
         <div className='flex flex-row'>
-          <Sidebar
-            links={links}
-            className={'block min-w-1/4 w-[60px] overflow-hidden medium:w-1/5 '}
-          />
+          <div className="w-[0] sm:w-[60px] medium:w-1/5"></div>
+          <div>
+            <Sidebar
+              links={links}
+              className={'min-w-1/4 sm:w-[60px] overflow-hidden medium:w-1/5 fixed w-full right-0 sm:top-[82px] bottom-0 left-0 z-50 sm:z-30 bg-white sm:h-[90vh] sm:max-h-[screen] shadow-2xl'}
+            />
+          </div>
+
           <Separator orientation='vertical' />
           {/* Replace with correct tablle */}
           {/* <div className='w-full p-4'>

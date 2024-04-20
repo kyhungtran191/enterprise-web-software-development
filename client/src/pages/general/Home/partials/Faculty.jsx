@@ -32,6 +32,6 @@ export default function Faculty() {
         <CarouselPrevious className="-left-6"></CarouselPrevious>
         <CarouselNext className="-right-8"></CarouselNext>
       </Carousel>
-    </section >
+    </section>
   )
 }
