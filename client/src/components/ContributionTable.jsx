@@ -182,14 +182,14 @@ export function ContributionTable() {
   })
   const contributions = data
     ? data?.data?.responseData?.results.map((contribution) => ({
-        ...contribution,
-        submissionDate: contribution.submissionDate
-          ? format(new Date(contribution.publicDate), 'MM-dd-yyyy')
-          : 'Not published',
-        publishDate: contribution.publishDate
-          ? format(new Date(contribution.publishDate), 'MM-dd-yyyy')
-          : 'Not published'
-      }))
+      ...contribution,
+      submissionDate: contribution.submissionDate
+        ? format(new Date(contribution.submissionDate), 'MM-dd-yyyy')
+        : 'Not published',
+      publishDate: contribution?.publicDate
+        ? format(new Date(contribution.publicDate), 'MM-dd-yyyy')
+        : 'Not published'
+    }))
     : []
   const [selectedRow, setSelectedRow] = useState({})
   return (
