@@ -83,6 +83,7 @@ public class ContributionReportMapper : IContributionReportMapper
             var reportWrapper = new CombineChartResponseWrapper<TotalContributionFollowingStatusDataSet>(){
                 AcademicYear = yearGroup.Key,
                 TotalLike = yearGroup.Sum(item => item.TotalLike ?? 0),
+                TotalView = yearGroup.Sum(item => item.TotalView ?? 0),
                 TotalComment = yearGroup.Sum(item => item.TotalComment ?? 0),
                 TotalContributionApproved = yearGroup.Sum(item => item.TotalContributionApproved ?? 0),
                 AverageRating = yearGroup.Average(item => item.AverageRating ?? 0)

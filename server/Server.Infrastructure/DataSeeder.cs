@@ -1334,8 +1334,11 @@ public static class DataSeeder
         // seed like
         if (!context.Likes.Any())
         {
+            Random rnd = new Random();
             for (var i = 0; i <= 9; i++)
             {
+                
+                
                 var contribution = await context.ContributionPublics.FindAsync(listContribution[i].Id);
                 context.Likes.Add(new Like()
                 {
@@ -1358,6 +1361,7 @@ public static class DataSeeder
                     ContributionPublicId = listContribution[i].Id
                 });
                 contribution.LikeQuantity += 1;
+                contribution.Views = rnd.Next(1,50);
             }
             for (var i = 10; i <= 19; i++)
             {
@@ -1369,13 +1373,13 @@ public static class DataSeeder
                     ContributionPublicId = listContribution[i].Id
                 });
                 contribution.LikeQuantity += 1;
-                context.Likes.Add(new Like()
-                {
+                //context.Likes.Add(new Like()
+                //{
 
-                    UserId = studentList[2].Id,
-                    ContributionPublicId = listContribution[i].Id
-                });
-                contribution.LikeQuantity += 1;
+                //    UserId = studentList[2].Id,
+                //    ContributionPublicId = listContribution[i].Id
+                //});
+                //contribution.LikeQuantity += 1;
                 context.Likes.Add(new Like()
                 {
 
@@ -1383,6 +1387,7 @@ public static class DataSeeder
                     ContributionPublicId = listContribution[i].Id
                 });
                 contribution.LikeQuantity += 1;
+                contribution.Views = rnd.Next(1, 50); 
             }
             await context.SaveChangesAsync();
         }
