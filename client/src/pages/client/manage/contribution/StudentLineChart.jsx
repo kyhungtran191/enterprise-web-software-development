@@ -5,7 +5,7 @@ export default function StudentLineChart({ data }) {
   const academicYears = data.map(item => item?.academicYear);
   const totalLikes = data.map(item => item?.totalLike);
   const totalComments = data.map(item => item?.totalComment);
-  // const totalContributionApproved = data.map(item => item?.totalContributionApproved);
+  const totalView = data.map(item => item?.totalView);
   const averageRatings = data.map(item => item?.averageRating);
   const chartData = {
     labels: academicYears,
@@ -22,12 +22,12 @@ export default function StudentLineChart({ data }) {
         borderColor: 'green',
         fill: false
       },
-      // {
-      //   label: 'Total Contribution Approved',
-      //   data: totalContributionApproved,
-      //   borderColor: 'orange',
-      //   fill: false
-      // },
+      {
+        label: 'Total Views ',
+        data: totalView,
+        borderColor: 'orange',
+        fill: false
+      },
       {
         label: 'Average Rating',
         data: averageRatings,
