@@ -48,7 +48,6 @@ export default function Login() {
         const dataDetail = jwtDecode(accessToken);
         let { email, facultyId, facultyName, family_name, given_name, id, permissions, roles } = dataDetail
         const permissionData = JSON.parse(permissions)
-        console.log(permissionData)
         const permissionAbility = convertPermissionsToObject(permissionData)
         const permissionsArray = [];
         Object.keys(permissionAbility).forEach(action => {
@@ -63,6 +62,7 @@ export default function Login() {
         saveUserToLS({
           email, facultyId, facultyName, family_name, given_name, id, permissions, roles
         })
+        console.log(accessToken)
         saveAccessTokenToLS(accessToken)
         saveRefreshTokenToLS(refreshToken)
         setIsAuthenticated(true)
