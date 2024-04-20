@@ -44,7 +44,7 @@ function App() {
     return () => clearTimeout(timeoutId)
   }, [location.pathname])
 
-  const { isAuthenticated, profile } = useContext(AppContext)
+  const { isAuthenticated, profile, permission } = useContext(AppContext)
   function RequireAuth() {
     return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/login' />
   }
@@ -59,6 +59,7 @@ function App() {
       <Outlet></Outlet>
     )
   }
+  console.log(permission)
 
   return (
     <>
