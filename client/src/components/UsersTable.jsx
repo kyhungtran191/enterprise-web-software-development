@@ -21,6 +21,7 @@ import Spinner from './Spinner'
 import { format } from 'date-fns'
 import { isUndefined, omitBy } from 'lodash'
 import { EditUserDialog } from './EditUserDialog'
+import ExcelExport from './ExcelExport'
 // import { EditUserDialog } from './EditUserDialog'
 
 export function UsersTable() {
@@ -232,24 +233,31 @@ export function UsersTable() {
   })
   const users = data
     ? data?.data?.responseData?.results?.map((user) => {
-        return {
-          ...user,
-          dob: format(new Date(user.dob), 'MM-dd-yyyy'),
-          status: user.isActive ? 'Active' : 'Inactive',
-          role: user.roles[0]
-        }
-      })
+      return {
+        ...user,
+        dob: format(new Date(user.dob), 'MM-dd-yyyy'),
+        status: user.isActive ? 'Active' : 'Inactive',
+        role: user.roles[0]
+      }
+    })
     : []
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [selectedRow, setSelectedRow] = useState({})
   const closeDialog = () => setIsOpenEditUser(false)
+
+  const exportData = data?.data?.responseData?.results.map((item) => {
+    return { ...item, roles: item?.roles[0] }
+  })
+  console.log(exportData)
   return (
     <div className='w-full p-4'>
+
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
         <NewUserDialog />
       </div>
+      <ExcelExport data={exportData} title='Export User Data For Current Page'></ExcelExport>
       {isLoading && (
         <div className='container flex items-center justify-center min-h-screen'>
           <Spinner className={'border-blue-500'}></Spinner>
