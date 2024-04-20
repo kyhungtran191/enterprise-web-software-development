@@ -16,6 +16,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import StudentLineChart from './StudentLineChart'
+import ExcelExport from '@/components/ExcelExport'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export default function StudentDashboard() {
@@ -73,10 +74,11 @@ export default function StudentDashboard() {
     };
   };
 
-
+  console.log(allData)
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
       <div className="px-3 py-6">
+        <ExcelExport data={allData}></ExcelExport>
         <Select onValueChange={setCurrentYear} className="" defaultValue={currentYear} >
           <SelectTrigger className='w-[200px] py-4 text-lg font-bold my-4'>
             <SelectValue placeholder='Academic Year' />
