@@ -26,7 +26,6 @@ import { useReadLaterContribution } from '@/query/useReadLaterContribution'
 
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
-  console.log(article)
   const navigate = useNavigate()
   const { mutate, isLoading } = useMutateApprove()
   const { profile } = useAppContext()

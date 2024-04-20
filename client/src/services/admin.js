@@ -15,9 +15,12 @@ import {
   getAllRolesAPI,
   getAllRolesPagingAPI,
   getAllUsersAPI,
+  getContributionPercentageWithinFacultyByAcademicYearAPI,
   getFacultyByIdAPI,
   getPermissionsForRoleAPI,
   getRoleByIdAPI,
+  getTotalContributionsPerFacultyForAllAcademicYearsAPI,
+  getTotalContributorsPerFacultyForAllAcademicYearsAPI,
   getUserByIdAPI,
   updateAcademicYearAPI,
   updateFacultyAPI,
@@ -90,4 +93,21 @@ export const Contributions = {
     await instanceAxios.get(getAllContributionsPagingAPI, {
       params: queryParams
     })
+}
+
+export const Report = {
+  getTotalContributionsPerFacultyForAllAcademicYears: async () =>
+    await instanceAxios.get(
+      getTotalContributionsPerFacultyForAllAcademicYearsAPI
+    ),
+  getTotalContributorsPerFacultyForAllAcademicYears: async () =>
+    await instanceAxios.get(
+      getTotalContributorsPerFacultyForAllAcademicYearsAPI
+    ),
+  getContributionPercentageWithinFacultyByAcademicYear: async (
+    academicYearId
+  ) =>
+    await instanceAxios.get(
+      `${getContributionPercentageWithinFacultyByAcademicYearAPI}/${academicYearId}`
+    )
 }

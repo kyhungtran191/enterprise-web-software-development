@@ -8,7 +8,6 @@ export default function GuestContribution() {
   const { profile } = useAppContext()
   const { data, isLoading } = useGuestContribution()
   if (!data || profile?.roles !== Roles.Guest) return <></>
-  console.log(data)
   const detailData = data && data?.data?.responseData?.results && data?.data?.responseData?.results
   return (
     <section className="my-4">

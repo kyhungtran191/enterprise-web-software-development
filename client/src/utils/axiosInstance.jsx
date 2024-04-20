@@ -7,7 +7,10 @@ import { useNavigate } from "react-router-dom"
 
 const instanceAxios = axios.create({
   baseURL: URL
-})
+});
+
+let isRefreshing = false;
+let refreshQueue = [];
 
 const AxiosInterceptor = ({ children }) => {
   const navigate = useNavigate()
@@ -17,36 +20,56 @@ const AxiosInterceptor = ({ children }) => {
     if (accessToken) {
       const decoded = jwtDecode(accessToken)
       if (decoded.exp > ((Date.now() / 1000))) {
-        config.headers.authorization = `Bearer ${accessToken}`
+        config.headers.authorization = ` Bearer ${accessToken}`;
+
         return config
       } else {
+
         if (refreshToken) {
-          console.log("current", refreshToken)
-          await axios
-            .post(
-              refreshTokenAPI,
-              { accessToken, refreshToken },
-            ).then(res => {
-              if (res && res?.data?.responseData) {
-                const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res?.data?.responseData
-                if (newAccessToken) {
-                  config.headers.authorization = `Bearer ${newAccessToken}`
-                  saveAccessTokenToLS(newAccessToken)
+
+          if (!isRefreshing) {
+            isRefreshing = true;
+
+            console.log("current", refreshToken);
+
+            await axios
+              .post(
+                refreshTokenAPI,
+                { accessToken, refreshToken },
+              ).then(res => {
+                if (res && res?.data?.responseData) {
+                  const { accessToken: newAccessToken, refreshToken: newRefreshToken } = res?.data?.responseData
+
+                  if (newAccessToken) {
+                    config.headers.authorization = `Bearer ${newAccessToken}`
+                    saveAccessTokenToLS(newAccessToken);
+                    refreshQueue.forEach((cb) => cb(newAccessToken));
+                    refreshQueue = [];
+                  }
+
+                  if (newRefreshToken) {
+                    saveRefreshTokenToLS(newRefreshToken)
+                  }
+                  else {
+                    toast.error("Không có access và refresh")
+                  }
                 }
-                if (newRefreshToken) {
-                  saveRefreshTokenToLS(newRefreshToken)
-                }
-                else {
-                  toast.error("Không có access và refresh")
-                }
-              }
-              return config;
-            })
-            .catch((error) => {
-              // clearLS()
-              // navigate("/login")
-              console.log(error)
-            })
+                return config;
+              })
+              .catch((error) => {
+                // clearLS()
+                // navigate("/login")
+                console.log(error)
+              })
+
+          } else {
+            return new Promise((resolve) => {
+              refreshQueue.push((newAccessToken) => {
+                config.headers.authorization = `Bearer ${newAccessToken}`;
+                resolve(config);
+              });
+            });
+          }
         } else {
           clearLS()
           navigate("/login")

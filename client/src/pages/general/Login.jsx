@@ -38,7 +38,7 @@ export default function Login() {
     mutationFn: (body) => Auth.login(body),
   })
 
-  const { setIsAuthenticated, setProfile } = useAppContext()
+  const { setIsAuthenticated, setProfile, setPermission } = useAppContext()
 
   const onSubmit = (data) => {
     mutate(data, {
@@ -48,7 +48,7 @@ export default function Login() {
         const dataDetail = jwtDecode(accessToken);
         let { email, facultyId, facultyName, family_name, given_name, id, permissions, roles } = dataDetail
         const permissionData = JSON.parse(permissions)
-        console.log(permissionData)
+        setPermission(permissionData)
         const permissionAbility = convertPermissionsToObject(permissionData)
         const permissionsArray = [];
         Object.keys(permissionAbility).forEach(action => {
@@ -57,6 +57,7 @@ export default function Login() {
           });
         });
         ability.update(permissionsArray)
+        console.log(ability)
         setProfile({
           email, facultyId, facultyName, family_name, given_name, id, permissions: JSON.parse(permissions), roles
         })

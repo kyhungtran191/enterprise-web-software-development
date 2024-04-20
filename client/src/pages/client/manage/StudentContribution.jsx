@@ -90,7 +90,6 @@ export default function StudentContribution() {
 
 
   const currentData = data && data?.data?.responseData;
-  console.log(position)
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>
