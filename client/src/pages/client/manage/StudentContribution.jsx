@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-
+import { PencilLine } from 'lucide-react';
 import Article from '@/components/article'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import { QueryClient, useQuery } from '@tanstack/react-query'
@@ -22,6 +22,8 @@ import { Icon } from '@iconify/react'
 import PaginationCustom from '@/components/PaginationCustom'
 import Spinner from '@/components/Spinner'
 import { STUDENT_OPTIONS } from '@/constant/menuSidebar'
+import GetCurrentAcademicYear, { IsOutDeadlineAdd } from '@/hooks/useIsActiveAcademicYear'
+import { formatDate } from '@/utils/helper'
 export default function StudentContribution() {
   const [position, setPosition] = React.useState('')
   const navigate = useNavigate()
@@ -88,7 +90,10 @@ export default function StudentContribution() {
     [navigate]
   );
 
-
+  const academicYear = GetCurrentAcademicYear()
+  console.log(academicYear);
+  const isOutDate = IsOutDeadlineAdd()
+  console.log(isOutDate)
   const currentData = data && data?.data?.responseData;
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
@@ -107,10 +112,8 @@ export default function StudentContribution() {
           />
         </div>
         <div className='flex flex-wrap items-center gap-2'>
-          <Button className='flex-1 py-4' onClick={() => navigate("/student-manage/add-contribution")}>
-            <Plus></Plus>
-            Add new Article
-          </Button>
+
+
           <div className='flex-1'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild className='w-full'>
@@ -144,7 +147,29 @@ export default function StudentContribution() {
             </DropdownMenu>
           </div>
         </div>
+
+
       </div>
+      {!isOutDate && <div className='w-full mx-auto px-2 py-4 font-semibold text-white shadow-lg rounded-lg min-w-[300px] max-w-[600px] min-h-[300px] text-center bg-purple-500/70'>
+        <div className="my-2 text-right">
+          {!isOutDate && <Button className='py-4 mx-auto' onClick={() => navigate("/student-manage/add-contribution")}>
+            <Plus></Plus>
+            Add new Article
+          </Button>}
+        </div>
+        <h3 className='mb-2 text-2xl font-bold'>{academicYear?.name}</h3>
+        <div className="flex items-center justify-center w-20 h-20 mx-auto bg-purple-200 rounded-full">
+          <PencilLine />
+        </div>
+        {!isOutDate && <div className="">
+
+          <div className='py-2 sm:text-base'>Start: <span className='font-bold '>{formatDate(academicYear?.startClosureDate)}</span></div>
+          <div className='py-2 sm:text-base'>End Receive Contributions: <span className='my-2 font-bold'>{formatDate(academicYear?.endClosureDate)}</span></div>
+          <div className='py-2 sm:text-base'>Final End for Editing Contributions: <span className='font-bold'>{formatDate(academicYear?.finalClosureDate)}</span></div>
+        </div>}
+
+      </div>}
+
       {currentData && currentData?.results?.length > 0 && <>
         {currentData && currentData?.results
           ?.map((article, index) => (
