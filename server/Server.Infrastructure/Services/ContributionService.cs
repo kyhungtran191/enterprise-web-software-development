@@ -30,60 +30,99 @@ public class ContributionService : IContributionService
             await conn.OpenAsync();
         }
 
-        var sql = @"WITH StatusData AS (
+        var sql = @"WITH ViewsData AS (
                         SELECT
-                            ay.Name AS AcademicYear,
-                            cs.Status,
-                            COUNT(*) AS Data
+                            cp.AcademicYearId,
+                            SUM(cp.Views) AS TotalView
                         FROM
-                            Contributions AS cs
-                        INNER JOIN
-                            AcademicYears AS ay ON cs.AcademicYearId = ay.Id
+                            ContributionPublics cp
                         WHERE
-                            cs.UserId = @currentUserId AND cs.DateDeleted IS NULL
+                            cp.UserId = @currentUserId AND cp.DateDeleted IS NULL
                         GROUP BY
-                            ay.Name, cs.Status
-                    ), InteractionData AS (
+                            cp.AcademicYearId
+                    ),
+                    LikesData AS (
                         SELECT
-                            ay.Name AS AcademicYear,
-                            COALESCE(SUM(cp.Views), 0) AS TotalView,
-                            COALESCE(COUNT(DISTINCT l.Id), 0) AS TotalLike,
-                            COALESCE(CAST(AVG(cpr.Rating) AS DECIMAL(10, 2)), 0) AS AverageRating,
-                            COALESCE(COUNT(DISTINCT cpc.Id), 0) AS TotalComment
+                            cp.AcademicYearId,
+                            COUNT(DISTINCT l.Id) AS TotalLike
                         FROM
-                            AcademicYears ay
-                        LEFT JOIN
-                            ContributionPublics cp ON ay.Id = cp.AcademicYearId
+                            ContributionPublics cp
                         LEFT JOIN
                             Likes l ON cp.Id = l.ContributionPublicId
+                        WHERE
+                            cp.UserId = @currentUserId AND cp.DateDeleted IS NULL
+                        GROUP BY
+                            cp.AcademicYearId
+                    ),
+                    RatingsData AS (
+                        SELECT
+                            cp.AcademicYearId,
+                            CAST(AVG(cpr.Rating) AS DECIMAL(10, 2)) AS AverageRating
+                        FROM
+                            ContributionPublics cp
                         LEFT JOIN
                             ContributionPublicRatings cpr ON cp.Id = cpr.ContributionPublicId
+                        WHERE
+                            cp.UserId = @currentUserId AND cp.DateDeleted IS NULL
+                        GROUP BY
+                            cp.AcademicYearId
+                    ),
+                    CommentsData AS (
+                        SELECT
+                            cp.AcademicYearId,
+                            COUNT(DISTINCT cpc.Id) AS TotalComment
+                        FROM
+                            ContributionPublics cp
                         LEFT JOIN
                             ContributionPublicComments cpc ON cp.Id = cpc.ContributionId
                         WHERE
                             cp.UserId = @currentUserId AND cp.DateDeleted IS NULL
                         GROUP BY
-                            ay.Name
+                            cp.AcademicYearId
+                    ),
+                    StatusData AS (
+                        SELECT
+                            ay.Id AS AcademicYearId,
+                            ay.Name AS AcademicYear,
+                            cs.Status,
+                            COUNT(cs.Id) AS Data
+                        FROM
+                            Contributions cs
+                        JOIN
+                            AcademicYears ay ON cs.AcademicYearId = ay.Id
+                        WHERE
+                            cs.UserId = @currentUserId AND cs.DateDeleted IS NULL
+                        GROUP BY
+                            ay.Id, ay.Name, cs.Status
                     )
                     SELECT
-                        i.AcademicYear,
-                        i.TotalLike,
-                        i.TotalComment,
-                        COALESCE(s1.Data, 0) AS TotalContributionApproved,
-                        i.AverageRating,
-                        COALESCE(s0.Data, 0) AS Pending,
-                        COALESCE(s1.Data, 0) AS Approve,
-                        COALESCE(s2.Data, 0) AS Reject
+                        ay.Name AS AcademicYear,
+                        COALESCE(vd.TotalView, 0) AS TotalView,
+                        COALESCE(ld.TotalLike, 0) AS TotalLike,
+                        COALESCE(rd.AverageRating, 0) AS AverageRating,
+                        COALESCE(cd.TotalComment, 0) AS TotalComment,
+                        COALESCE(sd1.Data, 0) AS TotalContributionApproved,
+                        COALESCE(sd0.Data, 0) AS Pending,
+                        COALESCE(sd1.Data, 0) AS Approve,
+                        COALESCE(sd2.Data, 0) AS Reject
                     FROM
-                        InteractionData i
+                        AcademicYears ay
                     LEFT JOIN
-                        StatusData s0 ON i.AcademicYear = s0.AcademicYear AND s0.Status = 0
+                        ViewsData vd ON ay.Id = vd.AcademicYearId
                     LEFT JOIN
-                        StatusData s1 ON i.AcademicYear = s1.AcademicYear AND s1.Status = 1
+                        LikesData ld ON ay.Id = ld.AcademicYearId
                     LEFT JOIN
-                        StatusData s2 ON i.AcademicYear = s2.AcademicYear AND s2.Status = 2
+                        RatingsData rd ON ay.Id = rd.AcademicYearId
+                    LEFT JOIN
+                        CommentsData cd ON ay.Id = cd.AcademicYearId
+                    LEFT JOIN
+                        StatusData sd0 ON ay.Id = sd0.AcademicYearId AND sd0.Status = 0
+                    LEFT JOIN
+                        StatusData sd1 ON ay.Id = sd1.AcademicYearId AND sd1.Status = 1
+                    LEFT JOIN
+                        StatusData sd2 ON ay.Id = sd2.AcademicYearId AND sd2.Status = 2
                     ORDER BY
-                        i.AcademicYear;";
+                        ay.Name;";
         var items = await conn.QueryAsync<TotalContributionFollowingStatusData>(sql: sql, param: new { currentUserId });
         return await _contributionReportMapper.MapToTotalContributionFollowingStatusDataResponse(items.AsList());
     }

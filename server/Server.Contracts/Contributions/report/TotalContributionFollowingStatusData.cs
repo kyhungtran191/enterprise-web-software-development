@@ -3,6 +3,7 @@
     public class TotalContributionFollowingStatusData
     {
         public string? AcademicYear { get; set; }
+        public int? TotalView { get; set; }
         public int? TotalLike { get; set; }
         public int? TotalComment { get; set; }
         public int? TotalContributionApproved { get; set; }

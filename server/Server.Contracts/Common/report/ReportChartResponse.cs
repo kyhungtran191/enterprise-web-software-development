@@ -20,6 +20,7 @@ public class CombineChartResponseWrapper<T> where T : class, new()
 {
     public String? AcademicYear { get; set; }
     public int? TotalLike { get; set; }
+    public int? TotalView { get; set; }
     public int? TotalComment { get; set; }
     public int? TotalContributionApproved { get; set; }
     public float? AverageRating { get; set; }
