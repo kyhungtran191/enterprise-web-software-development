@@ -102,7 +102,9 @@ namespace Server.Infrastructure.Persistence.Repositories
             var files = await _dbContext.Files
                 .Where(f => contributionIds.Contains(f.ContributionId))
                 .ToListAsync();
-
+            // get average rating
+            var publicContributions = await _dbContext.ContributionPublics.Where(x => contributionIds.Contains(x.Id))
+                .ToListAsync();
             var contributionsDto = contributions.Select(x => new ContributionInListDto
             {
                 Id = x.c.Id,
@@ -120,7 +122,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                     .Select(f => new FileReturnDto {Path = f.Path, Name = f.Name, Extension = f.Extension, PublicId = f.PublicId }).ToList(),
                 RejectedReason = GetRejectReason(x.c).GetAwaiter().GetResult(),
                 ShortDescription = x.c.ShortDescription,
-                GuestAllowed = x.c.AllowedGuest
+                GuestAllowed = x.c.AllowedGuest,
+                AverageRating = publicContributions.Where(p=>p.Id == x.c.Id).FirstOrDefault()?.AverageRating
             }).ToList();
 
 
