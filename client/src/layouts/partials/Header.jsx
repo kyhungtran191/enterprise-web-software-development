@@ -12,24 +12,26 @@ import { Switch } from '@/components/ui/switch'
 import { PERMISSIONS } from '@/constant/casl-permissions'
 import { Roles } from '@/constant/roles'
 import { useAppContext } from '@/hooks/useAppContext'
-import { clearLS } from '@/utils/auth'
+import { clearLS, deletePermissions } from '@/utils/auth'
 import { Icon } from '@iconify/react'
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { useQueryClient } from "@tanstack/react-query"
-import { Clock, BellRing, MessageSquare } from "lucide-react"
+import { useQueryClient } from '@tanstack/react-query'
+import { Clock, BellRing, MessageSquare } from 'lucide-react'
 export default function Header() {
   const queryClient = useQueryClient()
-  const { isAuthenticated, profile, setProfile, setIsAuthenticated, avatar } = useAppContext()
+  const { isAuthenticated, profile, setProfile, setIsAuthenticated, avatar } =
+    useAppContext()
   const ability = useContext(AbilityContext)
   let navigate = useNavigate()
   const handleLogout = () => {
     clearLS()
     setProfile({})
     setIsAuthenticated(false)
+    deletePermissions()
     queryClient.clear()
-    toast.success("Logout successfully!")
+    toast.success('Logout successfully!')
     navigate('/login')
   }
   return (
@@ -48,10 +50,14 @@ export default function Header() {
           </Link>
         </div>
         <div className='items-center hidden ml-8 lg:flex absolute left-[50%] -transition-x-1/2'>
-          {profile?.roles !== Roles.Guest && <Link className='mx-4 font-semibold hover:text-blue-500' to="/contributions">
-            Contribution Lists
-          </Link>
-          }
+          {profile?.roles !== Roles.Guest && (
+            <Link
+              className='mx-4 font-semibold hover:text-blue-500'
+              to='/contributions'
+            >
+              Contribution Lists
+            </Link>
+          )}
           {/* <Can I={PERMISSIONS.View.Dashboard.index} a={PERMISSIONS.View.Dashboard.value}>
             <button>Add</button>
           </Can> */}
@@ -68,7 +74,7 @@ export default function Header() {
             <PopoverTrigger asChild className='cursor-pointer'>
               <Avatar>
                 <AvatarImage
-                  src={`${avatar || "https://variety.com/wp-content/uploads/2021/04/Avatar.jpg"}`}
+                  src={`${avatar || 'https://variety.com/wp-content/uploads/2021/04/Avatar.jpg'}`}
                   className='object-cover'
                 ></AvatarImage>
                 <AvatarFallback>CN</AvatarFallback>
@@ -80,39 +86,64 @@ export default function Header() {
                   <h4 className='font-medium leading-none'>
                     {profile && profile?.email}
                   </h4>
-                  <p className='text-sm text-muted-foreground'>{profile && profile?.roles}({(profile?.facultyName)})</p>
+                  <p className='text-sm text-muted-foreground'>
+                    {profile && profile?.roles}({profile?.facultyName})
+                  </p>
                 </div>
                 <div className='gap-2 text-slate-700'>
-                  {profile && profile.roles === Roles.Student && <>
-                    <Link to="/student-manage/recent" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                      <Clock></Clock>Recent Post
-                    </Link>
-                    <Link to="/student-manage/favorites" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                      <Icon icon='icon-park-solid:like'></Icon>Liked Contribution
-                    </Link>
-                  </>}
-                  {profile && profile.roles === Roles.Admin && <>
-                    <Link to="/admin/roles" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                      <Icon icon='mage:user-fill'></Icon>Admin
-                    </Link>
-
-                  </>}
-                  {profile && profile.roles === Roles.Coordinator &&
-                    <Link to="/coodinator-manage/contributions?status=PENDING" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
+                  {profile && profile.roles === Roles.Student && (
+                    <>
+                      <Link
+                        to='/student-manage/recent'
+                        className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
+                      >
+                        <Clock></Clock>Recent Post
+                      </Link>
+                      <Link
+                        to='/student-manage/favorites'
+                        className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
+                      >
+                        <Icon icon='icon-park-solid:like'></Icon>Liked
+                        Contribution
+                      </Link>
+                    </>
+                  )}
+                  {profile && profile.roles === Roles.Admin && (
+                    <>
+                      <Link
+                        to='/admin/roles'
+                        className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
+                      >
+                        <Icon icon='mage:user-fill'></Icon>Admin
+                      </Link>
+                    </>
+                  )}
+                  {profile && profile.roles === Roles.Coordinator && (
+                    <Link
+                      to='/coodinator-manage/contributions?status=PENDING'
+                      className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
+                    >
                       <Icon icon='mage:user-fill'></Icon>Coodinator Manage
                     </Link>
-                  }
-                  {profile && profile.roles !== Roles?.Guest && <Link to="/profile" className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'>
-                    <Icon icon='mage:user-fill'></Icon>Profile
-                  </Link>}
-                  <div className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3' onClick={handleLogout}>
+                  )}
+                  {profile && profile.roles !== Roles?.Guest && (
+                    <Link
+                      to='/profile'
+                      className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
+                    >
+                      <Icon icon='mage:user-fill'></Icon>Profile
+                    </Link>
+                  )}
+                  <div
+                    className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
+                    onClick={handleLogout}
+                  >
                     <Icon icon='solar:logout-2-bold'></Icon>Logout
                   </div>
                 </div>
               </div>
             </PopoverContent>
           </Popover>
-
         </div>
       </nav>
     </header>

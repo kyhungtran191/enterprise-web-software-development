@@ -30,6 +30,7 @@ import Dashboard from './components/Dashboard'
 import ReadLaterContribution from './pages/client/manage/contribution/ReadLaterContribution'
 import StudentDashboard from './pages/client/manage/contribution/StudentDashboard'
 import ChatPage from './pages/ChatPage'
+import { routesConfig } from './constant/routeConfigs'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -45,6 +46,49 @@ function App() {
   }, [location.pathname])
 
   const { isAuthenticated, profile, permission } = useContext(AppContext)
+
+  const checkPermissions = (requiredPermission) => {
+    if (!requiredPermission) return true
+    if (!permission) return false
+
+    const [category, type] = requiredPermission.split('.')
+    const hasPermission =
+      permission[category] &&
+      permission[category][type] === `Permissions.${category}.${type}`
+
+    console.log(
+      `Checking permission for ${requiredPermission}: ${hasPermission}`
+    )
+
+    return hasPermission
+  }
+
+  const renderRoute = (route, key) => {
+    const { path, component: Component, layout: Layout, permission } = route
+    const isAllowed = checkPermissions(permission)
+    return (
+      <Route
+        key={key}
+        path={path}
+        element={
+          isAllowed ? (
+            Layout ? (
+              <Layout>
+                <Component />
+              </Layout>
+            ) : (
+              <Component />
+            )
+          ) : isAuthenticated ? (
+            <Navigate to='/404' replace />
+          ) : (
+            <Navigate to='/login' replace />
+          )
+        }
+      />
+    )
+  }
+
   function RequireAuth() {
     return isAuthenticated ? <Outlet></Outlet> : <Navigate to='/login' />
   }
@@ -59,7 +103,6 @@ function App() {
       <Outlet></Outlet>
     )
   }
-  console.log(permission)
 
   return (
     <>
@@ -73,7 +116,7 @@ function App() {
           <Loading></Loading>
         </div>
       )}
-      <Routes>
+      {/* <Routes>
         <Route path='' element={<RequireAuth></RequireAuth>}>
           <Route
             path='/'
@@ -83,14 +126,16 @@ function App() {
               </GeneralLayout>
             }
           ></Route>
-          <Route
-            path='/admin/roles'
-            element={
-              <AdminLayout>
-                <RolesTable />
-              </AdminLayout>
-            }
-          />
+          {permission?.Roles?.View && (
+            <Route
+              path='/admin/roles'
+              element={
+                <AdminLayout>
+                  <RolesTable />
+                </AdminLayout>
+              }
+            />
+          )}
           <Route
             path='/admin/users'
             element={
@@ -133,7 +178,10 @@ function App() {
           />
           <Route element={<IsGuestAccount />} path=''>
             <Route path='/student-manage'>
-              <Route index element={<StudentDashboard></StudentDashboard>}></Route>
+              <Route
+                index
+                element={<StudentDashboard></StudentDashboard>}
+              ></Route>
               <Route
                 path='/student-manage/recent'
                 element={<StudentContribution></StudentContribution>}
@@ -154,11 +202,13 @@ function App() {
                 path='/student-manage/read-later'
                 element={<ReadLaterContribution></ReadLaterContribution>}
               ></Route>
-              <Route path="/student-manage/dashboard" element={<StudentDashboard></StudentDashboard>}></Route>
+              <Route
+                path='/student-manage/dashboard'
+                element={<StudentDashboard></StudentDashboard>}
+              ></Route>
             </Route>
           </Route>
-          {/* Chat */}
-          <Route path="/message" element={<ChatPage></ChatPage>}></Route>
+          <Route path='/message' element={<ChatPage></ChatPage>}></Route>
           <Route
             path='/coodinator-manage/contributions'
             element={<ManageContributions></ManageContributions>}
@@ -184,6 +234,12 @@ function App() {
           ></Route>
           <Route path='/view-file' element={<ViewFile></ViewFile>}></Route>
         </Route>
+     
+        <Route path='*' element={<NotFound></NotFound>}></Route>
+      </Routes> */}
+      <Routes>
+        {routesConfig.map((route, index) => renderRoute(route, index))}
+        <Route path='*' element={<NotFound />} />
         <Route path='' element={<RejectedRoute></RejectedRoute>}>
           <Route path='/login' element={<Login></Login>} index></Route>
           <Route
@@ -195,7 +251,6 @@ function App() {
             element={<ResetPassword></ResetPassword>}
           ></Route>
         </Route>
-        <Route path='*' element={<NotFound></NotFound>}></Route>
       </Routes>
     </>
   )
