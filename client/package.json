@@ -36,6 +36,7 @@
     "@tinymce/tinymce-react": "^5.0.0",
     "axios": "^1.6.8",
     "chart.js": "^4.4.2",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.6.0",

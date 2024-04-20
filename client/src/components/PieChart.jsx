@@ -2,7 +2,6 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -10,12 +9,11 @@ import {
   PointElement,
   LineElement
 } from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+import { Pie } from 'react-chartjs-2'
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -24,11 +22,11 @@ ChartJS.register(
   PointElement
 )
 
-const BarChart = ({ data, options }) => {
+const PieChart = ({ data, options }) => {
   return (
     <>
-      <Bar data={data} options={options} />
+      <Pie data={data} options={options} />
     </>
   )
 }
-export default BarChart
+export default PieChart

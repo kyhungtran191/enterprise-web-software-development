@@ -21,6 +21,7 @@ import { toast } from 'react-toastify'
 import Spinner from './Spinner'
 import { AcademicYearEditDialog } from './AcademicYearEditDialog'
 import { isUndefined, omitBy } from 'lodash'
+import { useAcademicYearAdmin } from '@/query/useAcademicYearAdmin'
 export function AcademicYearTable() {
   const [isOpenEditAcademicYear, setIsOpenEditAcademicYear] = useState(false)
   const [selectedRow, setSelectedRow] = useState({})
@@ -199,21 +200,8 @@ export function AcademicYearTable() {
     },
     isUndefined
   )
-  const { data, isLoading } = useQuery({
-    queryKey: ['adminAcademicYears', queryConfig],
-    queryFn: (_) => AcademicYears.getAllAcademicYears(queryConfig),
-    keepPreviousData: true,
-    staleTime: 3 * 60 * 1000
-  })
-  const academicYearsData = data
-    ? data?.data?.responseData?.results.map((year) => ({
-        ...year,
-        startClosureDate: format(new Date(year.startClosureDate), 'MM-dd-yyyy'),
-        endClosureDate: format(new Date(year.endClosureDate), 'MM-dd-yyyy'),
-        finalClosureDate: format(new Date(year.finalClosureDate), 'MM-dd-yyyy'),
-        status: year.isActive ? 'Active' : 'Inactive'
-      }))
-    : []
+  const { academicYearsData, pageCount, isLoading } =
+    useAcademicYearAdmin(queryConfig)
   return (
     <div className='w-full p-4'>
       <div className='flex flex-row justify-between'>
@@ -232,7 +220,7 @@ export function AcademicYearTable() {
             data={academicYearsData}
             path={'/admin/academic-years'}
             queryConfig={queryConfig}
-            pageCount={data?.data?.responseData.pageCount || 1}
+            pageCount={pageCount}
             selectedRows={setSelectedRow}
           />
         </div>

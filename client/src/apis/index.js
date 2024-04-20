@@ -79,3 +79,8 @@ export const deleteFacultyAPI = `${URL}${adminAPI}/Faculties`
 
 // Contribution
 export const getAllContributionsPagingAPI = `${URL}${adminAPI}/Contributions/paging`
+
+// Dashboard
+export const getTotalContributionsPerFacultyForAllAcademicYearsAPI = `${URL}${adminAPI}/Contributions/report-contributions-within-each-faculty-for-each-academic-year`
+export const getTotalContributorsPerFacultyForAllAcademicYearsAPI = `${URL}${adminAPI}/Contributions/report-total-contributors-per-each-faculties-for-each-academic-years`
+export const getContributionPercentageWithinFacultyByAcademicYearAPI = `${URL}${adminAPI}/Contributions/report-percentages-contributions-within-each-faculty-by-academic-year`
