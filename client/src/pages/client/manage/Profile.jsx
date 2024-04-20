@@ -92,7 +92,6 @@ export default function Profile() {
         .then(blob => {
           const fileName = 'avatar';
           const file = new File([blob], fileName);
-          console.log(1)
           file && formData.append("Avatar", file)
         })
         .catch(error => {

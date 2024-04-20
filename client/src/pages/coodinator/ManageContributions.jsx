@@ -183,7 +183,6 @@ export default function ManageContribution() {
   );
 
   const currentData = data && data?.data?.responseData;
-  console.log(currentData);
   return (
     <AdminLayout links={MC_OPTIONS}>
       <div className='flex flex-wrap items-center gap-3 my-5'>

@@ -40,7 +40,6 @@ export default function PreviewContribution() {
   const queryClient = useQueryClient()
 
   const detailData = data && data?.data?.responseData
-  console.log(detailData)
   const cleanHTML = DOMPurify.sanitize(detailData?.content);
   const { profile } = useAppContext()
 
