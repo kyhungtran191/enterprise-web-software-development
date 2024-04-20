@@ -69,3 +69,9 @@ const updateAbilityFromPermissions = (ability, permissions) => {
     }
   });
 };
+
+
+export function roundToDecimal(number, decimalPlaces) {
+  let factor = Math.pow(10, decimalPlaces);
+  return Math.floor(number * factor) / factor;
+}
