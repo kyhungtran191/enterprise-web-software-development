@@ -19,52 +19,53 @@ import Spinner from './Spinner'
 const Dashboard = () => {
   const [selectedChartType, setSelectedChartType] = useState('contributions')
   const { academicYearsData } = useAcademicYearAdmin()
+  console.log(academicYearsData)
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(
     academicYearsData[0]?.name
   )
   const options =
     selectedChartType !== 'percentage'
       ? {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top'
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text:
+                selectedChartType === 'contributions'
+                  ? 'Number of contributions within each Faculty for each academic year'
+                  : 'Number of contributors within each Faculty for each academic year'
+            }
           },
-          title: {
-            display: true,
-            text:
-              selectedChartType === 'contributions'
-                ? 'Number of contributions within each Faculty for each academic year'
-                : 'Number of contributors within each Faculty for each academic year'
-          }
-        },
-        scales: {
-          x: {
-            stacked: true
-          },
-          y: {
-            stacked: true
-          }
-        }
-      }
-      : {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top'
-          },
-          title: {
-            display: true,
-            text: `Percentage of contributions within each Faculty for academic year ${selectedAcademicYear}`
-          },
-          datalabels: {
-            formatter: function (value, context) {
-              console.log(value)
-              return context.chart.data.labels[context.dataIndex]
+          scales: {
+            x: {
+              stacked: true
+            },
+            y: {
+              stacked: true
             }
           }
         }
-      }
+      : {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: `Percentage of contributions within each Faculty for academic year ${selectedAcademicYear}`
+            },
+            datalabels: {
+              formatter: function (value, context) {
+                console.log(value)
+                return context.chart.data.labels[context.dataIndex]
+              }
+            }
+          }
+        }
 
   const handleSelectChartType = (chartType) => {
     setSelectedChartType(chartType)

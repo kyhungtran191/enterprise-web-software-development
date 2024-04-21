@@ -15,6 +15,7 @@ import {
   getAllRolesAPI,
   getAllRolesPagingAPI,
   getAllUsersAPI,
+  getContributionActivityLogsAPI,
   getContributionPercentageWithinFacultyByAcademicYearAPI,
   getFacultyByIdAPI,
   getPermissionsForRoleAPI,
@@ -92,7 +93,11 @@ export const Contributions = {
   getAllContributionsPaging: async (queryParams) =>
     await instanceAxios.get(getAllContributionsPagingAPI, {
       params: queryParams
-    })
+    }),
+  getContributionActivityLogs: async (contributionId) =>
+    await instanceAxios.get(
+      `${getContributionActivityLogsAPI}/${contributionId}`
+    )
 }
 
 export const Report = {

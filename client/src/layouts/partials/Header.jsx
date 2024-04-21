@@ -63,7 +63,10 @@ export default function Header() {
           </Can> */}
         </div>
         <div className='flex items-center gap-x-2'>
-          <Link to="/message" className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
+          <Link
+            to='/message'
+            className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'
+          >
             <MessageSquare></MessageSquare>
           </Link>
           <div className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
@@ -111,10 +114,20 @@ export default function Header() {
                   {profile && profile.roles === Roles.Admin && (
                     <>
                       <Link
-                        to='/admin/roles'
+                        to='/admin/dashboard'
                         className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
                       >
                         <Icon icon='mage:user-fill'></Icon>Admin
+                      </Link>
+                    </>
+                  )}
+                  {profile && profile.roles === Roles.Manager && (
+                    <>
+                      <Link
+                        to='/mm/dashboard'
+                        className='flex items-center w-full px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-100 gap-x-3'
+                      >
+                        <Icon icon='mage:user-fill'></Icon>Manager
                       </Link>
                     </>
                   )}
