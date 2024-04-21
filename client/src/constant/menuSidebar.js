@@ -70,8 +70,7 @@ export const STUDENT_OPTIONS = [
     title: 'Favorites',
     icon: Heart,
     href: '/student-manage/favorites'
-  },
-
+  }
 ]
 
 export const MC_OPTIONS = [
@@ -89,5 +88,23 @@ export const MC_OPTIONS = [
     title: 'Settings GAC',
     icon: Clock,
     href: '/coodinator-manage/setting-guest'
+  }
+]
+
+export const MM_OPTIONS = [
+  {
+    title: 'Dashboard',
+    icon: CircleGauge,
+    href: '/mm/dashboard'
+  },
+  {
+    title: 'Contributions',
+    icon: BookText,
+    href: '/mm/contributions'
+  },
+  {
+    title: 'Users',
+    icon: User,
+    href: '/mm/users'
   }
 ]
