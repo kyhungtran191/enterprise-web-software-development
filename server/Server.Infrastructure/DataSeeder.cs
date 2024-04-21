@@ -706,7 +706,7 @@ public static class DataSeeder
                         Value = "Permissions.Contributions.Download"
                     }
                 };
-                foreach (var permission in managerPermissions)
+                foreach (var permission in managerPermissionList)
                 {
                     await roleManager.AddClaimAsync(managerRole, new Claim("permissions", permission.Value!));
                 }
