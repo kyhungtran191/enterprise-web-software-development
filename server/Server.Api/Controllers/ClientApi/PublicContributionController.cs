@@ -98,8 +98,7 @@ public class PublicContributionController : ClientApiController
 
     }
     [HttpGet("download-files/{ContributionId}")]
-    [Authorize]
-    [Authorize(Permissions.Contributions.View)]
+    [Authorize(Permissions.Contributions.Download)]
     public async Task<IActionResult> DownloadFiles([FromRoute] DownloadAllFileRequest request)
     {
         var query = _mapper.Map<DownloadAllFileQuery>(request);
@@ -109,7 +108,7 @@ public class PublicContributionController : ClientApiController
 
     [HttpGet("download-file")]
     [Authorize]
-    [Authorize(Permissions.Contributions.View)]
+    [Authorize(Permissions.Contributions.Download)]
     public async Task<IActionResult> DownloadFile(DownSingleFileRequest request)
     {
         var query = _mapper.Map<DownSingleFileQuery>(request);
