@@ -1,77 +1,97 @@
 export function formatDate(inputDate) {
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ]
 
-  const date = new Date(inputDate);
+  const date = new Date(inputDate)
 
-  const day = date.getDate();
-  const monthIndex = date.getMonth();
-  const year = date.getFullYear();
+  const day = date.getDate()
+  const monthIndex = date.getMonth()
+  const year = date.getFullYear()
 
-  const monthName = months[monthIndex];
+  const monthName = months[monthIndex]
 
-  const result = `${day} ${monthName} ${year}`;
+  const result = `${day} ${monthName} ${year}`
 
-  return result;
+  return result
 }
 
 export async function convertFilesToBlob(filesArray) {
-  const filesPromises = filesArray.map(async fileObj => {
+  const filesPromises = filesArray.map(async (fileObj) => {
     try {
-      const response = await fetch(fileObj.path);
-      const blob = await response.blob();
-      return new File([blob], fileObj.name, { type: blob.type });
+      const response = await fetch(fileObj.path)
+      const blob = await response.blob()
+      return new File([blob], fileObj.name, { type: blob.type })
     } catch (error) {
-      console.error(`Failed to create File for ${fileObj.name}:`, error);
-      return null;
+      console.error(`Failed to create File for ${fileObj.name}:`, error)
+      return null
     }
-  });
+  })
 
-  return Promise.all(filesPromises);
+  return Promise.all(filesPromises)
 }
 
-
 export const convertPermissionsToObject = (permissions) => {
-  const result = {};
+  const result = {}
 
-  permissions.forEach(permission => {
-    const [resource, action] = permission.split('.').reverse();
+  permissions.forEach((permission) => {
+    const [resource, action] = permission.split('.').reverse()
     if (!result[resource]) {
-      result[resource] = [];
+      result[resource] = []
     }
-    result[resource].push(action);
-  });
+    result[resource].push(action)
+  })
 
-  return result;
-};
-
+  return result
+}
+export const beautifyPermissions = (permissions) => {
+  return permissions.reduce((acc, perm) => {
+    const [_, group, action] = perm.split('.')
+    if (!acc[group]) {
+      acc[group] = {}
+    }
+    acc[group][action] = perm
+    return acc
+  }, {})
+}
 const updateAbilityFromPermissions = (ability, permissions) => {
-  permissions.forEach(permission => {
-    const { action, subject } = permission;
+  permissions.forEach((permission) => {
+    const { action, subject } = permission
     switch (action.toUpperCase()) {
       case 'CREATE':
-        ability.update([{ action: 'create', subject }]);
-        break;
+        ability.update([{ action: 'create', subject }])
+        break
       case 'READ':
-        ability.update([{ action: 'read', subject }]);
-        break;
+        ability.update([{ action: 'read', subject }])
+        break
       case 'UPDATE':
-        ability.update([{ action: 'update', subject }]);
-        break;
+        ability.update([{ action: 'update', subject }])
+        break
       case 'DELETE':
-        ability.update([{ action: 'delete', subject }]);
-        break;
+        ability.update([{ action: 'delete', subject }])
+        break
       case 'APPROVE':
-        ability.update([{ action: 'approve', subject }]);
-        break;
+        ability.update([{ action: 'approve', subject }])
+        break
       default:
-        console.error('Invalid action:', action);
-        break;
+        console.error('Invalid action:', action)
+        break
     }
-  });
-};
-
+  })
+}
 
 export function roundToDecimal(number, decimalPlaces) {
-  let factor = Math.pow(10, decimalPlaces);
-  return Math.floor(number * factor) / factor;
+  let factor = Math.pow(10, decimalPlaces)
+  return Math.floor(number * factor) / factor
 }

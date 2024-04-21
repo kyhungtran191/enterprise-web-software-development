@@ -6,8 +6,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAppContext } from '@/hooks/useAppContext'
 import { Auth } from '@/services/client'
-import { saveAccessTokenToLS, saveRefreshTokenToLS, saveUserToLS } from '@/utils/auth'
-import { convertPermissionsToObject } from '@/utils/helper'
+import {
+  saveAccessTokenToLS,
+  savePermissions,
+  saveRefreshTokenToLS,
+  saveUserToLS
+} from '@/utils/auth'
+import { beautifyPermissions, convertPermissionsToObject } from '@/utils/helper'
 import { EMAIL_REG } from '@/utils/regex'
 import { Ability, AbilityBuilder } from '@casl/ability'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -29,8 +34,11 @@ export default function Login() {
   const navigate = useNavigate()
   const schema = yup
     .object({
-      email: yup.string().matches(EMAIL_REG, 'Please provide correct email type').required('Please provide your email'),
-      password: yup.string().required('Please provide password'),
+      email: yup
+        .string()
+        .matches(EMAIL_REG, 'Please provide correct email type')
+        .required('Please provide your email'),
+      password: yup.string().required('Please provide password')
     })
     .required()
   const {
@@ -39,7 +47,7 @@ export default function Login() {
     formState: { errors }
   } = useForm({ resolver: yupResolver(schema) })
   const { isLoading, mutate } = useMutation({
-    mutationFn: (body) => Auth.login(body),
+    mutationFn: (body) => Auth.login(body)
   })
 
   const { setIsAuthenticated, setProfile, setPermission } = useAppContext()
@@ -47,32 +55,56 @@ export default function Login() {
   const onSubmit = (data) => {
     mutate(data, {
       onSuccess(data) {
-        let accessToken = data && data?.data?.accessToken;
+        let accessToken = data && data?.data?.accessToken
         let refreshToken = data && data?.data?.refreshToken
-        const dataDetail = jwtDecode(accessToken);
-        let { email, facultyId, facultyName, family_name, given_name, id, permissions, roles } = dataDetail
+        const dataDetail = jwtDecode(accessToken)
+        let {
+          email,
+          facultyId,
+          facultyName,
+          family_name,
+          given_name,
+          id,
+          permissions,
+          roles
+        } = dataDetail
         const permissionData = JSON.parse(permissions)
-        setPermission(permissionData)
+        const beautifiedPermissions = beautifyPermissions(permissionData)
+        setPermission(beautifiedPermissions)
+        savePermissions(beautifiedPermissions)
         const permissionAbility = convertPermissionsToObject(permissionData)
-        const permissionsArray = [];
-        Object.keys(permissionAbility).forEach(action => {
-          permissionAbility[action].forEach(subject => {
-            permissionsArray.push({ action, subject });
-          });
-        });
+        const permissionsArray = []
+        Object.keys(permissionAbility).forEach((action) => {
+          permissionAbility[action].forEach((subject) => {
+            permissionsArray.push({ action, subject })
+          })
+        })
         ability.update(permissionsArray)
-        console.log(ability)
         setProfile({
-          email, facultyId, facultyName, family_name, given_name, id, permissions: JSON.parse(permissions), roles
+          email,
+          facultyId,
+          facultyName,
+          family_name,
+          given_name,
+          id,
+          permissions: JSON.parse(permissions),
+          roles
         })
         saveUserToLS({
-          email, facultyId, facultyName, family_name, given_name, id, permissions, roles
+          email,
+          facultyId,
+          facultyName,
+          family_name,
+          given_name,
+          id,
+          permissions,
+          roles
         })
         saveAccessTokenToLS(accessToken)
         saveRefreshTokenToLS(refreshToken)
         setIsAuthenticated(true)
-        toast.success("Login Successfully!")
-        navigate("/")
+        toast.success('Login Successfully!')
+        navigate('/')
       },
       onError(data) {
         const errorMessage = data && data?.response?.data?.title
@@ -106,7 +138,7 @@ export default function Login() {
             <Label className='text-md'>Email</Label>
             <Controller
               control={control}
-              name="email"
+              name='email'
               render={({ field }) => (
                 <Input
                   className='p-4 mt-2 outline-none'
@@ -115,14 +147,16 @@ export default function Login() {
                 ></Input>
               )}
             />
-            <div className='h-5 mt-3 text-base font-semibold text-red-500'>{errors && errors?.email?.message}</div>
+            <div className='h-5 mt-3 text-base font-semibold text-red-500'>
+              {errors && errors?.email?.message}
+            </div>
           </div>
           <div className='my-4'>
             <Label className='text-md'>Password</Label>
             <div className='relative'>
               <Controller
                 control={control}
-                name="password"
+                name='password'
                 render={({ field }) => (
                   <Input
                     className='p-4 mt-2 outline-none'
@@ -143,17 +177,26 @@ export default function Login() {
                 )}
               </div>
             </div>
-            <div className='h-5 mt-3 text-base font-semibold text-red-500'>{errors && errors?.password?.message}</div>
+            <div className='h-5 mt-3 text-base font-semibold text-red-500'>
+              {errors && errors?.password?.message}
+            </div>
           </div>
 
-          <Link to='/forgot-password' className='inline-block ml-auto text-blue-500 underline'>
+          <Link
+            to='/forgot-password'
+            className='inline-block ml-auto text-blue-500 underline'
+          >
             Forgot password?
           </Link>
           <Button
             type='submit'
             className={`w-full py-6 mt-8 text-lg transition-all duration-300 ease-in-out bg-blue-600 hover:bg-blue-700 ${isLoading ? 'pointer-events-none bg-opacity-65' : ''}`}
           >
-            {isLoading ? <Spinner className={"border-white"}></Spinner> : "Sign In"}
+            {isLoading ? (
+              <Spinner className={'border-white'}></Spinner>
+            ) : (
+              'Sign In'
+            )}
           </Button>
         </form>
       </div>

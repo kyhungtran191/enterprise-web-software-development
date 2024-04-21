@@ -17,6 +17,7 @@ import { toast } from 'react-toastify'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useContributionsEditDetail } from '@/query/useContributionInfo'
 import { convertFilesToBlob } from '@/utils/helper'
+import { IsOutDeadlineUpdate } from '@/hooks/useIsActiveAcademicYear'
 
 const schema = yup.object({
   title: yup.string().required('Please provide post title'),
@@ -24,6 +25,12 @@ const schema = yup.object({
 });
 
 export default function UpdateContribution() {
+  useEffect(() => {
+    if (!IsOutDeadlineUpdate) {
+      toast.error("Accademic year for edit expired !")
+      return navigate('/student-manage/recent')
+    }
+  }, [IsOutDeadlineUpdate])
   const {
     register,
     handleSubmit,

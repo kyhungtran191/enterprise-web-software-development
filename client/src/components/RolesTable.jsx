@@ -10,11 +10,9 @@ import useParamsVariables from '@/hooks/useParams'
 import { Roles } from '@/services/admin'
 import Spinner from './Spinner'
 import { isUndefined, omitBy } from 'lodash'
-
 import { useState } from 'react'
 
 export function RolesTable() {
-  const queryClient = useQueryClient()
   const columns = [
     {
       id: 'select',

@@ -75,7 +75,7 @@ namespace Server.Api.Controllers.AdminApi
 
         [HttpPost]
         [Route("activate/{YearId}")]
-        [Authorize(Permissions.AcademicYears.Create)]
+        [Authorize(Permissions.AcademicYears.Activate)]
         public async Task<IActionResult> ActiveAcademicYear([FromRoute] ActiveAcademicYearRequest request)
         {
             var command = _mapper.Map<ActiveYearCommand>(request);
@@ -84,7 +84,7 @@ namespace Server.Api.Controllers.AdminApi
         }
         [HttpPost]
         [Route("inactivate/{YearId}")]
-        [Authorize(Permissions.AcademicYears.Create)]
+        [Authorize(Permissions.AcademicYears.Inactivate)]
         public async Task<IActionResult> ActiveAcademicYear([FromRoute] InactiveAcademicYearRequest request)
         {
             var command = _mapper.Map<InactiveYearCommand>(request);

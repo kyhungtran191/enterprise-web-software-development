@@ -56,7 +56,7 @@ namespace Server.Api.Controllers.ClientApi
         }
         [HttpGet("recent-contribution")]
         [Authorize]
-        [Authorize(Permissions.Contributions.View)]
+        [Authorize(Permissions.StudentContribution.View)]
         public async Task<IActionResult> GetContributionOfUser([FromQuery] GetAllContributionPagingRequest request)
         {
             var query = _mapper.Map<GetAllContributionsPagingQuery>(request);
@@ -85,7 +85,7 @@ namespace Server.Api.Controllers.ClientApi
         }
 
         [HttpGet("read-later")]
-        [Authorize]
+        [Authorize(Permissions.ReadLaterContribution.View)]
         public async Task<IActionResult> GetReadLater()
         {
             var query = new GetReadLaterQuery();
@@ -94,6 +94,7 @@ namespace Server.Api.Controllers.ClientApi
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
         [HttpGet("my-favorite")]
+        [Authorize(Permissions.FavoriteContribution.View)]
         public async Task<IActionResult> GetLikedContribution()
         {
             var query = new GetLikedContributionQuery();

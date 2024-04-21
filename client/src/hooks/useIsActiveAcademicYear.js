@@ -15,3 +15,11 @@ export function IsOutDeadlineAdd() {
   console.log(now, specifiedTime)
   return now > specifiedTime ? true : false
 }
+
+export function IsOutDeadlineUpdate() {
+  const data = GetCurrentAcademicYear()
+  const now = new Date();
+  const specifiedTime = new Date(data?.endFinalDate);
+  console.log(now, specifiedTime)
+  return now > specifiedTime ? true : false
+}

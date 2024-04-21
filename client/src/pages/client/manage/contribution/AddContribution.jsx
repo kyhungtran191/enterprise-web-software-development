@@ -2,7 +2,7 @@ import DynamicBreadcrumb from '@/components/DynamicBreadcrumbs'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import AdminLayout from '@/layouts/AdminLayout'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Editor } from '@tinymce/tinymce-react';
 import Dropzone from '@/components/dropzone'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ import { QueryClient, useMutation } from '@tanstack/react-query'
 import { Contributions } from '@/services/client'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { IsOutDeadlineAdd } from '@/hooks/useIsActiveAcademicYear'
 
 const schema = yup.object({
   title: yup.string().required('Please provide post title'),
@@ -22,6 +23,13 @@ const schema = yup.object({
 });
 
 export default function AddContribution() {
+  useEffect(() => {
+    if (!IsOutDeadlineAdd) {
+      toast.error("Accademic year for submit expired !")
+      return navigate('/student-manage/recent')
+    }
+  }, [IsOutDeadlineAdd])
+
   const {
     register,
     handleSubmit,
@@ -65,6 +73,7 @@ export default function AddContribution() {
     if (files.length === 0) {
       setFileError(true);
     }
+
     if (thumbnailError || detailError || files.length < 0 || !watch("terms")) return;
     let response = await fetch(currentThumbnail)
     let thumbNailFile;
@@ -87,8 +96,6 @@ export default function AddContribution() {
     for (let i = 0; i < files.length; i++) {
       formData.append('Files', files[i]);
     }
-    console.log()
-    console.log(thumbNailFile);
     addContributionMutation.mutate(formData, {
       onSuccess(data) {
         toast.success("Add new successfully!")

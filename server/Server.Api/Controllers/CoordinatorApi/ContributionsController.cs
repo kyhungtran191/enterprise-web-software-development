@@ -28,7 +28,7 @@ namespace Server.Api.Controllers.CoordinatorApi
 
         [HttpGet]
         [Route("paging")]
-        [Authorize(Permissions.Contributions.View)]
+        [Authorize(Permissions.ManageContribution.View)]
         public async Task<IActionResult> GetFacultyContribution([FromQuery] GetFacultyContributionRequest request)
         {
             var query = _mapper.Map<GetAllContributionsPagingQuery>(request);
@@ -67,7 +67,7 @@ namespace Server.Api.Controllers.CoordinatorApi
 
         }
         [HttpGet("activity-logs/{ContributionId}")]
-        [Authorize(Permissions.Contributions.Approve)]
+        [Authorize(Permissions.ActivityLogs.View)]
         public async Task<IActionResult> GetActivityLogs([FromRoute] GetActivityLogRequest request)
         {
             var query = _mapper.Map<GetActivityLogQuery>(request);
@@ -90,6 +90,7 @@ namespace Server.Api.Controllers.CoordinatorApi
 
         [HttpPost]
         [Route("allow-guest")]
+        [Authorize(Permissions.SettingGAC.View)]
         public async Task<IActionResult> AllowGuest(AllowGuestRequest request)
         {
             var command = _mapper.Map<AllowGuestCommand>(request);
@@ -100,6 +101,7 @@ namespace Server.Api.Controllers.CoordinatorApi
 
         [HttpPost]
         [Route("comment/{ContributionId}")]
+        [Authorize]
         public async Task<IActionResult> Comment([FromRoute]Guid ContributionId, CreateCommentRequest request )
         {
             var command = _mapper.Map<CreateCommentCommand>(request);

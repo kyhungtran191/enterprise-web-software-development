@@ -23,6 +23,7 @@ import { useLikedContribution } from '@/query/useLikedContribution'
 import { useLikeMutation } from '@/query/useLikeMutation'
 import { useReadLaterMutation } from '@/query/useReadLaterMutation'
 import { useReadLaterContribution } from '@/query/useReadLaterContribution'
+import { IsOutDeadlineUpdate } from '@/hooks/useIsActiveAcademicYear'
 
 
 export default function Article({ isRevert = false, className, status, classImageCustom, article }) {
@@ -138,7 +139,7 @@ export default function Article({ isRevert = false, className, status, classImag
             </div>
             <div className='flex flex-row flex-wrap gap-2'>
               {article?.status === "APPROVED" && <div className="flex items-center text-base font-semibold">
-                <span>{article?.averageRating &&roundToDecimal(article?.averageRating, 1) || 0}</span>
+                <span>{article?.averageRating && roundToDecimal(article?.averageRating, 1) || 0}</span>
                 ⭐
               </div>}
               <div> {status && <Badge variant="outline" className={`${status === "PENDING" ? "text-yellow-500" : status === "APPROVED" ? "text-green-500" : "text-red-500"} font-semibold`} >{status}</Badge>}
@@ -158,7 +159,7 @@ export default function Article({ isRevert = false, className, status, classImag
               <CustomRejectComponent id={article?.id}></CustomRejectComponent>
             </Button>
           </div>}
-          {profile && profile?.roles == "Student" && status && status == "PENDING" && <div onClick={(e) => {
+          {profile && profile?.roles == "Student" && status && status == "PENDING" && !IsOutDeadlineUpdate && <div onClick={(e) => {
             e.stopPropagation();
             navigate(`/student-manage/edit-contribution/${article.slug}`)
           }} className="mt-4 text-lg font-semibold text-blue-500 underline">Edit</div>}

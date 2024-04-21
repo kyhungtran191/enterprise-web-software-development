@@ -80,7 +80,7 @@ namespace Server.Api.Controllers.AdminApi
         }
 
         [HttpGet("report-contributions-within-each-faculty-for-each-academic-year")]
-        [Authorize(Permissions.Contributions.View)]
+        [Authorize(Permissions.Dashboard.View)]
         public async Task<IActionResult> GetContributionsWithinEachFacultyForEachAcademicYearsReport()
         {
             var result = await _contributionService.GetContributionsWithinEachFacultyForEachAcademicYearReport();
@@ -88,7 +88,7 @@ namespace Server.Api.Controllers.AdminApi
         }
         
         [HttpGet("report-total-contributors-per-each-faculties-for-each-academic-years")]
-        [Authorize(Permissions.Contributions.View)]
+        [Authorize(Permissions.Dashboard.View)]
         public async Task<IActionResult> GetTotalContributorsPerEachFactultiesForEachAcademicYearsReport()
         {
             var result = await _contributionService.GetTotalContributorsPerEachFacultiesPerEachAcademicYearsDto();
@@ -97,7 +97,7 @@ namespace Server.Api.Controllers.AdminApi
         
         [HttpGet]
         [Route("report-percentages-contributions-within-each-faculty-by-academic-year/{academicYearName}")]
-        [Authorize(Permissions.Contributions.View)]
+        [Authorize(Permissions.Dashboard.View)]
         public async Task<IActionResult> GetPercentagesContributionsWithinEachFacultyByAcademicYearReport([FromRoute] string academicYearName)
         {
             if (await _academicYearRepository.GetAcademicYearByName(academicYearName) is null)
@@ -111,6 +111,7 @@ namespace Server.Api.Controllers.AdminApi
 
         [HttpGet]
         [Route("report-total-contributions-following-status-for-each-academic-years")]
+        [Authorize(Permissions.StudentDashBoard.View)]
         public async Task<IActionResult> GetContributionsFollowingStatusForEachAcademicYearReport()
         {
             var userId = User.GetUserId();

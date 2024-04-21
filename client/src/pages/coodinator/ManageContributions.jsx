@@ -205,7 +205,7 @@ export default function ManageContribution() {
                   variant='default'
                   className='gap-4 border-none outline-none py-7 min-w-[145px]'
                 >
-                  {position.toUpperCase() || "Filter Status"} <ArrowDown10Icon></ArrowDown10Icon>
+                  {position?.toUpperCase() || "Filter Status"} <ArrowDown10Icon></ArrowDown10Icon>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className='w-56'>
