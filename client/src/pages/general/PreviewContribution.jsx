@@ -25,6 +25,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Roles } from '@/constant/roles'
 import CustomRejectComponent from '@/components/CustomRejectComponent'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { IsOutDeadlineUpdate } from '@/hooks/useIsActiveAcademicYear';
 
 export default function PreviewContribution() {
   const [openOptions, setOpenOptions] = useState(true)
@@ -148,8 +149,7 @@ export default function PreviewContribution() {
                 <div className='w-1 h-1 bg-gray-600 rounded-full md:w-2 md:h-2'></div>
                 <div>{detailData?.userName}</div>
               </div>
-              {detailData?.status === "PENDING" && <Button><Link to={`/student-manage/edit-contribution/${detailData.slug}`} className='w-full'>Edit now</Link></Button>}
-
+              {detailData?.status === "PENDING" && !IsOutDeadlineUpdate && <Button><Link to={`/student-manage/edit-contribution/${detailData.slug}`} className='w-full'>Edit now</Link></Button>}
             </div>
             <div>{detailData?.shortDescription}</div>
           </div>
