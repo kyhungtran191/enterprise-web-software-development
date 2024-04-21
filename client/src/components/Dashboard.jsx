@@ -25,46 +25,46 @@ const Dashboard = () => {
   const options =
     selectedChartType !== 'percentage'
       ? {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top'
-            },
-            title: {
-              display: true,
-              text:
-                selectedChartType === 'contributions'
-                  ? 'Number of contributions within each Faculty for each academic year'
-                  : 'Number of contributors within each Faculty for each academic year'
-            }
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top'
           },
-          scales: {
-            x: {
-              stacked: true
-            },
-            y: {
-              stacked: true
-            }
+          title: {
+            display: true,
+            text:
+              selectedChartType === 'contributions'
+                ? 'Number of contributions within each Faculty for each academic year'
+                : 'Number of contributors within each Faculty for each academic year'
+          }
+        },
+        scales: {
+          x: {
+            stacked: true
+          },
+          y: {
+            stacked: true
           }
         }
+      }
       : {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top'
-            },
-            title: {
-              display: true,
-              text: `Percentage of contributions within each Faculty for academic year ${selectedAcademicYear}`
-            },
-            datalabels: {
-              formatter: function (value, context) {
-                console.log(value)
-                return context.chart.data.labels[context.dataIndex]
-              }
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top'
+          },
+          title: {
+            display: true,
+            text: `Percentage of contributions within each Faculty for academic year ${selectedAcademicYear}`
+          },
+          datalabels: {
+            formatter: function (value, context) {
+              console.log(value)
+              return context.chart.data.labels[context.dataIndex]
             }
           }
         }
+      }
 
   const handleSelectChartType = (chartType) => {
     setSelectedChartType(chartType)
@@ -142,7 +142,7 @@ const Dashboard = () => {
         data: chartData.data.response.flatMap((data) =>
           data.dataSets.map((dataSet) => dataSet.data)
         ),
-        backgroundColor: labels.map(
+        backgroundColor: labels?.map(
           () => colors[Math.floor(Math.random() * colors.length)]
         )
       }
@@ -197,7 +197,7 @@ const Dashboard = () => {
         </div>
       )}
       {!isLoading && (
-        <div className='h-full w-full flex justify-center px-4 py-6 lg:px-8'>
+        <div className='flex justify-center w-full h-full px-4 py-6 lg:px-8'>
           {selectedChartType === 'percentage' ? (
             <div className='md:w-[50%] w-[80%] '>
               <PieChart data={data} options={options} />

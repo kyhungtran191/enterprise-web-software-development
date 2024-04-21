@@ -63,9 +63,9 @@ export default function Header() {
           </Can> */}
         </div>
         <div className='flex items-center gap-x-2'>
-          <div className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
+          <Link to="/message" className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
             <MessageSquare></MessageSquare>
-          </div>
+          </Link>
           <div className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
             <BellRing></BellRing>
           </div>

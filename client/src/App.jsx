@@ -31,6 +31,7 @@ import ReadLaterContribution from './pages/client/manage/contribution/ReadLaterC
 import StudentDashboard from './pages/client/manage/contribution/StudentDashboard'
 import ChatPage from './pages/ChatPage'
 import { routesConfig } from './constant/routeConfigs'
+import { useAppContext } from './hooks/useAppContext'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
@@ -103,6 +104,22 @@ function App() {
       <Outlet></Outlet>
     )
   }
+
+  function IsStudent() {
+    return profile.roles === Roles.Student ? (
+      <Outlet></Outlet>
+    ) : (
+      <Navigate to='/' />
+    )
+  }
+  function IsMC() {
+    return profile.roles == Roles.Coordinator ? (
+      <Outlet></Outlet>
+    ) : (
+      <Navigate to='/' />
+    )
+  }
+
 
   return (
     <>
@@ -240,6 +257,80 @@ function App() {
       <Routes>
         {routesConfig.map((route, index) => renderRoute(route, index))}
         <Route path='*' element={<NotFound />} />
+        <Route path='' element={<RequireAuth></RequireAuth>}>
+          {/* General */}
+          <Route
+            path='/'
+            element={
+              <GeneralLayout>
+                <Home></Home>
+              </GeneralLayout>
+            }
+          ></Route>
+          <Route
+            path='/contributions/:id'
+            element={<ContributionDetail></ContributionDetail>}
+          ></Route>
+
+          <Route element={<IsGuestAccount />} path=''>
+            {/* Student */}
+            <Route path='/student-manage' element={<IsStudent></IsStudent>}>
+              <Route
+                index
+                element={<StudentDashboard></StudentDashboard>}
+              ></Route>
+              <Route
+                path='/student-manage/recent'
+                element={<StudentContribution></StudentContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/add-contribution'
+                element={<AddContribution></AddContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/edit-contribution/:slug'
+                element={<UpdateContribution></UpdateContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/favorites'
+                element={<FavoriteContribution></FavoriteContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/read-later'
+                element={<ReadLaterContribution></ReadLaterContribution>}
+              ></Route>
+              <Route
+                path='/student-manage/dashboard'
+                element={<StudentDashboard></StudentDashboard>}
+              ></Route>
+            </Route>
+
+            {/* Manager */}
+            <Route path='/coodinator-manage' element={<IsMC></IsMC>}>
+              <Route
+                path='/coodinator-manage/contributions'
+                element={<ManageContributions></ManageContributions>}
+              ></Route>
+              <Route
+                path='/coodinator-manage/setting-guest'
+                element={<SettingGAC></SettingGAC>}
+              ></Route>
+            </Route>
+
+            {/* General */}
+            <Route path='/view-file' element={<ViewFile></ViewFile>}></Route>
+            <Route path='/message' element={<ChatPage></ChatPage>}></Route>
+            <Route path='/profile' element={<Profile></Profile>}></Route>
+            <Route
+              path='/contributions'
+              element={<ContributionList></ContributionList>}
+            ></Route>
+            <Route
+              path='/preview/:slug'
+              element={<PreviewContribution></PreviewContribution>}
+            ></Route>
+          </Route>
+        </Route>
         <Route path='' element={<RejectedRoute></RejectedRoute>}>
           <Route path='/login' element={<Login></Login>} index></Route>
           <Route
