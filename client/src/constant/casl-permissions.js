@@ -34,5 +34,8 @@ export const PERMISSIONS = {
   },
   Approve: {
     Contributions: { index: 'Approve', value: 'Contributions' }
+  },
+  Download: {
+    Contributions: { index: 'Download', value: 'Contributions' }
   }
 }

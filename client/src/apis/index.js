@@ -1,7 +1,7 @@
 export const URL = 'http://localhost:5272/api'
 export const adminAPI = `/admin`
 export const clientAPI = `/client`
-
+export const coordinatorAPI = `/coordinator`
 // Authenticate API
 export const loginAPI = `http://localhost:5272/Auth/login`
 export const forgotPasswordAPI = `${URL}${clientAPI}/Users/forgot-password`
@@ -79,6 +79,7 @@ export const deleteFacultyAPI = `${URL}${adminAPI}/Faculties`
 
 // Contribution
 export const getAllContributionsPagingAPI = `${URL}${adminAPI}/Contributions/paging`
+export const getContributionActivityLogsAPI = `${URL}${coordinatorAPI}/Contributions/activity-logs`
 
 // Dashboard
 export const getTotalContributionsPerFacultyForAllAcademicYearsAPI = `${URL}${adminAPI}/Contributions/report-contributions-within-each-faculty-for-each-academic-year`
