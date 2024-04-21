@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Data.Common;
 
 namespace Server.Domain.Common.Constants
 {
@@ -84,6 +85,10 @@ namespace Server.Domain.Common.Constants
 
             [Description("Delete AcademicYears")]
             public const string Delete = "Permissions.AcademicYears.Delete";
+            [Description("Active AcademicYears")]
+            public const string Activate = "Permissions.AcademicYears.Activate";
+            [Description("Inactive AcademicYears")]
+            public const string Inactivate = "Permissions.AcademicYears.Inactivate";
         }
 
         public static class Contributions
@@ -102,10 +107,75 @@ namespace Server.Domain.Common.Constants
 
             [Description("Approve Contributions")]
             public const string Approve = "Permissions.Contributions.Approve";
+
+            [Description("Download file")]
+            public const string Download = "Permissions.Contributions.Download";
         }
 
+        public static class StudentDashBoard
+        {
+            [Description("View Student Dashboard")]
+            public const string View = "Permissions.StudentDashboard.View";
+        }
 
+        public static class StudentContribution
+        {
+            [Description("View Student Contribution")]
+            public const string View = "Permissions.StudentContribution.View";
+        }
 
+        public static class AddContribution
+        {
+            [Description("View Add Contribution")]
+            public const string View = "Permissions.AddContribution.View";
+        }
+
+        public static class EditContribution
+        {
+            [Description("View Edit Contribution")]
+            public const string View = "Permissions.EditContribution.View";
+        }
+
+        public static class FavoriteContribution
+        {
+            [Description("View Favorite Contribution")]
+            public const string View = "Permissions.FavoriteContribution.View";
+        }
+
+        public static class ReadLaterContribution
+        {
+            [Description("View Read Later Contribution")]
+            public const string View = "Permissions.ReadLaterContribution.View";
+        }
+
+        public static class ManageContribution
+        {
+            [Description("View Manage Contribution")]
+            public const string View = "Permissions.ManageContributions.View";
+        }
+
+        public static class SettingGAC
+        {
+            [Description("View SettingGAC")] 
+            public const string View = "Permissions.SettingGAC.View";
+        }
+
+        public static class PreviewContribution
+        {
+            [Description("View Preview Contribution")]
+            public const string View = "Permissions.PreviewContribution.View";
+        }
+
+        public static class ActivityLogs
+        {
+            [Description("View Activity Logs")] public const string View = "Permissions.ActivityLogs.View";
+        }
+
+        public static class NotCommentContribution
+        {
+            [Description("View Not Comment Contribution")]
+            public const string View = "Permissions.NotCommentContribution.View";
+        }
         // public static class Royalty
         // {
         //     [Description("Xem nhuận bút")]

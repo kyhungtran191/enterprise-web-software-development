@@ -40,7 +40,7 @@ public class AcademicYearRepository : RepositoryBase<AcademicYear, Guid>, IAcade
     public async Task<bool> CanEditAsync(DateTime date)
     {
         var academicYear = await _dbContext.AcademicYears
-            .Where(a => date >= a.EndClosureDate && date <= a.FinalClosureDate)
+            .Where(a => date >= a.StartClosureDate && date <= a.FinalClosureDate)
             .FirstOrDefaultAsync();
 
         return academicYear != null;
