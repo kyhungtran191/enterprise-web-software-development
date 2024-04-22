@@ -61,6 +61,15 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
             {
                 return Errors.Contribution.AlreadyApproved;
             }
+            if (!(await _unitOfWork.AcademicYearRepository.CanEditAsync(_dateTimeProvider.UtcNow)))
+            {
+                return Errors.Contribution.CannotEdit;
+            }
+            var academicYear = await _unitOfWork.AcademicYearRepository.GetAcademicYearByDateAsync(_dateTimeProvider.UtcNow);
+            if (academicYear is null)
+            {
+                return Errors.Contribution.AcademicYearNotFound;
+            }
             _mapper.Map(request,itemFromDb);
             itemFromDb.DateEdited = _dateTimeProvider.UtcNow;
             await _unitOfWork.CompleteAsync();

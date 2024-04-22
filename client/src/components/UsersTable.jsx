@@ -206,10 +206,10 @@ export function UsersTable() {
                   <Pencil className='w-4 h-4 mr-2' />
                   <span>Edit user</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                   <UserRoundX className='w-4 h-4 mr-2' />
                   <span>Deactivate user</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -233,13 +233,13 @@ export function UsersTable() {
   })
   const users = data
     ? data?.data?.responseData?.results?.map((user) => {
-      return {
-        ...user,
-        dob: format(new Date(user.dob), 'MM-dd-yyyy'),
-        status: user.isActive ? 'Active' : 'Inactive',
-        role: user.roles[0]
-      }
-    })
+        return {
+          ...user,
+          dob: format(new Date(user.dob), 'MM-dd-yyyy'),
+          status: user.isActive ? 'Active' : 'Inactive',
+          role: user.roles[0]
+        }
+      })
     : []
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -250,14 +250,16 @@ export function UsersTable() {
     return { ...item, roles: item?.roles[0] }
   })
 
-return (
+  return (
     <div className='w-full p-4'>
-
       <div className='flex flex-row justify-between'>
         <DynamicBreadcrumb />
         <NewUserDialog />
       </div>
-      <ExcelExport data={exportData} title='Export User Data For Current Page'></ExcelExport>
+      <ExcelExport
+        data={exportData}
+        title='Export User Data For Current Page'
+      ></ExcelExport>
       {isLoading && (
         <div className='container flex items-center justify-center min-h-screen'>
           <Spinner className={'border-blue-500'}></Spinner>

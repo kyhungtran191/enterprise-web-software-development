@@ -211,9 +211,11 @@ public static class DataSeeder
 
         var rootAdminRoleId = Guid.NewGuid();
         var adminId = Guid.NewGuid();
+        var managerId = Guid.NewGuid();
         var studentRoleId = Guid.NewGuid();
         var coordinatorRoleId = Guid.NewGuid();
         var guestRoleId = Guid.NewGuid();
+        var managerRoleId = Guid.NewGuid();
         AppRole? role = new AppRole
         {
             Id = rootAdminRoleId,
@@ -242,6 +244,13 @@ public static class DataSeeder
             NormalizedName = Roles.Guest.ToUpperInvariant(),
             DisplayName = "Guest",
         };
+        AppRole? managerRole = new AppRole
+        {
+            Id = managerRoleId,
+            Name = Roles.Manager,
+            NormalizedName = Roles.Manager.ToUpperInvariant(),
+            DisplayName = "Manager"
+        };
 
         if (!context.Roles.Any())
         {
@@ -249,6 +258,7 @@ public static class DataSeeder
             await context.Roles.AddAsync(studentRole);
             await context.Roles.AddAsync(coordinatorRole);
             await context.Roles.AddAsync(guestRole);
+            await context.Roles.AddAsync(managerRole);
             await context.SaveChangesAsync();
         }
         var studentList = new List<AppUser>
@@ -463,6 +473,34 @@ public static class DataSeeder
                 RoleId = rootAdminRoleId,
                 UserId = adminId
             });
+            // manager
+            var managerEmail = "manager@gmail.com";
+            var managerUserName = "manager";
+            var manager = new AppUser
+            {
+                Id = managerId,
+                FirstName = "Vu",
+                LastName = "Nguyen",
+                Email = managerEmail,
+                NormalizedEmail = managerEmail.ToUpperInvariant(),
+                UserName = managerUserName,
+                NormalizedUserName = managerUserName.ToUpperInvariant(),
+                IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                Avatar =
+                    "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712564003/avatar/user-86f43cf0-d40e-445f-a6c3-f9ff620935f0/u5ckrzjjylvr3nvhbp86.jpg",
+                AvatarPublicId = "avatar/user-86f43cf0-d40e-445f-a6c3-f9ff620935f0/u5ckrzjjylvr3nvhbp86",
+                FacultyId = facultiesList[1].Id,
+            };
+            manager.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
+            await context.Users.AddAsync(manager);
+            await context.UserRoles.AddAsync(new IdentityUserRole<Guid>
+            {
+                RoleId = managerRoleId,
+                UserId = managerId
+            });
             // student
             foreach (var item in studentList)
             {
@@ -526,7 +564,7 @@ public static class DataSeeder
                     new()
                     {
                         Selected = true,
-                        Value = "Permissions.Dashboard.View"
+                        Value = "Permissions.StudentDashboard.View"
                     },
                     new()
                     {
@@ -543,6 +581,41 @@ public static class DataSeeder
                         Selected = true,
                         Value = "Permissions.Contributions.Edit"
                     },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.StudentContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.AddContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.EditContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.FavoriteContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.ReadLaterContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.PreviewContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Download"
+                    }
                 };
                 foreach (var permission in studentPermissionList)
                 {
@@ -570,10 +643,72 @@ public static class DataSeeder
                         Selected = true,
                         Value = "Permissions.Contributions.Approve"
                     },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.ManageContributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.SettingGAC.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.PreviewContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Download"
+                    }
                 };
                 foreach (var permission in coordinatorPermissionList)
                 {
                     await roleManager.AddClaimAsync(coordinatorRole, new Claim("permissions", permission.Value!));
+                }
+            }
+            // seed manager permission
+            var managerPermissions = await roleManager.GetClaimsAsync(managerRole);
+            if (coordinatorPermissions.Any() == false)
+            {
+                var managerPermissionList = new List<RoleClaimsDto>
+                {
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Dashboard.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.ManageContributions.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.ActivityLogs.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.NotCommentContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Contributions.Download"
+                    }
+                };
+                foreach (var permission in managerPermissionList)
+                {
+                    await roleManager.AddClaimAsync(managerRole, new Claim("permissions", permission.Value!));
                 }
             }
             // seed guest permission

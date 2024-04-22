@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Drawing.Printing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos;
@@ -36,6 +37,45 @@ namespace Server.Infrastructure.Persistence.Repositories
         {
             var contribution = GetByIdAsync(contributionId).GetAwaiter().GetResult();
             return contribution.IsConfirmed;
+        }
+        public async Task<PagedResult<NotCommentContributionDto>> GetUncommentedContributions(int pageIndex = 1, int pageSize = 10)
+        {
+            var currentDate = DateTime.UtcNow;
+            var query = from c in _dbContext.Contributions
+                where c.DateDeleted == null
+                join u in _dbContext.Users on c.UserId equals u.Id
+                join f in _dbContext.Faculties on c.FacultyId equals f.Id
+                join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                select new { c, u, f, a };
+
+            var totalRow = await query.CountAsync(); 
+            var skipRow = (pageIndex - 1 < 0 ? 1 : pageIndex - 1) * pageSize;
+            var contributions = await query
+                .OrderByDescending(x => x.c.DateCreated)
+                .Skip(skipRow)
+                .Take(pageSize)
+                .ToListAsync();
+            var result = contributions.Select(x => new NotCommentContributionDto
+            {
+                Title = x.c.Title,
+                Slug = x.c.Slug,
+                UserName = x.u.UserName,
+                AcademicYear = x.a.Name,
+                FacultyName = x.f.Name,
+                Id = x.c.Id,
+                SubmissionDate = x.c.SubmissionDate,
+                IsCoordinatorComment = x.c.IsCoordinatorComment
+
+            }).ToList();
+
+
+            return new PagedResult<NotCommentContributionDto>
+            {
+                CurrentPage = pageIndex,
+                RowCount = totalRow,
+                PageSize = pageSize,
+                Results = result
+            };
         }
         public async Task<PagedResult<ContributionInListDto>> GetAllPaging(string? keyword, string? year, string? facultyName, Guid? userId, string? status, int pageIndex = 1, int pageSize = 10, bool? GuestAllowed = false)
         {

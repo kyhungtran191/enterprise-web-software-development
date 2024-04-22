@@ -59,6 +59,12 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
     ? facultiesData?.data?.responseData.results
     : []
   const roles = rolesData ? rolesData?.data?.responseData : []
+  const isMM = (id) => {
+    const mmId = roles.find(
+      (role) => role.displayName === 'Marketing Manager'
+    )?.id
+    return id === mmId
+  }
   const formSchema = z.object({
     firstName: z.string().min(2, {
       message: 'First name must be at least 2 characters.'
@@ -98,10 +104,10 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
       lastName: '',
       phoneNumber: '',
       username: '',
-      role: '',
+      roleId: '',
       email: '',
       dob: '',
-      faculty: ''
+      facultyId: ''
     }
   })
   async function getImageAsBinaryString() {
@@ -144,6 +150,7 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
       console.log(error)
     }
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='w-full space-y-4'>
@@ -298,32 +305,30 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
             </FormItem>
           )}
         />
-        {userType !== 'marketingManager' && (
-          <FormField
-            control={form.control}
-            name='facultyId'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Faculty</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger className='w-min-[180px] w-full'>
-                      <SelectValue placeholder='Select faculty' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {faculties?.map((faculty) => (
-                        <SelectItem key={faculty.id} value={faculty.id}>
-                          {faculty.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        <FormField
+          control={form.control}
+          name='facultyId'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Faculty</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger className='w-min-[180px] w-full'>
+                    <SelectValue placeholder='Select faculty' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {faculties?.map((faculty) => (
+                      <SelectItem key={faculty.id} value={faculty.id}>
+                        {faculty.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <DialogFooter>
           <Button
             type='submit'

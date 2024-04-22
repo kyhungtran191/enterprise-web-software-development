@@ -56,16 +56,17 @@ function App() {
     const hasPermission =
       permission[category] &&
       permission[category][type] === `Permissions.${category}.${type}`
-
-    console.log(
-      `Checking permission for ${requiredPermission}: ${hasPermission}`
-    )
-
     return hasPermission
   }
 
   const renderRoute = (route, key) => {
-    const { path, component: Component, layout: Layout, permission } = route
+    const {
+      path,
+      component: Component,
+      layout: Layout,
+      sidebarOptions,
+      permission
+    } = route
     const isAllowed = checkPermissions(permission)
     return (
       <Route
@@ -74,7 +75,7 @@ function App() {
         element={
           isAllowed ? (
             Layout ? (
-              <Layout>
+              <Layout links={sidebarOptions}>
                 <Component />
               </Layout>
             ) : (
@@ -119,7 +120,6 @@ function App() {
       <Navigate to='/' />
     )
   }
-
 
   return (
     <>
