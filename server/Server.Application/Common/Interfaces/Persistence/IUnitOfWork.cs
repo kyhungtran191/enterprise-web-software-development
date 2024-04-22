@@ -14,6 +14,8 @@ public interface IUnitOfWork : IDisposable
     ICommentRepository CommentRepository { get; }
     IPublicCommentRepository PublicCommentRepository { get; }
     IRatingRepository RatingRepository { get; }
-    
+
+    IAnnouncementRepository AnnouncementRepository { get; }
+    IAnnouncementUserRepository AnnouncementUserRepository{ get; }
 }
 
