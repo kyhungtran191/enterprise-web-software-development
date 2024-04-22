@@ -38,11 +38,11 @@ public static class IdentityExtentions
         var facultyName = ((ClaimsIdentity)claimsPrincipal.Identity!).GetSpecificClaim(UserClaims.FacultyName);
         return facultyName;
     }
-    public static async Task<AppUser> FindByFacultyIdAsync(this UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, Guid facultyId )
+    public static async Task<List<AppUser>> FindByFacultyIdAsync(this UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, Guid facultyId )
     {
         AppRole coordinatorRole = await roleManager.FindByNameAsync(Roles.Coordinator);
         var usersInRole = await userManager.GetUsersInRoleAsync(coordinatorRole.Name);
-        AppUser coordinator = usersInRole.FirstOrDefault(u => u.FacultyId == facultyId);
+        List<AppUser> coordinator = usersInRole.Where(u => u.FacultyId == facultyId).ToList();
         return coordinator;
 
     }

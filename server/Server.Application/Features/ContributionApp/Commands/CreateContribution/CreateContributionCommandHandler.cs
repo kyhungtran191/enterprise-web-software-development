@@ -126,55 +126,59 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 return Errors.User.CannotFound;
             }
 
-            var coordinator = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
+            var coordinators = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
             var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)user.FacultyId);
-            _emailService.SendEmail(new MailRequest
+            foreach (var coordinator in coordinators)
             {
-                ToEmail = coordinator.Email,
-                Body = $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
-                       $" <h2>New Blog request are pending</h2>\r\n " +
-                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
-                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
-                       $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {user.UserName}</p>\r\n " +
-                       $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
-                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
-                Subject = "NEW CONTRIBUTION"
-            });
-            await _unitOfWork.CompleteAsync();
-            // send to approve 
-            await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
-            await _unitOfWork.CompleteAsync();
+                _emailService.SendEmail(new MailRequest
+                {
+                    ToEmail = coordinator.Email,
+                    Body = $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
+                           $" <h2>New Blog request are pending</h2>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
+                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {user.UserName}</p>\r\n " +
+                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
+                    Subject = "NEW CONTRIBUTION"
+                });
+                await _unitOfWork.CompleteAsync();
+                // send to approve 
+                await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
+                await _unitOfWork.CompleteAsync();
 
-            // notify
-            var notificationId = Guid.NewGuid().ToString();
-            var announcementDto = new AnnouncementDto()
-            {
-                Id = notificationId,
-                Title = "Order created",
-                DateCreated = DateTime.Now,
-                Content = $"Order has been created",
-                UserId = coordinator.Id,
-                Type = "Contribution-CreateContribution"                
-            };
-            _announcementService.Add(announcementDto);
+                // notify
+                var notificationId = Guid.NewGuid().ToString();
+                var announcementDto = new AnnouncementDto()
+                {
+                    Id = notificationId,
+                    Title = "Order created",
+                    DateCreated = DateTime.Now,
+                    Content = $"Order has been created",
+                    UserId = coordinator.Id,
+                    Type = "Contribution-CreateContribution"
+                };
+                _announcementService.Add(announcementDto);
 
-            var announcementUsers = new List<AnnouncementUserDto>()
-            {
-                new AnnouncementUserDto(){
-                    AnnouncementId = notificationId,
-                    HasRead = false,
-                    UserId = coordinator.Id
-                }
-            };
+                var announcementUsers = new List<AnnouncementUserDto>()
+                {
+                    new AnnouncementUserDto(){
+                        AnnouncementId = notificationId,
+                        HasRead = false,
+                        UserId = coordinator.Id
+                    }
+                };
 
-            _announcementService.AddToAnnouncementUsers(announcementUsers);
+                _announcementService.AddToAnnouncementUsers(announcementUsers);
 
-            await _unitOfWork.CompleteAsync();
+                await _unitOfWork.CompleteAsync();
 
-            await _announcementHub
-                .Clients
-                .Users(coordinator.UserName!.ToString())
-                .GetNewAnnouncement(announcementDto);
+                await _announcementHub
+                    .Clients
+                    .Users(coordinator.UserName!.ToString())
+                    .GetNewAnnouncement(announcementDto);
+
+            }
 
             return new ResponseWrapper
             {
