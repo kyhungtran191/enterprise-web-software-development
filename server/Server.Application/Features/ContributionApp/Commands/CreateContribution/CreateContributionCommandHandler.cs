@@ -173,7 +173,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
             await _announcementHub
                 .Clients
-                .Users(coordinator.Id.ToString())
+                .Users(coordinator.UserName!.ToString())
                 .GetNewAnnouncement(announcementDto);
 
             return new ResponseWrapper
