@@ -44,9 +44,22 @@ if (app.Environment.IsDevelopment())
 
     app.UseCors(serverCorsPolicy);
 
+    app.Use(async (context, next) =>
+         {
+             var accessToken = context.Request.Query["access_token"];
+             if (!string.IsNullOrEmpty(accessToken))
+             {
+                 context.Request.Headers["Authorization"] = "Bearer " + accessToken;
+             }
+
+             await next.Invoke().ConfigureAwait(false);
+         });
+
     app.UseAuthentication();
 
     app.UseAuthorization();
+
+
 
     app.MapControllers();
 
