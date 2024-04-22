@@ -247,6 +247,7 @@ export function ContributionTable() {
 
     await Promise.all(fetchPromises)
   }
+
   async function downloadAllContributions() {
     const zip = new JSZip()
     setIsLoadingFiles(true)
