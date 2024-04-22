@@ -60,7 +60,7 @@ public static class DependencyInjection
                 options.UseMicrosoftDependencyInjectionJobFactory();
             }); 
         services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
-        services.ConfigureOptions<MailManagerJobSetup>();
+        services.ConfigureOptions<JobSetup>();
 
         // AddAuthentication must below AddIdentity because it will redirect to new page by Identity
 
