@@ -271,6 +271,7 @@ function App() {
             path='/contributions/:id'
             element={<ContributionDetail></ContributionDetail>}
           ></Route>
+          <Route path='/view-file' element={<ViewFile></ViewFile>}></Route>
 
           <Route element={<IsGuestAccount />} path=''>
             {/* Student */}
@@ -318,7 +319,7 @@ function App() {
             </Route>
 
             {/* General */}
-            <Route path='/view-file' element={<ViewFile></ViewFile>}></Route>
+
             <Route path='/message' element={<ChatPage></ChatPage>}></Route>
             <Route path='/profile' element={<Profile></Profile>}></Route>
             <Route

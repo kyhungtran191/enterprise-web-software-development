@@ -139,7 +139,7 @@ export default function SettingGAC() {
       keyword: queryParams.keyword,
       name: queryParams.name,
       year: queryParams.year,
-      pagesize: queryParams.pagesize || '4'
+      pagesize: queryParams.pagesize
     },
     isUndefined
   )
@@ -148,30 +148,7 @@ export default function SettingGAC() {
     queryFn: (_) => Contributions.MCContribution(queryConfig)
   })
 
-  const handleInputChange = debounce((value) => {
-    if (!value) {
-      return navigate({
-        pathname: '/coodinator-manage/setting-guest',
-        search: createSearchParams(
-          omit({ ...queryConfig }, ['keyword'])
-        ).toString()
-      })
-    }
 
-    navigate({
-      pathname: '/coodinator-manage/setting-guest',
-      search: createSearchParams(
-        omitBy(
-          {
-            ...queryConfig,
-            keyword: value
-          },
-          (value, key) =>
-            key === 'pageindex' || key === 'pagesize' || isUndefined(value)
-        )
-      ).toString()
-    })
-  }, 300)
 
   const { mutate } = useMutation({
     mutationFn: (body) => Contributions.MCAllowGuest(body)
