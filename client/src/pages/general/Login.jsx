@@ -24,6 +24,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
+import notificationNoticeSound from "/notification.mp3"
 export default function Login() {
 
 
@@ -55,6 +56,8 @@ export default function Login() {
   const onSubmit = (data) => {
     mutate(data, {
       onSuccess(data) {
+        const sound = new Audio(notificationNoticeSound)
+        sound.play()
         let accessToken = data && data?.data?.accessToken
         let refreshToken = data && data?.data?.refreshToken
         const dataDetail = jwtDecode(accessToken)

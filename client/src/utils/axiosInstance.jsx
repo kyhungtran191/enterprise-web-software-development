@@ -4,6 +4,8 @@ import { clearLS, getAccessTokenFromLS, getRefreshToken, saveAccessTokenToLS, sa
 import { refreshTokenAPI } from "@/apis"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import { useAppContext } from "@/hooks/useAppContext"
+import { useQueryClient } from "@tanstack/react-query"
 
 const instanceAxios = axios.create({
   baseURL: URL
@@ -14,6 +16,8 @@ let refreshQueue = [];
 
 const AxiosInterceptor = ({ children }) => {
   const navigate = useNavigate()
+  let { setProfile, setIsAuthenticated } = useAppContext()
+  let queryClient = useQueryClient()
   instanceAxios.interceptors.request.use(async function (config) {
 
     let accessToken = getAccessTokenFromLS();
@@ -24,9 +28,7 @@ const AxiosInterceptor = ({ children }) => {
         config.headers.authorization = ` Bearer ${accessToken}`
         return config
       } else {
-
         if (refreshToken) {
-
           if (!isRefreshing) {
             isRefreshing = true;
             await axios
@@ -55,9 +57,12 @@ const AxiosInterceptor = ({ children }) => {
                 return config;
               })
               .catch((error) => {
-                // clearLS()
-                // navigate("/login")
-                console.log(error)
+                toast.error("Refresh Token Timeout!")
+                clearLS()
+                setProfile({})
+                setIsAuthenticated(false)
+                queryClient.clear()
+                return navigate("/login")
               })
 
           } else {
@@ -69,8 +74,12 @@ const AxiosInterceptor = ({ children }) => {
             });
           }
         } else {
+          console.log(1)
           clearLS()
-          navigate("/login")
+          setProfile({})
+          setIsAuthenticated(false)
+          queryClient.clear()
+          return navigate("/login")
         }
       }
     }
