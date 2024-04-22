@@ -22,6 +22,6 @@ export function IsOutDeadlineUpdate() {
   if (!data) return true;
   const now = new Date();
   const specifiedTime = new Date(data?.endFinalDate);
-  console.log(now, specifiedTime)
+
   return now > specifiedTime ? true : false
 }

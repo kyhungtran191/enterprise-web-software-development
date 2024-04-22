@@ -25,6 +25,7 @@ import { PERMISSIONS } from '@/constant/casl-permissions'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { ActivityLogDialog } from './ActivityLogDialog'
+import { IsOutDeadlineUpdate } from '@/hooks/useIsActiveAcademicYear'
 
 export function ContributionTable() {
   const [isOpenViewActivityLog, setIsOpenViewActivityLog] = useState(false)
@@ -35,7 +36,6 @@ export function ContributionTable() {
     setIsOpenViewActivityLog(true)
     setViewContributionLog(contribution)
   }
-  console.log(viewContributionLog)
   const { data: activityLogs } = useQuery({
     queryKey: ['adminContributionLog', viewContributionLog?.id],
     queryFn: (_) =>
@@ -178,12 +178,13 @@ export function ContributionTable() {
             </DropdownMenuTrigger>
             <DropdownMenuContent className='w-56'>
               <DropdownMenuGroup>
-                <DropdownMenuItem
+                {isOutDeadline && <DropdownMenuItem
                   onSelect={() => downloadContributionFiles(row.original)}
                 >
                   <Download className='w-4 h-4 mr-2' />
                   <span>Download contribution</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem>}
+
                 <DropdownMenuItem
                   onSelect={() => handleViewActivityLog(row.original)}
                 >
@@ -198,7 +199,7 @@ export function ContributionTable() {
     }
   ]
   const [isLoadingFiles, setIsLoadingFiles] = useState(false)
-
+  let isOutDeadline = IsOutDeadlineUpdate()
   const queryParams = useParamsVariables()
   const queryConfig = omitBy(
     {
@@ -215,14 +216,14 @@ export function ContributionTable() {
   })
   const contributions = data
     ? data?.data?.responseData?.results.map((contribution) => ({
-        ...contribution,
-        submissionDate: contribution.submissionDate
-          ? format(new Date(contribution.submissionDate), 'MM-dd-yyyy')
-          : 'Not published',
-        publishDate: contribution?.publicDate
-          ? format(new Date(contribution.publicDate), 'MM-dd-yyyy')
-          : 'Not published'
-      }))
+      ...contribution,
+      submissionDate: contribution.submissionDate
+        ? format(new Date(contribution.submissionDate), 'MM-dd-yyyy')
+        : 'Not published',
+      publishDate: contribution?.publicDate
+        ? format(new Date(contribution.publicDate), 'MM-dd-yyyy')
+        : 'Not published'
+    }))
     : []
   const [selectedRow, setSelectedRow] = useState({})
   const ability = useContext(AbilityContext)
@@ -297,7 +298,7 @@ export function ContributionTable() {
         {isLoadingFiles ? (
           <Spinner className={'border-blue-400'}></Spinner>
         ) : (
-          <Button onClick={downloadAllContributions}>
+          <Button onClick={downloadAllContributions} className={`${!isOutDeadline ? "hidden" : "block"}`}>
             Download all contributions
           </Button>
         )}
