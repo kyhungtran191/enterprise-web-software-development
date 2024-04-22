@@ -3,7 +3,10 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Server.Application.Common.Dtos.Announcement;
 using Server.Application.Common.Extensions;
+using Server.Application.Common.Interfaces.Hubs.Announcement;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers;
@@ -25,8 +28,10 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
         private readonly IMediaService _mediaService;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly IHubContext<AnnouncementHub, IAnnouncementClient> _announcementHub;
+        private readonly IAnnouncementService _announcementService;
 
-        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService,IMediaService mediaService) 
+        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IMediaService mediaService, IHubContext<AnnouncementHub, IAnnouncementClient> announcementHub, IAnnouncementService announcementService)
         {
             _unitOfWork = unitOfWork;
             _dateTimeProvider = dateTimeProvider;
@@ -34,6 +39,8 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             _userManager = userManager;
             _mediaService = mediaService;
             _roleManager = roleManager;
+            _announcementHub = announcementHub;
+            _announcementService = announcementService;
         }
 
         public async Task<ErrorOr<IResponseWrapper>> Handle(CreateContributionCommand request,
@@ -84,13 +91,13 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             var thumbnailTypes = new List<string>();
 
             if (request.Thumbnail is not null || request.Files.Count > 0)
-                {
+            {
 
-                    thumbnailList.Add(request.Thumbnail);
+                thumbnailList.Add(request.Thumbnail);
                 //var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
                 //var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
-                var thumbnailInfo = await _mediaService.UploadFileCloudinary(thumbnailList, FileType.Thumbnail,contributon.Id);
-                var fileInfo = await _mediaService.UploadFileCloudinary(request.Files, FileType.File,contributon.Id);
+                var thumbnailInfo = await _mediaService.UploadFileCloudinary(thumbnailList, FileType.Thumbnail, contributon.Id);
+                var fileInfo = await _mediaService.UploadFileCloudinary(request.Files, FileType.File, contributon.Id);
                 //filePath = fileInfo.Select(x => x.Path).ToList();
                 //thumbnailPath = thumbnailInfo.Select(x => x.Path).ToList();
                 filePublicId = fileInfo.Select(x => x.PublicId).ToList();
@@ -98,50 +105,82 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 thumbnailPublicId = thumbnailInfo.Select(x => x.PublicId).ToList();
                 thumbnailTypes = thumbnailInfo.Select(x => x.Type).ToList();
                 foreach (var info in fileInfo.Concat(thumbnailInfo))
+                {
+                    _unitOfWork.FileRepository.Add(new File
                     {
-                        _unitOfWork.FileRepository.Add(new File
-                        {
-                            ContributionId = contributon.Id,
-                            Path = info.Path,
-                            Type = info.Type,
-                            Name = info.Name,
-                            PublicId = info.PublicId,
-                            Extension = info.Extension,
-                        });
-                    }
+                        ContributionId = contributon.Id,
+                        Path = info.Path,
+                        Type = info.Type,
+                        Name = info.Name,
+                        PublicId = info.PublicId,
+                        Extension = info.Extension,
+                    });
                 }
+            }
 
-                var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-                if (user == null)
-                {
-                    await _mediaService.RemoveFromCloudinary(filePublicId,fileTypes);
-                    await _mediaService.RemoveFromCloudinary(thumbnailPublicId,thumbnailTypes);
-                    return Errors.User.CannotFound;
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            if (user == null)
+            {
+                await _mediaService.RemoveFromCloudinary(filePublicId, fileTypes);
+                await _mediaService.RemoveFromCloudinary(thumbnailPublicId, thumbnailTypes);
+                return Errors.User.CannotFound;
+            }
+
+            var coordinator = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
+            var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)user.FacultyId);
+            _emailService.SendEmail(new MailRequest
+            {
+                ToEmail = coordinator.Email,
+                Body = $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
+                       $" <h2>New Blog request are pending</h2>\r\n " +
+                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
+                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
+                       $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {user.UserName}</p>\r\n " +
+                       $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
+                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
+                Subject = "NEW CONTRIBUTION"
+            });
+            await _unitOfWork.CompleteAsync();
+            // send to approve 
+            await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
+            await _unitOfWork.CompleteAsync();
+
+            // notify
+            var notificationId = Guid.NewGuid().ToString();
+            var announcementDto = new AnnouncementDto()
+            {
+                Id = notificationId,
+                Title = "Order created",
+                DateCreated = DateTime.Now,
+                Content = $"Order has been created",
+                UserId = coordinator.Id,
+                Type = "Contribution-CreateContribution"                
+            };
+            _announcementService.Add(announcementDto);
+
+            var announcementUsers = new List<AnnouncementUserDto>()
+            {
+                new AnnouncementUserDto(){
+                    AnnouncementId = notificationId,
+                    HasRead = false,
+                    UserId = coordinator.Id
                 }
+            };
 
-                var coordinator = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
-                var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)user.FacultyId);
-                _emailService.SendEmail(new MailRequest
-                {
-                    ToEmail = coordinator.Email,
-                    Body = $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
-                           $" <h2>New Blog request are pending</h2>\r\n " +
-                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
-                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
-                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {user.UserName}</p>\r\n " +
-                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
-                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
-                    Subject = "NEW CONTRIBUTION"
-                });
-                await _unitOfWork.CompleteAsync();
-                // send to approve 
-                await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
-                await _unitOfWork.CompleteAsync();
-                return new ResponseWrapper
-                {
-                    IsSuccessfull = true,
-                    Messages = new List<string> { $"Create contribution successfully!" }
-                };
+            _announcementService.AddToAnnouncementUsers(announcementUsers);
+
+            await _unitOfWork.CompleteAsync();
+
+            await _announcementHub
+                .Clients
+                .Users(coordinator.Id.ToString())
+                .GetNewAnnouncement(announcementDto);
+
+            return new ResponseWrapper
+            {
+                IsSuccessfull = true,
+                Messages = new List<string> { $"Create contribution successfully!" }
+            };
         }
     }
 }

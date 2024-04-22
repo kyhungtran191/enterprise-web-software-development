@@ -15,6 +15,35 @@ public class AnnouncementService : IAnnouncementService
         _unitOfWork = unitOfWork;
     }
 
+    public void Add(AnnouncementDto announcementDto)
+    {
+        Announcement announcement = new Announcement
+        {
+            Id = announcementDto.Id,
+            Content = announcementDto.Content,
+            DateCreated = announcementDto.DateCreated,
+            UserId = announcementDto.UserId,
+            Title = announcementDto.Title,
+        };
+        _unitOfWork.AnnouncementRepository.Add(announcement);
+    }
+
+    public void AddToAnnouncementUsers(IEnumerable<AnnouncementUserDto> announcementUserDtos)
+    {
+        // Save announcement user
+        foreach (var userVm in announcementUserDtos)
+        {
+            AnnouncementUser announcementUser = new AnnouncementUser
+            {
+                UserId = userVm.UserId,
+                Id = userVm.Id,
+                AnnouncementId = userVm.AnnouncementId,
+                HasRead = userVm.HasRead,
+            };
+            _unitOfWork.AnnouncementUserRepository.Add(announcementUser);
+        }
+    }
+
     public async Task<PagedResult<AnnouncementDto>> GetAllUnreadPaging(Guid userId, int pageIndex, int pageSize)
     {
 
@@ -58,7 +87,7 @@ public class AnnouncementService : IAnnouncementService
 
         bool result = false;
 
-        var announce = 
+        var announce =
             _unitOfWork
             .AnnouncementUserRepository
             .Find(x => x.UserId == userId || x.AnnouncementId == id).FirstOrDefault();

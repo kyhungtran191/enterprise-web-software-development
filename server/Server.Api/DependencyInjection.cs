@@ -19,6 +19,7 @@ public static class DependencyInjection
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers();
+        services.AddSignalR();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
@@ -91,7 +92,7 @@ public static class DependencyInjection
         }));
 
         return services;
-    }
+    }    
 
     public static IServiceCollection AddAuthorization(this IServiceCollection services)
     {
