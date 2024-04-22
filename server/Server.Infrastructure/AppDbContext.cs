@@ -30,6 +30,8 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Setting> Settings { get; set; }
     public DbSet<File> Files { get; set; }
+    public DbSet<Announcement> Announcements { get; set; }
+    public DbSet<AnnouncementUser> AnnouncementUsers { get; set; }
     public DbSet<ContributionPublicRating> ContributionPublicRatings { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
