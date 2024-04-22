@@ -10,14 +10,16 @@ export default function GetCurrentAcademicYear() {
 
 export function IsOutDeadlineAdd() {
   const data = GetCurrentAcademicYear()
+  if (!data) return true
   const now = new Date();
   const specifiedTime = new Date(data?.endClosureDate);
-  console.log(now, specifiedTime)
+
   return now > specifiedTime ? true : false
 }
 
 export function IsOutDeadlineUpdate() {
   const data = GetCurrentAcademicYear()
+  if (!data) return true;
   const now = new Date();
   const specifiedTime = new Date(data?.endFinalDate);
   console.log(now, specifiedTime)

@@ -91,9 +91,7 @@ export default function StudentContribution() {
   );
 
   const academicYear = GetCurrentAcademicYear()
-  console.log(academicYear);
   const isOutDate = IsOutDeadlineAdd()
-  console.log(isOutDate)
   const currentData = data && data?.data?.responseData;
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
