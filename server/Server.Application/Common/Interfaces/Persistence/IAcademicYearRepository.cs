@@ -11,6 +11,7 @@ namespace Server.Application.Common.Interfaces.Persistence
         Task<bool> HasContributionsAsync(Guid academicYearId);
         Task<bool> AnyActiveYear();
         Task<AcademicYear> GetAcademicYearByDateAsync(DateTime date);
+        Task<AcademicYear> GetAcademicYearByCurrentYearAsync(DateTime date);
         Task<bool> CanSubmitAsync(DateTime date);
         Task<bool> CanEditAsync(DateTime date);
     }

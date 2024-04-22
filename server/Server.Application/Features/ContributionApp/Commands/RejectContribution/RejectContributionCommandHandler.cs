@@ -50,16 +50,17 @@ namespace Server.Application.Features.ContributionApp.Commands.RejectContributio
             await _unitOfWork.ContributionRepository.Reject(contribution, request.UserId, request.Note);
             var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
             var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)student?.FacultyId!);
+            var currentAcademicYear = await _unitOfWork.AcademicYearRepository.GetAcademicYearByCurrentYearAsync(DateTime.UtcNow);
             _emailService.SendEmail(new MailRequest
             {
                 ToEmail = student.Email,
                 Body = $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
                        $" <h2>Coordinator rejected your contribution with reason: {request.Note}</h2>\r\n " +
-                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
-                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
+                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: {contribution.Title} 2</p>\r\n " +
+                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: {contribution.Content}</p>\r\n" +
                        $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {student.UserName}</p>\r\n " +
                        $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
-                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
+                       $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: {currentAcademicYear.Name}</p>\r\n</div>",
                 Subject = "REJECTED CONTRIBUTION"
             });
             await _unitOfWork.CompleteAsync();
