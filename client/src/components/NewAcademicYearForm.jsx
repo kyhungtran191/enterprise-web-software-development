@@ -241,7 +241,7 @@ export function NewAcademicYearForm() {
                     selected={field.value}
                     onSelect={(date) => {
                       field.onChange(date)
-                      setStartClosureDate(date)
+                      setEndClosureDate(date)
                     }}
                     disabled={(date) => date < new Date('2000-01-01')}
                     initialFocus
@@ -286,7 +286,7 @@ export function NewAcademicYearForm() {
                     selected={field.value}
                     onSelect={(date) => {
                       field.onChange(date)
-                      setStartClosureDate(date)
+                      setFinalClosureDate(date)
                     }}
                     disabled={(date) => date < new Date('2000-01-01')}
                     initialFocus
