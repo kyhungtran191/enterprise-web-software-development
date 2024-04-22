@@ -29,6 +29,8 @@ public class UnitOfWork : IUnitOfWork
   public ICommentRepository CommentRepository => new CommentRepository(_context);
   public IPublicCommentRepository PublicCommentRepository => new PublicCommentRepository(_context);
   public IRatingRepository RatingRepository => new RatingRepository(_context);
+  public IAnnouncementRepository AnnouncementRepository => new AnnouncementRepository(_context);
+  public IAnnouncementUserRepository AnnouncementUserRepository => new AnnouncementUserRepository(_context);
   public async Task<int> CompleteAsync()
   => await _context.SaveChangesAsync();
 
