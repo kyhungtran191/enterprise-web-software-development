@@ -1330,6 +1330,12 @@ public static class DataSeeder
             foreach (var contribution in listContribution)
             {
                 await context.Contributions.AddAsync(contribution);
+                
+            }
+            await context.SaveChangesAsync();
+            foreach (var contribution in listContribution)
+            {
+                await contributionRepository.SendToApprove(contribution.Id, adminId);
             }
             await context.SaveChangesAsync();
         }
