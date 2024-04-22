@@ -343,9 +343,9 @@ namespace Server.Infrastructure.Persistence.Repositories
                         on like.ContributionPublicId equals c.Id
                     where like.UserId == userId
                     join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
-                    select new { c,a })
+                    select new { c,a,like })
                 .Distinct()
-                .ToList();
+                .OrderByDescending(x=>x.like.DateCreated).ToList();
             var contributionIds = contributions.Select(x => x.c.Id).ToList();
             var files = await _dbContext.Files
                 .Where(f => contributionIds.Contains(f.ContributionId))
@@ -422,10 +422,10 @@ namespace Server.Infrastructure.Persistence.Repositories
                 join c in _dbContext.ContributionPublics on f.ContributionPublicId equals c.Id
                 where c.DateDeleted == null
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
-                select new { c, a };
+                select new { c, a ,f};
 
             var readlaterContributions = await query
-                .OrderBy(x => x.c.DateCreated)
+                .OrderByDescending(x => x.f.DateCreated)
                 .ToListAsync();
 
             var contributionIds = readlaterContributions.Select(x => x.c.Id).ToList();

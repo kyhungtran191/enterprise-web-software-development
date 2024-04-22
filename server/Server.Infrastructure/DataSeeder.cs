@@ -662,7 +662,17 @@ public static class DataSeeder
                     {
                         Selected = true,
                         Value = "Permissions.Contributions.Download"
-                    }
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.FavoriteContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.ReadLaterContribution.View"
+                    },
                 };
                 foreach (var permission in coordinatorPermissionList)
                 {
@@ -704,7 +714,17 @@ public static class DataSeeder
                     {
                         Selected = true,
                         Value = "Permissions.Contributions.Download"
-                    }
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.FavoriteContribution.View"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.ReadLaterContribution.View"
+                    },
                 };
                 foreach (var permission in managerPermissionList)
                 {
