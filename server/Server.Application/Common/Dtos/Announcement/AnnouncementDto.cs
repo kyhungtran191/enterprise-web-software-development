@@ -17,5 +17,6 @@ namespace Server.Application.Common.Dtos.Announcement
 
         public DateTime DateCreated { set; get; }
         public DateTime DateModified { set; get; }        
+        public string? Type { get; set; }
     }
 }
