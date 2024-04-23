@@ -127,8 +127,9 @@ export default function Profile() {
         toast.success('Update Profile Successfully!')
         queryClient.invalidateQueries(['profile'])
       },
-      onError(err) {
-        console.log(err)
+      onError(data) {
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
       }
     })
   }
@@ -263,7 +264,7 @@ export default function Profile() {
               onSelect={setDate}
               fromYear={1960}
               toYear={2030}
-          ></DatePickerCustom>
+            ></DatePickerCustom>
           </div>
           <Button className='col-span-2 py-6 bg-blue-500'>Update</Button>
         </form>

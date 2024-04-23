@@ -59,6 +59,7 @@ export default function AddContribution() {
       setThumbnailError(false);
     }
   }
+  console.log(addContributionMutation.isError)
   const editorRef = useRef(null);
   const onSubmit = async (data) => {
     if (!currentThumbnail) {
@@ -103,17 +104,18 @@ export default function AddContribution() {
         navigate('/student-manage/recent?status=PENDING')
       },
       onError(data) {
-        toast.error(data && data?.messages[0])
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
       }
     })
   }
-
   return (
     <AdminLayout link={STUDENT_OPTIONS}>
       <div>
         <DynamicBreadcrumb></DynamicBreadcrumb>
-        {addContributionMutation.isLoading && <ActionSpinner></ActionSpinner>
-        }
+        {addContributionMutation.isLoading && !addContributionMutation.isError && (
+          <ActionSpinner></ActionSpinner>
+        )}
         <form className='py-4' onSubmit={handleSubmit(onSubmit)}>
           <div className='mt-2'>
             <Label className="text-2xl font-semibold">Title</Label>

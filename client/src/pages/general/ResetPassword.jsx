@@ -11,7 +11,7 @@ import { Icon } from '@iconify/react'
 import { useMutation } from '@tanstack/react-query'
 import { Auth } from '@/services/client'
 import { toast } from 'react-toastify'
-import { PASSWORD_REG } from '@/utils/regex'
+import { PASSWORD_REG, RESET_PASS } from '@/utils/regex'
 export default function ResetPassword() {
   const navigate = useNavigate()
   const { token } = useParams();
@@ -20,7 +20,7 @@ export default function ResetPassword() {
   const [isOpenConfirm, setIsOpenConfirm] = useState(false)
   const schema = yup
     .object({
-      password: yup.string().matches(PASSWORD_REG, { message: "The password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character" }).required('Please provide password'),
+      password: yup.string().matches(RESET_PASS, { message: "The password must contain at least 8 character long and one uppercase letter, one lowercase letter, one digit, and one special character" }).required('Please provide password'),
       confirm_password: yup.string().required("Please provide confirmation password").oneOf([yup.ref('password')], "Confirm password does not match"),
     })
     .required()
