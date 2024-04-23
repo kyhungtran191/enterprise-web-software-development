@@ -24,6 +24,11 @@ public class AnnouncementService : IAnnouncementService
             DateCreated = announcementDto.DateCreated,
             UserId = announcementDto.UserId,
             Title = announcementDto.Title,
+            Avatar = announcementDto.Avatar,
+            Slug = announcementDto.Slug,
+            Username = announcementDto.Username,
+            DateModified = announcementDto.DateModified,
+            Type = announcementDto.Type,
         };
         _unitOfWork.AnnouncementRepository.Add(announcement);
     }
@@ -55,7 +60,7 @@ public class AnnouncementService : IAnnouncementService
                         on x.Id equals y.AnnouncementId
                         into xy
                     from announUser in xy.DefaultIfEmpty()
-                    where (announUser.UserId == null || announUser.UserId == userId)
+                    where announUser.UserId == null || announUser.UserId == userId
                     select new { x, announUser };
 
         int totalRow = query.Count();
@@ -74,7 +79,8 @@ public class AnnouncementService : IAnnouncementService
                 Avatar = result.x.Avatar,
                 Slug = result.x.Slug,
                 Username = result.x.Username,
-                HasReceiverRead = result.announUser.HasRead!.Value
+                HasReceiverRead = result.announUser.HasRead!.Value,
+                Type = result.x.Type,
             }).ToList();
 
         return new PagedResult<AnnouncementDto>
