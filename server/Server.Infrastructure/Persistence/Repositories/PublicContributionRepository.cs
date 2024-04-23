@@ -154,6 +154,7 @@ namespace Server.Infrastructure.Persistence.Repositories
             var query = from c in _dbContext.ContributionPublics
                 where c.DateDeleted == null
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
+                join f in _dbContext.Faculties on c.FacultyId equals f.Id
                 select new { c, a };
 
            
