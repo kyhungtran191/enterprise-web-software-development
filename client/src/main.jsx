@@ -11,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AbilityContext } from './components/casl/Can.js'
 import Ability from './components/casl/Ability.js'
+import { SignalRProvider } from './contexts/signalr.context.jsx'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -30,9 +31,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       />
       <QueryClientProvider client={queryClient}>
         <AppProvider>
-          <AxiosInterceptor>
-            <App />
-          </AxiosInterceptor>
+          <SignalRProvider>
+            <AxiosInterceptor>
+              <App />
+            </AxiosInterceptor>
+          </SignalRProvider>
         </AppProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

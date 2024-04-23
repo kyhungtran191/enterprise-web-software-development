@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Immutable;
+using AutoMapper;
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -28,10 +29,10 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
         private readonly IMediaService _mediaService;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
-        private readonly IHubContext<AnnouncementHub, IAnnouncementClient> _announcementHub;
+        private readonly IHubContext<AnnouncementHub> _announcementHub;
         private readonly IAnnouncementService _announcementService;
 
-        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IMediaService mediaService, IHubContext<AnnouncementHub, IAnnouncementClient> announcementHub, IAnnouncementService announcementService)
+        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IMediaService mediaService, IHubContext<AnnouncementHub> announcementHub, IAnnouncementService announcementService)
         {
             _unitOfWork = unitOfWork;
             _dateTimeProvider = dateTimeProvider;
@@ -128,6 +129,7 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
             var coordinators = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
             var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)user.FacultyId);
+
             foreach (var coordinator in coordinators)
             {
                 _emailService.SendEmail(new MailRequest
@@ -147,16 +149,19 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
                 await _unitOfWork.CompleteAsync();
 
-                // notify
+                 // notify
                 var notificationId = Guid.NewGuid().ToString();
                 var announcementDto = new AnnouncementDto()
                 {
                     Id = notificationId,
-                    Title = "Order created",
+                    Title = "Contribution created",
                     DateCreated = DateTime.Now,
-                    Content = $"Order has been created",
-                    UserId = coordinator.Id,
-                    Type = "Contribution-CreateContribution"
+                    Content = $"Contribution has been created",
+                    Username = user.UserName,   
+                    UserId = coordinator.Id,                 
+                    Type = "Contribution-CreateContribution",
+                    Avatar = user.Avatar,
+                    Slug = contributon.Slug
                 };
                 _announcementService.Add(announcementDto);
 
@@ -175,10 +180,10 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
 
                 await _announcementHub
                     .Clients
-                    .Users(coordinator.UserName!.ToString())
-                    .GetNewAnnouncement(announcementDto);
-
+                    .User(coordinator.Id.ToString())
+                    .SendAsync("GetNewAnnouncement", announcementDto);
             }
+
 
             return new ResponseWrapper
             {

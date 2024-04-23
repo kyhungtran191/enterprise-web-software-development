@@ -1,11 +1,35 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import { Bell } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Separator } from '@radix-ui/react-dropdown-menu'
+import { getAccessTokenFromLS } from '@/utils/auth'
+import { useSignalRContext } from '@/contexts/signalr.context'
 
 export default function Notification() {
+
+  const { connections } = useSignalRContext();
+ 
+  useEffect(() => {
+    const connection = connections["AnnouncementHub"];
+
+    if (connection) {
+      const handleNewAnnouncement = (message) => {
+        console.log(message);
+      };
+
+      // Add event listener
+      connection.on("GetNewAnnouncement", handleNewAnnouncement);
+
+      // Cleanup: Remove event listener when component unmounts
+      return () => {
+        connection.off("GetNewAnnouncement", handleNewAnnouncement);
+      };
+    }
+  }, [connections["AnnouncementHub"]])
+
+
   return (
     <div className='relative flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
       <div className="absolute w-[10px] h-[10px] bg-red-500 rounded-full bottom-6 left-6 z-20"></div>
