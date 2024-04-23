@@ -98,7 +98,6 @@ export default function ContributionDetail() {
       },
     })
   }
-  console.log(detailData)
   return (
 
     <GeneralLayout>

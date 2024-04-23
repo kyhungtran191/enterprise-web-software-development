@@ -20,6 +20,8 @@ const queryClient = new QueryClient({
     }
   }
 })
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <AbilityContext.Provider value={Ability}>
     <BrowserRouter>

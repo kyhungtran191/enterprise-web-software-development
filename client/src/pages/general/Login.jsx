@@ -25,11 +25,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 import notificationNoticeSound from "/notification.mp3"
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+
+let connection = null;
+
 export default function Login() {
-
-
-
-
   const ability = useContext(AbilityContext)
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
@@ -106,6 +106,22 @@ export default function Login() {
         saveAccessTokenToLS(accessToken)
         saveRefreshTokenToLS(refreshToken)
         setIsAuthenticated(true)
+
+        // if (accessToken) {
+        //   connection = new HubConnectionBuilder()
+        //     .withUrl("http://localhost:5272/hubs/announcement", { accessTokenFactory: () => accessToken })
+        //     .build();
+        // }
+
+
+        // connection.start()
+        //   .then(() => {
+        //     console.log('Connected to SignalR hub');
+        //   })
+        //   .catch(error => {
+        //     console.error('Error connecting to SignalR hub:', error);
+        //   });
+
         toast.success('Login Successfully!')
         navigate('/')
       },
@@ -206,3 +222,4 @@ export default function Login() {
     </div>
   )
 }
+export { connection }
