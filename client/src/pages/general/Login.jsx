@@ -106,22 +106,7 @@ export default function Login() {
         saveAccessTokenToLS(accessToken)
         saveRefreshTokenToLS(refreshToken)
         setIsAuthenticated(true)
-
-        // if (accessToken) {
-        //   connection = new HubConnectionBuilder()
-        //     .withUrl("http://localhost:5272/hubs/announcement", { accessTokenFactory: () => accessToken })
-        //     .build();
-        // }
-
-
-        // connection.start()
-        //   .then(() => {
-        //     console.log('Connected to SignalR hub');
-        //   })
-        //   .catch(error => {
-        //     console.error('Error connecting to SignalR hub:', error);
-        //   });
-
+        window.location.reload();
         toast.success('Login Successfully!')
         navigate('/')
       },
