@@ -15,7 +15,7 @@ namespace Server.Application.Common.Dtos.Announcement
 
     public Guid UserId { set; get; }
     public string? Username { get; set; }
-
+    public bool HasReceiverRead { get; set; } = false;
     public DateTime DateCreated { set; get; }
     public DateTime DateModified { set; get; }
     public string? Type { get; set; }

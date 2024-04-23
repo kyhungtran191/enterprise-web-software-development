@@ -23,7 +23,7 @@ public class Announcement
     public string? Username { set; get; }
 
     [StringLength(500)]
-    public string? Avatar { get; set; }
+    public string? Avatar { get; set; }    
 
     public Guid UserId { set; get; }
 
