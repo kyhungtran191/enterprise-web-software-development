@@ -75,7 +75,7 @@ export default function Notification() {
           <Bell className='relative w-6 h-6'>
           </Bell>
         </PopoverTrigger>
-        {currentData && currentData?.length > 0 && <PopoverContent className="p-0 h-[350px] overflow-y-scroll">
+        {currentData && currentData?.length > 0 && <PopoverContent className="p-0 h-[350px] overflow-y-scrol  l">
           <div className="">
             {/* Notificate component */}
             {currentData && currentData?.length > 0 && currentData?.map((item) => (
