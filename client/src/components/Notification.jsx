@@ -69,7 +69,7 @@ export default function Notification() {
   }
   return (
     <div className='relative flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
-      {currentData?.some((item) => item.hasReceiverRead === true) && <div className="absolute w-[10px] h-[10px] bg-red-500 rounded-full bottom-6 left-6 z-20"></div>}
+      {currentData?.some((item) => item.hasReceiverRead === false) && <div className="absolute w-[10px] h-[10px] bg-red-500 rounded-full bottom-6 left-6 z-20"></div>}
       <Popover className="">
         <PopoverTrigger className='flex items-center justify-center w-12 h-12'>
           <Bell className='relative w-6 h-6'>

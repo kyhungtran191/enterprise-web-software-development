@@ -1,6 +1,9 @@
 ﻿using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Server.Application.Common.Dtos.Announcement;
+using Server.Application.Common.Interfaces.Hubs.Announcement;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers;
@@ -16,11 +19,17 @@ namespace Server.Application.Features.ContributionApp.Commands.RejectContributio
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
         private readonly UserManager<AppUser> _userManager;
-        public RejectContributionCommandHandler(IUnitOfWork unitOfWork, IEmailService emailService, UserManager<AppUser> userManager)
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IHubContext<AnnouncementHub> _announcementHub;
+        private readonly IAnnouncementService _announcementService;
+        public RejectContributionCommandHandler(IUnitOfWork unitOfWork, IEmailService emailService, UserManager<AppUser> userManager, ICurrentUserService currentUserService, IAnnouncementService announcementService, IHubContext<AnnouncementHub> announcementHub)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
             _userManager = userManager;
+            _currentUserService = currentUserService;
+            _announcementService = announcementService;
+            _announcementHub = announcementHub;
         }
         public async Task<ErrorOr<IResponseWrapper>> Handle(RejectContributionCommand request, CancellationToken cancellationToken)
         {
@@ -64,6 +73,43 @@ namespace Server.Application.Features.ContributionApp.Commands.RejectContributio
                 Subject = "REJECTED CONTRIBUTION"
             });
             await _unitOfWork.CompleteAsync();
+
+            var coordinator = await _userManager.FindByIdAsync(_currentUserService.UserId.ToString());
+
+            // notify
+            var notificationId = Guid.NewGuid().ToString();
+
+            var announcementDto = new AnnouncementDto()
+            {
+                Id = notificationId,
+                Title = "Contribution rejected",
+                DateCreated = DateTime.Now,
+                Content = $"Contribution has been rejected",
+                UserId = coordinator!.Id,
+                Type = "Contribution-Reject",
+                Username = coordinator?.UserName,
+                Avatar = coordinator?.Avatar,
+                Slug = contribution.Slug
+            };
+            _announcementService.Add(announcementDto);
+
+            var announcementUsers = new List<AnnouncementUserDto>() {
+                new AnnouncementUserDto
+                {
+                    AnnouncementId = notificationId,
+                    HasRead = false,
+                    UserId = student.Id
+                }
+            };
+            _announcementService.AddToAnnouncementUsers(announcementUsers);
+
+            await _unitOfWork.CompleteAsync();
+
+            await _announcementHub
+                .Clients
+                .User(student.Id.ToString())
+                .SendAsync("GetNewAnnouncement", announcementDto);
+
             return new ResponseWrapper
             {
                 IsSuccessfull = true,

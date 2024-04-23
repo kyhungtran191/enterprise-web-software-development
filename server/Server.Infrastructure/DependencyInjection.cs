@@ -40,7 +40,9 @@ public static class DependencyInjection
         services.AddScoped<IContributionService, ContributionService>();
         services.AddScoped<IContributionReportMapper, ContributionReportMapper>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IAnnouncementService, AnnouncementService>();
+        services.AddHttpContextAccessor();
         
         // email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));

@@ -99,7 +99,7 @@ public class AnnouncementService : IAnnouncementService
         var announce =
             _unitOfWork
             .AnnouncementUserRepository
-            .Find(x => x.UserId == userId || x.AnnouncementId == id).FirstOrDefault();
+            .Find(x => x.UserId == userId && x.AnnouncementId == id).FirstOrDefault();
 
         if (announce == null)
         {
