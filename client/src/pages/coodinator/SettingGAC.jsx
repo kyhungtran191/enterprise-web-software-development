@@ -173,11 +173,12 @@ export default function SettingGAC() {
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm({ resolver: yupResolver(schema) })
 
   const addNewGuestMutation = useMutation({
-    mutationFn: (body) => Auth.login(body)
+    mutationFn: (body) => Contributions.MCCreateGuest(body)
   })
 
   const { mutate } = useMutation({
@@ -219,7 +220,27 @@ export default function SettingGAC() {
     });
   }
   const onAddNewGuest = (data) => {
-
+    console.log(data)
+    const formData = new FormData();
+    formData.append('Email', data?.email);
+    formData.append('UserName', data?.username);
+    // If IsActive is boolean
+    formData.append('IsActive', true);
+    addNewGuestMutation.mutate(formData, {
+      onSuccess(data) {
+        toast.success("Add new guest account successfully!")
+        setIsOpen(false)
+        reset({
+          email: "",
+          username: "",
+        })
+      },
+      onError(data) {
+        console.log(data)
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
+      }
+    })
   }
   return (
     <AdminLayout links={MC_OPTIONS}>
@@ -227,7 +248,10 @@ export default function SettingGAC() {
         <DialogTrigger asChild>
           <Button className="max-w-[200px] my-5 ml-auto" onClick={() => setIsOpen(true)}>Add New Guest Account</Button>
         </DialogTrigger>
-        <DialogContent className='sm:max-w-md'>
+        <DialogContent className=' sm:max-w-md'>
+          {addNewGuestMutation.isLoading && !addNewGuestMutation.isError && <div className="absolute inset-0 z-30 flex items-center justify-center bg-white bg-opacity-50">
+            <Spinner></Spinner>
+          </div>}
           <DialogHeader>
             <DialogTitle>Add new guest</DialogTitle>
           </DialogHeader>
@@ -268,7 +292,7 @@ export default function SettingGAC() {
 
                 </div>
                 <div className='h-5 mt-3 text-base font-semibold text-red-500'>
-                  {errors && errors?.userName?.message}
+                  {errors && errors?.username?.message}
                 </div>
               </div>
               <Button
@@ -286,7 +310,7 @@ export default function SettingGAC() {
         </DialogContent>
       </Dialog>
       {!isLoading && (
-        <div className="max-h-[80vh] overflow-auto">
+        <div className="max-h-[70vh] overflow-auto">
           <CustomTable
             columns={columns}
             data={tableData}
