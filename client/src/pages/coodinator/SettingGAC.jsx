@@ -187,7 +187,6 @@ export default function SettingGAC() {
       }
     });
   }
-  console.log(tableData);
   return (
     <AdminLayout links={MC_OPTIONS}>
 

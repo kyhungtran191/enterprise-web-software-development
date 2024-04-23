@@ -21,6 +21,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Clock, BellRing, MessageSquare } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import Notification from '@/components/Notification'
+
 export default function Header() {
   const queryClient = useQueryClient()
   const { isAuthenticated, profile, setProfile, setIsAuthenticated, avatar } =
@@ -36,6 +37,7 @@ export default function Header() {
     toast.success('Logout successfully!')
     navigate('/login')
   }
+
   return (
     <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black'>
       <nav className='container h-full flex justify-between items-center leading-[72px] relative'>

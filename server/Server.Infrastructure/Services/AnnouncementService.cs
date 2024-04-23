@@ -24,6 +24,11 @@ public class AnnouncementService : IAnnouncementService
             DateCreated = announcementDto.DateCreated,
             UserId = announcementDto.UserId,
             Title = announcementDto.Title,
+            Avatar = announcementDto.Avatar,
+            Slug = announcementDto.Slug,
+            Username = announcementDto.Username,
+            DateModified = announcementDto.DateModified,
+            Type = announcementDto.Type,
         };
         _unitOfWork.AnnouncementRepository.Add(announcement);
     }
@@ -55,22 +60,27 @@ public class AnnouncementService : IAnnouncementService
                         on x.Id equals y.AnnouncementId
                         into xy
                     from announUser in xy.DefaultIfEmpty()
-                    where (announUser.UserId == null || announUser.UserId == userId)
-                    select x;
+                    where announUser.UserId == null || announUser.UserId == userId
+                    select new { x, announUser };
 
         int totalRow = query.Count();
 
-        List<AnnouncementDto> announcementViewModels = query.OrderByDescending(x => x.DateCreated)
+        List<AnnouncementDto> announcementViewModels = query.OrderByDescending(result => result.x.DateCreated)
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new AnnouncementDto
+            .Select(result => new AnnouncementDto
             {
-                Id = x.Id,
-                Content = x.Content,
-                DateCreated = x.DateCreated,
-                Title = x.Title,
+                Id = result.x.Id,
+                Content = result.x.Content,
+                DateCreated = result.x.DateCreated,
+                Title = result.x.Title,
                 UserId = userId,
-                DateModified = x.DateModified
+                DateModified = result.x.DateModified,
+                Avatar = result.x.Avatar,
+                Slug = result.x.Slug,
+                Username = result.x.Username,
+                HasReceiverRead = result.announUser.HasRead!.Value,
+                Type = result.x.Type,
             }).ToList();
 
         return new PagedResult<AnnouncementDto>
@@ -84,13 +94,12 @@ public class AnnouncementService : IAnnouncementService
 
     public async Task<bool> MarkAsRead(Guid userId, string id)
     {
-
         bool result = false;
 
         var announce =
             _unitOfWork
             .AnnouncementUserRepository
-            .Find(x => x.UserId == userId || x.AnnouncementId == id).FirstOrDefault();
+            .Find(x => x.UserId == userId && x.AnnouncementId == id).FirstOrDefault();
 
         if (announce == null)
         {

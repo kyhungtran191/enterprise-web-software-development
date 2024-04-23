@@ -26,6 +26,7 @@ import { Roles } from '@/constant/roles'
 import CustomRejectComponent from '@/components/CustomRejectComponent'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { IsOutDeadlineUpdate } from '@/hooks/useIsActiveAcademicYear';
+import SafeView from 'safeview';
 
 export default function PreviewContribution() {
   const [openOptions, setOpenOptions] = useState(true)

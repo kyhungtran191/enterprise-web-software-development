@@ -1,7 +1,10 @@
 ﻿using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Server.Application.Common.Dtos.Announcement;
+using Server.Application.Common.Interfaces.Hubs.Announcement;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Features.ContributionApp.Commands.ApproveContributions;
@@ -18,16 +21,22 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
+        private readonly IHubContext<AnnouncementHub> _announcementHub;
         private readonly UserManager<AppUser> _userManager;
-        public ApproveContributionsCommandHandler(IUnitOfWork unitOfWork,IEmailService emailService, UserManager<AppUser> userManager)
+        private readonly IAnnouncementService _announcementService;
+        public ApproveContributionsCommandHandler(IUnitOfWork unitOfWork, IEmailService emailService, UserManager<AppUser> userManager, IHubContext<AnnouncementHub> announcementHub, IAnnouncementService announcementService)
         {
             _unitOfWork = unitOfWork;
             _emailService = emailService;
             _userManager = userManager;
+            _announcementHub = announcementHub;
+            _announcementService = announcementService;
         }
         public async Task<ErrorOr<IResponseWrapper>> Handle(ApproveContributionsCommand request, CancellationToken cancellationToken)
         {
-
+            List<Guid> studentIds = new();
+            string coordinatorId = string.Empty;
+            AppUser? coordinator = null;
             foreach (var id in request.Ids)
             {
                 var contribution = await _unitOfWork.ContributionRepository.GetByIdAsync(id);
@@ -54,15 +63,18 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
                     return Errors.Contribution.AlreadyRejected;
                 }
 
-               
                 var student = await _userManager.FindByIdAsync(contribution.UserId.ToString());
-                var coordinator = await _userManager.FindByIdAsync(request.UserId.ToString());
+                coordinator = await _userManager.FindByIdAsync(request.UserId.ToString());
+
                 if (student.FacultyId != coordinator.FacultyId)
                 {
                     return Errors.Contribution.NotBelongFaculty;
                 }
+
+                studentIds.Add(student.Id);
+
                 var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)student?.FacultyId!);
-                await _unitOfWork.ContributionRepository.Approve(contribution,request.UserId);
+                await _unitOfWork.ContributionRepository.Approve(contribution, request.UserId);
                 _emailService.SendEmail(new MailRequest
                 {
                     ToEmail = student.Email,
@@ -76,8 +88,41 @@ namespace Server.Application.Features.ContributionApp.Commands.ApproveContributi
                     Subject = "APPROVED CONTRIBUTION"
                 });
             }
-           
+
             await _unitOfWork.CompleteAsync();
+
+            var contribution1 = await _unitOfWork.ContributionRepository.GetByIdAsync(request.Ids[0]);
+
+            // notify
+            var notificationId = Guid.NewGuid().ToString();
+            var announcementDto = new AnnouncementDto()
+            {
+                Id = notificationId,
+                Title = "Contribution approved",
+                DateCreated = DateTime.Now,
+                Content = $"Contribution has been approved",
+                UserId = coordinator!.Id,
+                Type = "Contribution-Approve",
+                Username = coordinator?.UserName,
+                Avatar = coordinator?.Avatar,
+                Slug = contribution1.Slug
+            };
+            _announcementService.Add(announcementDto);
+
+            var announcementUsers = studentIds.Select(studentId => new AnnouncementUserDto
+            {
+                AnnouncementId = notificationId,
+                HasRead = false,
+                UserId = studentId
+            });
+            _announcementService.AddToAnnouncementUsers(announcementUsers);
+
+            await _unitOfWork.CompleteAsync();
+
+            await _announcementHub
+                .Clients
+                .Users(studentIds.Select(x => x.ToString()))
+                .SendAsync("GetNewAnnouncement", announcementDto);
 
             return new ResponseWrapper
             {

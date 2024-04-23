@@ -346,6 +346,18 @@ public static class DataSeeder
             },
             new()
             {
+                Id = Guid.NewGuid(), FirstName = "Vu", LastName = "Nguyen2", Email = "vunguyenNguaHoang2k3@fpt.edu.vn",
+                NormalizedEmail = "vunguyenNguaHoang2k3@fpt.edu.vn".ToUpperInvariant(), UserName = "coordinator5",
+                NormalizedUserName = "coordinator5".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[1].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572623/avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8.jpg",
+                AvatarPublicId = "avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8"
+            },
+            new()
+            {
                 Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "nguyenvu260703.dev@gmail.com",
                 NormalizedEmail = "nguyenvu260703.dev@gmail.com".ToUpperInvariant(), UserName = "coordinator2",
                 NormalizedUserName = "coordinator2".ToUpperInvariant(), IsActive = true,
