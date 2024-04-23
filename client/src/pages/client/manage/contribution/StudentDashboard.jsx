@@ -74,7 +74,6 @@ export default function StudentDashboard() {
     };
   };
 
-  console.log(allData)
   return (
     <AdminLayout links={STUDENT_OPTIONS}>
       <div className="px-3 py-6">
