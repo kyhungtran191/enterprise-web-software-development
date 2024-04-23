@@ -149,41 +149,39 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
                 await _unitOfWork.CompleteAsync();
 
-                 // notify
-                var notificationId = Guid.NewGuid().ToString();
-                var announcementDto = new AnnouncementDto()
-                {
-                    Id = notificationId,
-                    Title = "Contribution created",
-                    DateCreated = DateTime.Now,
-                    Content = $"Contribution has been created",
-                    Username = user.UserName,   
-                    UserId = coordinator.Id,                 
-                    Type = "Contribution-CreateContribution",
-                    Avatar = user.Avatar,
-                    Slug = contributon.Slug
-                };
-                _announcementService.Add(announcementDto);
 
-                var announcementUsers = new List<AnnouncementUserDto>()
-                {
-                    new AnnouncementUserDto(){
-                        AnnouncementId = notificationId,
-                        HasRead = false,
-                        UserId = coordinator.Id
-                    }
-                };
-
-                _announcementService.AddToAnnouncementUsers(announcementUsers);
-
-                await _unitOfWork.CompleteAsync();
-
-                await _announcementHub
-                    .Clients
-                    .User(coordinator.Id.ToString())
-                    .SendAsync("GetNewAnnouncement", announcementDto);
             }
 
+            // notify
+            var notificationId = Guid.NewGuid().ToString();
+            var announcementDto = new AnnouncementDto()
+            {
+                Id = notificationId,
+                Title = "Contribution created",
+                DateCreated = DateTime.Now,
+                Content = $"Contribution has been created",
+                UserId = user.Id,
+                Type = "Contribution-CreateContribution",
+                Username = user.UserName,
+                Avatar = user.Avatar,
+                Slug = contributon.Slug
+            };
+            _announcementService.Add(announcementDto);
+
+            var announcementUsers = coordinators.Select(coordinator => new AnnouncementUserDto
+            {
+                AnnouncementId = notificationId,
+                HasRead = false,
+                UserId = coordinator.Id
+            });
+            _announcementService.AddToAnnouncementUsers(announcementUsers);
+
+            await _unitOfWork.CompleteAsync();
+
+            await _announcementHub
+                .Clients
+                .Users(coordinators.Select(x => x.Id.ToString()).ToImmutableList())
+                .SendAsync("GetNewAnnouncement", announcementDto);
 
             return new ResponseWrapper
             {
