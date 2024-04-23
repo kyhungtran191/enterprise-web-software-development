@@ -11,13 +11,13 @@ public class AppUser : IdentityUser<Guid>
 {        
     public Guid? FacultyId { get; set; }
 
-    [Required]
+    //[Required]
     [MaxLength(100)]
-    public string FirstName { get; set; } = default!;
+    public string? FirstName { get; set; } = default!;
 
-    [Required]
+    //[Required]
     [MaxLength(100)]
-    public string LastName { get; set; } = default!;
+    public string? LastName { get; set; } = default!;
 
     public bool IsActive { get; set; }
     public DateTime? Dob { get; set; }

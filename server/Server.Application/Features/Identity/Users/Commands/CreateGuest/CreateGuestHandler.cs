@@ -70,17 +70,17 @@ namespace Server.Application.Features.Identity.Users.Commands.CreateGuest
             newUser.PasswordHash = new PasswordHasher<AppUser>().HashPassword(newUser, randomPassword);
 
             // avatar
-            if (request.Avatar is not null)
-            {
-                var avatarList = new List<IFormFile>();
-                avatarList.Add(request.Avatar);
-                var avatarInfo = await _mediaService.UploadFileCloudinary(avatarList, FileType.Avatar, newUser.Id);
-                foreach (var info in avatarInfo)
-                {
-                    newUser.Avatar = info.Path;
-                    newUser.AvatarPublicId = info.PublicId;
-                }
-            }
+            //if (request.Avatar is not null)
+            //{
+            //    var avatarList = new List<IFormFile>();
+            //    avatarList.Add(request.Avatar);
+            //    var avatarInfo = await _mediaService.UploadFileCloudinary(avatarList, FileType.Avatar, newUser.Id);
+            //    foreach (var info in avatarInfo)
+            //    {
+            //        newUser.Avatar = info.Path;
+            //        newUser.AvatarPublicId = info.PublicId;
+            //    }
+            //}
 
             var result = await _userManager.CreateAsync(newUser);
 

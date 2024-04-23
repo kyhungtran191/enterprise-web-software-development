@@ -14,22 +14,22 @@ public class UserCommandValidator<T>
 {
     public UserCommandValidator()
     {
-        RuleFor(x => x.FirstName)
-            .MaximumLength(255)
-                .WithMessage("First name must be less than 255 characters")
-            .NotEmpty()
-                .WithMessage("First name must not be empty.");
+        //RuleFor(x => x.FirstName)
+        //    .MaximumLength(255)
+        //        .WithMessage("First name must be less than 255 characters")
+        //    .NotEmpty()
+        //        .WithMessage("First name must not be empty.");
 
-        RuleFor(x => x.LastName)
-            .MaximumLength(255)
-                .WithMessage("First name must be less than 255 characters")
-            .NotEmpty()
-                .WithMessage("First name must not be empty.");
+        //RuleFor(x => x.LastName)
+        //    .MaximumLength(255)
+        //        .WithMessage("First name must be less than 255 characters")
+        //    .NotEmpty()
+        //        .WithMessage("First name must not be empty.");
 
-        RuleFor(x => x.PhoneNumber)
-            .MaximumLength(11)
-                .WithMessage("Phone Number have to 11 characters")
-            .NotEmpty()
-                .WithMessage("Phone Number must not be empty.");
+        //RuleFor(x => x.PhoneNumber)
+        //    .MaximumLength(11)
+        //        .WithMessage("Phone Number have to 11 characters")
+        //    .NotEmpty()
+        //        .WithMessage("Phone Number must not be empty.");
     }
 }
