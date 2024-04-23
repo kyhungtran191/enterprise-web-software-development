@@ -57,16 +57,34 @@ export default function Notification() {
     }
   }, [connections["AnnouncementHub"]])
 
-  const handleClickNotification = (id, slug) => {
-    readMutation.mutate(id, {
-      onSuccess() {
-        toast.success("success")
-        navigate(`/preview/${slug}`)
-        queryClient.invalidateQueries(['notification'])
-      }
-    })
+  const handleClickNotification = (item) => {
+    console.log(item)
+    if (item?.type.startsWith("Contribution")) {
+      readMutation.mutate(item?.id, {
+        onSuccess() {
+          queryClient.invalidateQueries(['notification'])
+          let action = item?.type.split("-")[1];
+          switch (action) {
+            case "Approve":
+              // code block
+              return navigate(`/contributions/${item?.slug}`)
 
+            default:
+              return navigate(`/preview/${item?.slug}`)
+          }
+        },
+        onError(data) {
+          const errorMessage = data && data?.response?.data?.title
+          toast.error(errorMessage)
+        }
+      })
+
+
+    }
   }
+
+
+
   return (
     <div className='relative flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
       {currentData?.some((item) => item.hasReceiverRead === false) && <div className="absolute w-[10px] h-[10px] bg-red-500 rounded-full bottom-6 left-6 z-20"></div>}
@@ -75,11 +93,11 @@ export default function Notification() {
           <Bell className='relative w-6 h-6'>
           </Bell>
         </PopoverTrigger>
-        {currentData && currentData?.length > 0 && <PopoverContent className="p-0 h-[350px] overflow-y-scroll">
+        {currentData && currentData?.length > 0 && <PopoverContent className="p-0 h-[350px] overflow-y-scrol  l">
           <div className="">
             {/* Notificate component */}
             {currentData && currentData?.length > 0 && currentData?.map((item) => (
-              <div key={item.id} onClick={() => handleClickNotification(item.id, item.slug)}>
+              <div key={item.id} onClick={() => handleClickNotification(item)}>
                 <div className={`flex items-center w-full gap-5 px-3 py-2 border-b cursor-pointer hover:bg-white ${item?.hasReceiverRead ? "bg-white" : "bg-slate-100 "}`}>
                   <Avatar>
                     <AvatarImage

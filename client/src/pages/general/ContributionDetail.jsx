@@ -89,8 +89,9 @@ export default function ContributionDetail() {
       onSuccess() {
         toast.success("Toggle Like Successfully!")
       },
-      onError(err) {
-        console.log(err)
+      onError(data) {
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
       },
       onSettled() {
         queryClient.invalidateQueries(['favorite-list']);

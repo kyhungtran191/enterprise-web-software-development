@@ -85,7 +85,7 @@ export const MC_OPTIONS = [
     href: '/profile'
   },
   {
-    title: 'Settings GAC',
+    title: 'Settings Guest',
     icon: Clock,
     href: '/coodinator-manage/setting-guest'
   }

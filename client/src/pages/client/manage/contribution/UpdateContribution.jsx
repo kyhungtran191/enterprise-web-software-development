@@ -114,7 +114,8 @@ export default function UpdateContribution() {
         navigate('/student-manage/recent?status=PENDING')
       },
       onError(data) {
-        toast.error(data && data?.messages[0])
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
       }
     })
   }
