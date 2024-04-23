@@ -32,10 +32,15 @@ namespace Server.Application.Features.AcademicYearApp.Commands.UpdateAcademicYea
                 return Errors.AcademicYear.Deleted;
             }
 
-            if (await _unitOfWork.AcademicYearRepository.GetAcademicYearByName(request.AcademicYearName) is not null)
+            var yearToChange = await _unitOfWork.AcademicYearRepository.GetAcademicYearByName(request.AcademicYearName);
+           
+            if (yearFromDb.Id != yearToChange.Id)
             {
                 return Errors.AcademicYear.AlreadyExist;
+
             }
+            
+           
             yearFromDb.Name = request.AcademicYearName;
             yearFromDb.FinalClosureDate = request.FinalClosureDate;
             yearFromDb.EndClosureDate = request.EndClosureDate;
