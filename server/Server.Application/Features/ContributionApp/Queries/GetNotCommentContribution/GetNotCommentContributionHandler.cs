@@ -22,7 +22,7 @@ namespace Server.Application.Features.ContributionApp.Queries.GetNotCommentContr
         }
         public async Task<ErrorOr<IResponseWrapper<PagedResult<NotCommentContributionDto>>>> Handle(GetNotCommentContributionQuery request, CancellationToken cancellationToken)
         {
-            var items = await _unitOfWork.ContributionRepository.GetUncommentedContributions();
+            var items = await _unitOfWork.ContributionRepository.GetUncommentedContributions(request.PageIndex,request.PageSize);
             return new ResponseWrapper<PagedResult<NotCommentContributionDto>>
             {
                 IsSuccessfull = true,
