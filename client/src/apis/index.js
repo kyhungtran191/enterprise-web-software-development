@@ -80,7 +80,7 @@ export const deleteFacultyAPI = `${URL}${adminAPI}/Faculties`
 
 // Contribution
 export const getAllContributionsPagingAPI = `${URL}${adminAPI}/Contributions/paging`
-export const getContributionActivityLogsAPI = `${URL}${coordinatorAPI}/Contributions/activity-logs`
+export const getContributionActivityLogsAPI = `${URL}/manager/Contributions/activity-logs`
 
 // Dashboard
 export const getTotalContributionsPerFacultyForAllAcademicYearsAPI = `${URL}${adminAPI}/Contributions/report-contributions-within-each-faculty-for-each-academic-year`
