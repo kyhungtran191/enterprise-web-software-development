@@ -42,6 +42,8 @@ namespace Server.Infrastructure.Jobs
                 {
                     currentAcademicYear.IsActive = false;
                 }
+
+                await _unitOfWork.CompleteAsync();
                 var pendingContributionInCurrentYear =  _unitOfWork.ContributionRepository.Find(x => x.AcademicYearId == currentAcademicYear.Id && x.Status == ContributionStatus.Pending).ToList();
                 foreach(var item in pendingContributionInCurrentYear)
                 {
