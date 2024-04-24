@@ -879,6 +879,16 @@ public static class DataSeeder
                         Selected = true,
                         Value = "Permissions.Roles.View"
                     },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Users.Create"
+                    },
+                    new()
+                    {
+                        Selected = true,
+                        Value = "Permissions.Users.Edit"
+                    },
                 };
                 foreach (var permission in managerPermissionList)
                 {
