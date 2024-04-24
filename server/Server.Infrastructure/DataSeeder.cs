@@ -3115,11 +3115,6 @@ public static class DataSeeder
                 contribution.AverageRating = await ratingRepository.GetAverageRatingAsync(contribution.Id);
                 await context.SaveChangesAsync();
             }
-<<<<<<< HEAD
-=======
-          
->>>>>>> 758c912fb76766623ba5580d354096e382d12e3f
-
         }
         //if (!context.ContributionComments.Any())
         //{
