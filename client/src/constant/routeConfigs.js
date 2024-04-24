@@ -8,6 +8,7 @@ import GeneralLayout from '@/layouts'
 import AdminLayout from '@/layouts/AdminLayout'
 import Home from '@/pages/general/Home'
 import { ADMIN_OPTIONS, MM_OPTIONS } from './menuSidebar'
+import { NotCommentsContributionTable } from '@/components/NotCommentsTable'
 
 export const routesConfig = [
   // { path: '/', component: Home, layout: GeneralLayout, permission: null },
@@ -87,7 +88,12 @@ export const routesConfig = [
     layout: AdminLayout,
     sidebarOptions: MM_OPTIONS,
     permission: 'Contributions.View'
+  },
+  {
+    path: '/mm/not-comment-contributions',
+    component: NotCommentsContributionTable,
+    layout: AdminLayout,
+    sidebarOptions: MM_OPTIONS,
+    permission: 'NotCommentContribution.View'
   }
-
-  // { path: '*', component: NotFound, layout: null, permission: null }
 ]
