@@ -237,14 +237,14 @@ export function ContributionTable() {
   })
   const contributions = data
     ? data?.data?.responseData?.results.map((contribution) => ({
-      ...contribution,
-      submissionDate: contribution.submissionDate
-        ? format(new Date(contribution.submissionDate), 'MM-dd-yyyy')
-        : 'Not published',
-      publishDate: contribution?.publicDate
-        ? format(new Date(contribution.publicDate), 'MM-dd-yyyy')
-        : 'Not published'
-    }))
+        ...contribution,
+        submissionDate: contribution.submissionDate
+          ? format(new Date(contribution.submissionDate), 'MM-dd-yyyy')
+          : 'Not published',
+        publishDate: contribution?.publicDate
+          ? format(new Date(contribution.publicDate), 'MM-dd-yyyy')
+          : 'Not published'
+      }))
     : []
   const [selectedRow, setSelectedRow] = useState({})
 
@@ -381,13 +381,6 @@ export function ContributionTable() {
             </Button>
           )}
         </div>
-        {isLoadingFiles ? (
-          <Spinner className={'border-blue-400'}></Spinner>
-        ) : (
-          <Button onClick={downloadAllContributions} className={`${!isAllowedDownload() ? "hidden" : "block"}`}>
-            Download all contributions
-          </Button>
-        )}
       </div>
       {isLoading && (
         <div className='container flex items-center justify-center min-h-screen'>
