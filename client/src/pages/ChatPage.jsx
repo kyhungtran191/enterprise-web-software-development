@@ -3,9 +3,11 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppContext } from '@/hooks/useAppContext'
 import GeneralLayout from '@/layouts'
-import { createNewConservation, getCurrentOnlineUser, getDetailConservations, getPrivateConservations } from '@/services/chat'
+import { addNewMessage, createNewConservation, getCurrentOnlineUser, getDetailConservations, getPrivateConservations } from '@/services/chat'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 // const messages = [
@@ -42,9 +44,22 @@ import * as yup from 'yup'
 //     "DateCreated": 4,
 //   }]
 export default function ChatPage() {
+  const schema = yup
+    .object({
+      message: yup.string().required('')
+    })
+    .required()
+  const {
+    handleSubmit,
+    control,
+    reset,
+    register,
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(schema) })
+
   const queryClient = useQueryClient()
   const [openNav, setOpenNav] = useState(true)
-  const [currentSelect, setCurrentSelect] = useState("online")
+  const [currentSelect, setCurrentSelect] = useState("history")
 
   const { profile } = useAppContext()
   const [firstChatMessages, setFirstChatMessages] = useState()
@@ -73,10 +88,6 @@ export default function ChatPage() {
   })
 
 
-  const addMessage = useMutation({
-    mutationFn: (body) => createNewConservation(body)
-  })
-
 
 
   const handleClickUser = (receiverId) => {
@@ -100,14 +111,29 @@ export default function ChatPage() {
   const handleChangeUserChat = async (item) => {
     setCurrentReceiver(item)
     const data = await getDetailConservations(item?.receiverId)
-    console.log(data)
     const currentReceiver = data?.data.find((listId) => listId.receiverId === item.receiverId)
     setFirstChatMessages(currentReceiver?.currentMessagesReceiver)
   }
-
-  // const handleAddMessage = () => {
-  //   addMessage
-  // }
+  const addMessage = useMutation({
+    mutationFn: (body) => addNewMessage(body)
+  })
+  console.log(firstChatMessages)
+  const onAddMessage = (data) => {
+    let message = {
+      senderId: currentReceiver?.currentUserId,
+      receiverId: currentReceiver?.receiverId,
+      content: data?.message,
+      chatId: currentReceiver?.chatId
+    }
+    addMessage.mutate(message, {
+      onSuccess(data) {
+        reset({ message: "" })
+      },
+      onError(err) {
+        console.log(err)
+      }
+    })
+  }
 
   return (
     <GeneralLayout>
@@ -151,7 +177,7 @@ export default function ChatPage() {
                 {historyData?.data && historyData?.data.map((item) => (
                   <div key={item.receiverId} className={`flex flex-col items-center p-2 rounded-md cursor-pointer medium:mb-4 hover:bg-gray-100 medium:flex-row ${currentReceiver?.receiverId === item?.receiverId ? "bg-purple-400 text-white" : ""}`} onClick={() => { handleChangeUserChat(item) }}>
                     <div className="flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full">
-                      <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" className="w-12 h-12 rounded-full" />
+                      <img src={item?.avatar} alt="User Avatar" className="w-12 h-12 rounded-full" />
                     </div>
                     <div className="flex-1 ">
                       <h2 className="text-lg font-semibold">{item?.username}</h2>
@@ -181,7 +207,7 @@ export default function ChatPage() {
                         <p>{item?.content}</p>
                       </div>
                       <div className="flex items-center justify-center ml-2 rounded-full w-9 h-9">
-                        <img src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ •̀ʔ&font=Lato" alt="My Avatar" className="w-8 h-8 rounded-full" />
+                        <img src={item?.avatarSender} alt="My Avatar" className="w-8 h-8 rounded-full" />
                       </div>
                     </div>
                   )
@@ -189,7 +215,7 @@ export default function ChatPage() {
                 return (
                   <div className="flex mb-4 cursor-pointer" key={item.id}>
                     <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
-                      <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" className="w-8 h-8 rounded-full" />
+                      <img src={item?.avatarReceiver} alt="User Avatar" className="w-8 h-8 rounded-full" />
                     </div>
                     <div className="flex gap-3 p-3 bg-white rounded-lg max-w-96">
                       <p className="text-gray-700">{item?.content}</p>
@@ -205,10 +231,10 @@ export default function ChatPage() {
             <div className="flex items-center justify-center w-full">
               <div className="fixed bottom-0 w-full p-4 mx-auto bg-white border-gray-300 medium:absolute medium:w-3/4 ">
                 <Separator class></Separator>
-                <div className="flex items-center">
-                  <input type="text" placeholder="Type a message..." className="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500" />
-                  <button className="px-4 py-2 ml-2 text-white bg-indigo-500 rounded-md">Send</button>
-                </div>
+                <form className="flex items-center" onSubmit={handleSubmit(onAddMessage)}>
+                  <input type="text" placeholder="Type a message..." className={`w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500`} {...register('message')} />
+                  <button className={`px-4 py-2 ml-2 text-white bg-indigo-500 rounded-md ${addMessage.isLoading ? "disabled" : ""}`}>Send</button>
+                </form>
               </div>
             </div>
           </div>}

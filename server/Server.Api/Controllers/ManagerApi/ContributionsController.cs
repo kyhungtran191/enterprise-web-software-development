@@ -30,6 +30,8 @@ namespace Server.Api.Controllers.ManagerApi
         public async Task<IActionResult> GetNotCommentContribution([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 10)
         {
             var query = new GetNotCommentContributionQuery();
+            query.PageIndex = pageIndex;
+            query.PageSize = pageSize;
             var result = await _mediatorSender.Send(query);
             return result.Match(result => Ok(result), errors => Problem(errors));
         }
