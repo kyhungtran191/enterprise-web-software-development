@@ -6,7 +6,8 @@ export const PERMISSIONS = {
     Faculties: { index: 'View', value: 'Faculties' },
     Tags: { index: 'View', value: 'Tags' },
     AcademicYears: { index: 'View', value: 'AcademicYears' },
-    Contributions: { index: 'View', value: 'Contributions' }
+    Contributions: { index: 'View', value: 'Contributions' },
+    NotCommentContribution: { index: 'View', value: 'NotCommentContribution' }
   },
   Create: {
     Roles: { index: 'Create', value: 'Roles' },

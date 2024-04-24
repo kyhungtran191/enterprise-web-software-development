@@ -106,5 +106,10 @@ export const MM_OPTIONS = [
     title: 'Users',
     icon: User,
     href: '/mm/users'
+  },
+  {
+    title: 'Not comment contributions',
+    icon: BookText,
+    href: '/mm/not-comment-contributions'
   }
 ]

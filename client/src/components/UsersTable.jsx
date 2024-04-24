@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { UserDialog } from './UserDialog'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import useParamsVariables from '@/hooks/useParams'
 import { Users } from '@/services/admin'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -22,17 +22,28 @@ import { format } from 'date-fns'
 import { isUndefined, omitBy } from 'lodash'
 import { EditUserDialog } from './EditUserDialog'
 import ExcelExport from './ExcelExport'
+import { AppContext } from '@/contexts/app.context'
+import { Roles } from '@/constant/roles'
+import { toast } from 'react-toastify'
 // import { EditUserDialog } from './EditUserDialog'
 
 export function UsersTable() {
   const [isOpenViewUser, setIsOpenViewUser] = useState(false)
   const [isOpenEditUser, setIsOpenEditUser] = useState(false)
+  const { profile } = useContext(AppContext)
   const [viewUser, setViewUser] = useState({})
   const handleViewUser = (user) => {
     setIsOpenViewUser(true)
     setViewUser(user)
   }
   const handleEditUser = (user) => {
+    console.log(user)
+    if (profile.roles === Roles.Manager) {
+      if (user.role !== Roles.Coordinator) {
+        toast.error('You are not authorized to edit this user')
+        return
+      }
+    }
     setIsOpenEditUser(true)
     setViewUser(user)
   }
@@ -231,6 +242,33 @@ export function UsersTable() {
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000
   })
+  // const users = data
+  //   ? profile.roles === Roles.Admin
+  //     ? data?.data?.responseData?.results?.map((user) => {
+  //         return {
+  //           ...user,
+  //           dob: user.dob
+  //             ? format(new Date(user.dob), 'MM-dd-yyyy')
+  //             : 'No data',
+
+  //           status: user.isActive ? 'Active' : 'Inactive',
+  //           role: user.roles[0]
+  //         }
+  //       })
+  //     : data?.data?.responseData?.results
+  //         ?.filter((user) => user.roles[0] === Roles.Coordinator)
+  //         .map((user) => {
+  //           return {
+  //             ...user,
+  //             dob: user.dob
+  //               ? format(new Date(user.dob), 'MM-dd-yyyy')
+  //               : 'No data',
+
+  //             status: user.isActive ? 'Active' : 'Inactive',
+  //             role: user.roles[0]
+  //           }
+  //         })
+  //   : []
   const users = data
     ? data?.data?.responseData?.results?.map((user) => {
         return {
@@ -270,7 +308,7 @@ export function UsersTable() {
           <CustomTable
             columns={columns}
             data={users}
-            path={'/admin/users'}
+            path={profile.roles === Roles.Admin ? '/admin/users' : '/mm/users'}
             queryConfig={queryConfig}
             pageCount={data?.data?.responseData.pageCount || 1}
             selectedRows={setSelectedRow}
