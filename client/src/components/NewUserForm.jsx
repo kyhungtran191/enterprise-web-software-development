@@ -84,7 +84,12 @@ export function NewUserForm({ isSubmitting, setIsSubmitting, closeDialog }) {
             {
               message: 'Faculty must be chosen'
             }
-          )
+          ),
+    firstName: z.string(),
+    lastName: z.string(),
+    phoneNumber: z.string(),
+    dob: z.date(),
+
   })
   const form = useForm({
     mode: 'all',

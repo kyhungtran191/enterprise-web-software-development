@@ -52,7 +52,6 @@ export function EditUserDialog({
   closeDialog
 }) {
   const [userType, setUserType] = useState(data.role)
-  console.log(data.role)
   const queryClient = useQueryClient()
   const { isLoading, mutate } = useMutation({
     mutationFn: (data) => Users.updateUserById(data)
@@ -98,28 +97,29 @@ export function EditUserDialog({
             {
               message: 'Faculty must be chosen'
             }
-          )
+          ),
+    firstName: z.string(),
+    lastName: z.string(),
+    phoneNumber: z.string(),
+    dob: z.date()
   })
-  console.log('roles', roles)
-  console.log(roles?.find((role) => role.name === data.role)?.id)
   const form = useForm({
     mode: 'all',
     reValidateMode: 'onChange',
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      phoneNumber: data.phoneNumber,
-      username: data.userName,
-      role: data.role,
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      phoneNumber: data.phoneNumber || '',
+      userName: data.userName,
       roleId: roles?.find((role) => role.name === data.role)?.id,
       facultyId: faculties?.find((faculty) => faculty.name === data.faculty)
         ?.id,
       email: data.email,
-      dob: new Date(data.dob),
-      faculty: data.faculty
+      dob: new Date(data.dob) || null
     }
   })
+  console.log(form.getValues())
   async function getImageAsBinaryString() {
     const response = await fetch('/client/public/avatar.png')
     if (!response.ok) {
@@ -146,9 +146,9 @@ export function EditUserDialog({
       mutate(payload, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['adminUsers'] })
-          setIsSubmitting(false)
           toast.success('User created successfully!')
           form.reset()
+          setIsSubmitting(false)
           closeDialog()
         },
         onError: (error) => {
@@ -208,7 +208,7 @@ export function EditUserDialog({
             />
             <FormField
               control={form.control}
-              name='username'
+              name='userName'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
@@ -345,7 +345,14 @@ export function EditUserDialog({
                   <FormItem>
                     <FormLabel>Faculty</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={
+                          faculties?.find(
+                            (faculty) => faculty.name === data.faculty
+                          )?.id
+                        }
+                      >
                         <SelectTrigger className='w-min-[180px] w-full'>
                           <SelectValue placeholder='Select faculty' />
                         </SelectTrigger>
