@@ -6,9 +6,12 @@ using Server.Application.Common.Dtos;
 using Server.Application.Common.Dtos.Contributions;
 using Server.Application.Common.Extensions;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Common.Constants;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
+using Server.Infrastructure.Persistence.Repositories;
+using Server.Infrastructure.Services;
 using File = Server.Domain.Entity.Content.File;
 
 namespace Server.Infrastructure;
@@ -95,7 +98,13 @@ public static class DataSeeder
         }
     }
 
-    public static async Task SeedContribution(AppDbContext context, RoleManager<AppRole> roleManager, IContributionRepository contributionRepository,IRatingRepository ratingRepository)
+    public static async Task SeedContribution(AppDbContext context, 
+    RoleManager<AppRole> roleManager, 
+    IContributionRepository contributionRepository, 
+    IRatingRepository ratingRepository,
+    IDateTimeProvider dateTimeProvider,
+    IPrivateChatRepository privateChatRepository, 
+    IPrivateMessagesRepository privateMessagesRepository)
     {
         var allFaculties = new List<string>
         {
@@ -194,7 +203,7 @@ public static class DataSeeder
             },
 
         };
-    
+
 
         if (!context.AcademicYears.Any())
         {
@@ -205,7 +214,7 @@ public static class DataSeeder
 
             await context.SaveChangesAsync();
         }
-        
+
         // seed user
         var passwordHasher = new PasswordHasher<AppUser>();
 
@@ -261,6 +270,9 @@ public static class DataSeeder
             await context.Roles.AddAsync(managerRole);
             await context.SaveChangesAsync();
         }
+
+        var student1_gmail_com = Guid.NewGuid();
+
         var studentList = new List<AppUser>
         {
             new()
@@ -278,7 +290,7 @@ public static class DataSeeder
             },
             new()
             {
-                Id = Guid.NewGuid(), FirstName = "Vu", LastName = "Nguyen", Email = "student1@gmail.com",
+                Id = student1_gmail_com, FirstName = "Vu", LastName = "Nguyen", Email = "student1@gmail.com",
                 NormalizedEmail = "student1@gmail.com".ToUpperInvariant(), UserName = "student1",
                 NormalizedUserName = "student1".ToUpperInvariant(), IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -316,6 +328,10 @@ public static class DataSeeder
 
             },
         };
+
+        var cor_hungtkgcs200234_fpt_edu_vn = Guid.NewGuid();
+
+
         var coordinatorList = new List<AppUser>
         {
             new()
@@ -333,7 +349,7 @@ public static class DataSeeder
             },
             new()
             {
-                Id = Guid.NewGuid(), FirstName = "Vu", LastName = "Nguyen", Email = "hungtkgcs200234@fpt.edu.vn",
+                Id = cor_hungtkgcs200234_fpt_edu_vn, FirstName = "Vu", LastName = "Nguyen", Email = "hungtkgcs200234@fpt.edu.vn",
                 NormalizedEmail = "hungtkgcs200234@fpt.edu.vn".ToUpperInvariant(), UserName = "coordinator1",
                 NormalizedUserName = "coordinator1".ToUpperInvariant(), IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -452,10 +468,23 @@ public static class DataSeeder
             user.PasswordHash = passwordHasher.HashPassword(user, "Admin123@");
         }
 
+        // Seed message
+        if (!context.PrivateChats.Any() && !context.PrivateMessages.Any())
+        {
+
+            await SeedPrivateChatAndMessages(context,
+                                            privateChatRepository,
+                                            privateMessagesRepository,
+                                            dateTimeProvider,
+                                            cor_hungtkgcs200234_fpt_edu_vn,
+                                             student1_gmail_com);
+        }
+
+
         if (!context.Users.Any())
         {
             // admin
-            
+
             var userEmail = "admin@gmail.com";
             var userName = "admin";
             var user = new AppUser
@@ -543,7 +572,7 @@ public static class DataSeeder
                     UserId = item.Id,
                 });
             }
-          await context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         if (context.RoleClaims.Any() == false)
@@ -1362,7 +1391,7 @@ public static class DataSeeder
             foreach (var contribution in listContribution)
             {
                 await context.Contributions.AddAsync(contribution);
-                
+
             }
             await context.SaveChangesAsync();
             foreach (var contribution in listContribution)
@@ -1433,7 +1462,7 @@ public static class DataSeeder
         if (!context.ContributionPublics.Any())
         {
             await contributionRepository.Approve(listContribution[0], adminId);
-            await contributionRepository.Approve(listContribution[1], adminId); 
+            await contributionRepository.Approve(listContribution[1], adminId);
             await contributionRepository.Approve(listContribution[2], adminId);
             await contributionRepository.Approve(listContribution[3], adminId);
             await contributionRepository.Approve(listContribution[4], adminId);
@@ -1452,14 +1481,14 @@ public static class DataSeeder
             await contributionRepository.Approve(listContribution[17], adminId);
             await contributionRepository.Approve(listContribution[18], adminId);
             await contributionRepository.Approve(listContribution[19], adminId);
-          
+
 
             await context.SaveChangesAsync();
         }
         // seed comment
         if (!context.ContributionPublicComments.Any())
         {
-            for (var i = 0;i<=9;i++)
+            for (var i = 0; i <= 9; i++)
             {
                 context.ContributionPublicComments.Add(new ContributionPublicComment()
                 {
@@ -1479,7 +1508,7 @@ public static class DataSeeder
                     ContributionId = listContribution[i].Id,
                     UserId = studentList[3].Id,
                 });
-                
+
             }
             for (var i = 10; i <= 19; i++)
             {
@@ -1510,12 +1539,12 @@ public static class DataSeeder
             Random rnd = new Random();
             for (var i = 0; i <= 9; i++)
             {
-                
-                
+
+
                 var contribution = await context.ContributionPublics.FindAsync(listContribution[i].Id);
                 context.Likes.Add(new Like()
                 {
-                    
+
                     UserId = studentList[1].Id,
                     ContributionPublicId = listContribution[i].Id
                 });
@@ -1534,7 +1563,7 @@ public static class DataSeeder
                     ContributionPublicId = listContribution[i].Id
                 });
                 contribution.LikeQuantity += 1;
-                contribution.Views = rnd.Next(1,50);
+                contribution.Views = rnd.Next(1, 50);
             }
             for (var i = 10; i <= 19; i++)
             {
@@ -1560,7 +1589,7 @@ public static class DataSeeder
                     ContributionPublicId = listContribution[i].Id
                 });
                 contribution.LikeQuantity += 1;
-                contribution.Views = rnd.Next(1, 50); 
+                contribution.Views = rnd.Next(1, 50);
             }
             await context.SaveChangesAsync();
         }
@@ -1570,7 +1599,7 @@ public static class DataSeeder
             for (var i = 0; i <= 9; i++)
             {
                 var contribution = await context.ContributionPublics.FindAsync(listContribution[i].Id);
-                
+
                 context.ContributionPublicRatings.Add(new ContributionPublicRating()
                 {
 
@@ -1624,7 +1653,7 @@ public static class DataSeeder
                 contribution.AverageRating = await ratingRepository.GetAverageRatingAsync(contribution.Id);
                 await context.SaveChangesAsync();
             }
-           
+
         }
         //if (!context.ContributionComments.Any())
         //{
@@ -1693,4 +1722,46 @@ public static class DataSeeder
         await context.SaveChangesAsync();
     }
 
+    private static async Task SeedPrivateChatAndMessages(AppDbContext dbContext,
+                                                        IPrivateChatRepository privateChatRepository,
+                                                        IPrivateMessagesRepository privateMessagesRepository,
+                                                         IDateTimeProvider dateTimeProvider,
+                                                         Guid corId,
+                                                         Guid stdId)
+    {
+
+
+        privateChatRepository.Add(new PrivateChat
+        {
+            User1Id = corId,
+            User2Id = stdId,
+            LastActivity = dateTimeProvider.UtcNow,
+        });
+
+        privateMessagesRepository.Add(new PrivateMessage
+        {
+            ChatId = Guid.NewGuid(),
+            SenderId = corId,
+            ReceiverId = stdId,
+            Content = "Hallo",
+        });
+
+        privateMessagesRepository.Add(new PrivateMessage
+        {
+            ChatId = Guid.NewGuid(),
+            SenderId = corId,
+            ReceiverId = stdId,
+            Content = "Um wie viel Uhr gehen Sie die Schule?",
+        });
+
+        privateMessagesRepository.Add(new PrivateMessage
+        {
+            ChatId = Guid.NewGuid(),
+            SenderId = stdId,
+            ReceiverId = corId,
+            Content = "Um halb neunzig Uhr",
+        });
+
+        await dbContext.SaveChangesAsync();
+    }
 }

@@ -16,6 +16,8 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     }
 
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<PrivateChat> PrivateChats { get; set; }
+    public DbSet<PrivateMessage> PrivateMessages { get; set; }
     public DbSet<Contribution> Contributions { get; set; }
     public DbSet<ContributionComment> ContributionComments { get; set; }
     public DbSet<ContributionPublic> ContributionPublics { get; set; }
@@ -52,6 +54,11 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         #endregion Identity Configuration
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
+    
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var entries = ChangeTracker

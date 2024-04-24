@@ -26,6 +26,7 @@ public class AppUser : IdentityUser<Guid>
     public string? AccessToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
     public DateTime? LastLoginDate { get; set; }
+    public bool IsOnline { get; set; }
 
     [MaxLength(500)]
     public string? Avatar { get; set; }
