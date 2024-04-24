@@ -29,7 +29,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { Faculties, Roles, Users } from '@/services/admin'
 import { toast } from 'react-toastify'
@@ -41,7 +41,8 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import DatePickerCustom from './DatePickerCustom'
-
+import { Roles as ROLES } from '@/constant/roles'
+import { AppContext } from '@/contexts/app.context'
 export function EditUserDialog({
   isOpen,
   handleOpenChange,
@@ -50,11 +51,13 @@ export function EditUserDialog({
   setIsSubmitting,
   closeDialog
 }) {
-  const [userType, setUserType] = useState('')
+  const [userType, setUserType] = useState(data.role)
+  console.log(data.role)
   const queryClient = useQueryClient()
   const { isLoading, mutate } = useMutation({
     mutationFn: (data) => Users.updateUserById(data)
   })
+  const { profile } = useContext(AppContext)
   const queryParams = useParamsVariables()
   const { data: facultiesData, isLoading: isFacultiesLoading } = useQuery({
     queryKey: ['adminFaculties', queryParams],
@@ -71,37 +74,34 @@ export function EditUserDialog({
   const faculties = facultiesData
     ? facultiesData?.data?.responseData.results
     : []
-  const roles = rolesData ? rolesData?.data?.responseData : []
+  const roles = rolesData
+    ? profile.roles === ROLES.Admin
+      ? rolesData?.data?.responseData
+      : rolesData?.data?.responseData.filter(
+          (role) => role.name === ROLES.Coordinator
+        )
+    : []
   const formSchema = z.object({
-    firstName: z.string().min(2, {
-      message: 'First name must be at least 2 characters.'
-    }),
-    lastName: z.string().min(2, {
-      message: 'Last name must be at least 2 characters.'
-    }),
-    phoneNumber: z.string().min(10, {
-      message: 'Phone number must be at least 10 characters.'
-    }),
-    username: z.string().min(2, {
-      message: 'Username must be at least 6 characters.'
-    }),
     email: z.string().email(),
-    dob: z.date({
-      message: 'A date of birth is required.'
-    }),
+    userName: z.string().min(6),
     roleId: z.enum(
       roles.map((role) => role.id),
       {
         message: 'User type must be chosen'
       }
     ),
-    facultyId: z.enum(
-      faculties.map((faculty) => faculty.id),
-      {
-        message: 'Faculty must be chosen'
-      }
-    )
+    facultyId:
+      userType === ROLES.Admin || userType === ROLES.Manager
+        ? z.string()
+        : z.enum(
+            faculties.map((faculty) => faculty.id),
+            {
+              message: 'Faculty must be chosen'
+            }
+          )
   })
+  console.log('roles', roles)
+  console.log(roles?.find((role) => role.name === data.role)?.id)
   const form = useForm({
     mode: 'all',
     reValidateMode: 'onChange',
@@ -112,7 +112,7 @@ export function EditUserDialog({
       phoneNumber: data.phoneNumber,
       username: data.userName,
       role: data.role,
-      roleId: roles?.find((role) => role.displayName === data.role)?.id,
+      roleId: roles?.find((role) => role.name === data.role)?.id,
       facultyId: faculties?.find((faculty) => faculty.name === data.faculty)
         ?.id,
       email: data.email,
@@ -310,7 +310,15 @@ export function EditUserDialog({
                   <FormLabel>User Roles</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(fieldValue) => {
+                        const selectedRole = roles.find(
+                          (role) => role.id === fieldValue
+                        )
+                        if (selectedRole) {
+                          field.onChange(selectedRole.id)
+                          setUserType(selectedRole.name)
+                        }
+                      }}
                       defaultValue={form.getValues('roleId')}
                     >
                       <SelectTrigger className='w-min-[180px] w-full'>
@@ -329,7 +337,7 @@ export function EditUserDialog({
                 </FormItem>
               )}
             />
-            {userType !== 'marketingManager' && (
+            {userType !== ROLES.Admin && userType !== ROLES.Manager && (
               <FormField
                 control={form.control}
                 name='facultyId'
@@ -337,10 +345,7 @@ export function EditUserDialog({
                   <FormItem>
                     <FormLabel>Faculty</FormLabel>
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={form.getValues('facultyId')}
-                      >
+                      <Select onValueChange={field.onChange}>
                         <SelectTrigger className='w-min-[180px] w-full'>
                           <SelectValue placeholder='Select faculty' />
                         </SelectTrigger>
