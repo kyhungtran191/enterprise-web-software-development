@@ -6,4 +6,5 @@ public static class Faculties
     public const string Marketing = "Marketing";
     public const string Design = "Design";
     public const string Bussiness = "Bussiness";
+    public const string Art = "Art";
 }
