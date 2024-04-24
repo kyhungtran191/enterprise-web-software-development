@@ -31,7 +31,12 @@ public class UnitOfWork : IUnitOfWork
   public IRatingRepository RatingRepository => new RatingRepository(_context);
   public IAnnouncementRepository AnnouncementRepository => new AnnouncementRepository(_context);
   public IAnnouncementUserRepository AnnouncementUserRepository => new AnnouncementUserRepository(_context);
-  public async Task<int> CompleteAsync()
+
+    public IPrivateChatRepository PrivateChatRepository => new PrivateChatRepository(_context);
+
+    public IPrivateMessagesRepository PrivateMessagesRepository => new PrivateMessagesRepository(_context);
+
+    public async Task<int> CompleteAsync()
   => await _context.SaveChangesAsync();
 
   public void Dispose()
