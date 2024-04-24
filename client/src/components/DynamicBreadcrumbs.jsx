@@ -12,7 +12,6 @@ import { routesMapping } from '@/configs/global'
 const DynamicBreadcrumb = () => {
   const location = useLocation()
   const pathNames = location.pathname.split('/').filter((x) => x)
-
   const breadcrumbItems = pathNames.map((segment, index) => {
     const routeTo = `/${pathNames.slice(0, index + 1).join('/')}`
     const isLast = index === pathNames.length - 1

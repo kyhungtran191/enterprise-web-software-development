@@ -16,7 +16,6 @@ export function ActivityLogDialog({
   logs,
   contribution
 }) {
-  console.log(contribution)
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className='sm:max-w-md lg:max-w-lg xl:max-w-xl'>
