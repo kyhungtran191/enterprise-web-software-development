@@ -32,12 +32,14 @@ using Server.Application.Features.FacultyApp.Commands.UpdateFaculty;
 using Server.Application.Features.FacultyApp.Queries.GetAllFacutiesPaging;
 using Server.Application.Features.FacultyApp.Queries.GetFacultyByName;
 using Server.Application.Features.Identity.Tokens.Commands.RefreshToken;
+using Server.Application.Features.Identity.Users.Commands.CreateGuest;
 using Server.Application.Features.Identity.Users.Commands.CreateUser;
 using Server.Application.Features.Identity.Users.Commands.DeleteUserById;
 using Server.Application.Features.Identity.Users.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Users.Commands.ResetPassword;
 using Server.Application.Features.Identity.Users.Commands.UpdateProfile;
 using Server.Application.Features.Identity.Users.Commands.UpdateUser;
+using Server.Application.Features.Identity.Users.Queries.GetAllGuestsPaging;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
@@ -93,17 +95,21 @@ public class MappingProfiles : Profile
         // Create users
         CreateMap<CreateUserRequest, CreateUserCommand>();        
         CreateMap<CreateUserCommand, AppUser>();        
+        CreateMap<CreateGuestRequest, CreateGuestCommand>();
+        CreateMap<CreateGuestCommand, AppUser>();
 
         // Update users
         CreateMap<UpdateUserRequest, UpdateUserCommand>();        
-        CreateMap<UpdateUserCommand, AppUser>();        
+        CreateMap<UpdateUserCommand, AppUser>();
 
         // Get user paging
         CreateMap<GetAllUserPagingRequest, GetAllUserPagingQuery>();
+        // Get guest paging
+        CreateMap<GetAllUserPagingRequest, GetAllGuestsPagingQuery>();
 
         // Get User by id
         CreateMap<GetUserByIdRequest, GetUserByIdQuery>();
-
+        
         // Delete User By Id
         CreateMap<DeleteUserByIdRequest, DeleteUserByIdCommand>();
 

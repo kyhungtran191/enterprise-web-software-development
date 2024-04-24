@@ -19,6 +19,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useQueryClient } from '@tanstack/react-query'
 import { Clock, BellRing, MessageSquare } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
+import Notification from '@/components/Notification'
+
 export default function Header() {
   const queryClient = useQueryClient()
   const { isAuthenticated, profile, setProfile, setIsAuthenticated, avatar } =
@@ -34,6 +37,7 @@ export default function Header() {
     toast.success('Logout successfully!')
     navigate('/login')
   }
+
   return (
     <header className='h-[72px] w-full sticky top-0 left-0 right-0 shadow-md z-30 bg-white text-black'>
       <nav className='container h-full flex justify-between items-center leading-[72px] relative'>
@@ -63,15 +67,15 @@ export default function Header() {
           </Can> */}
         </div>
         <div className='flex items-center gap-x-2'>
-          <Link
-            to='/message'
-            className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'
-          >
-            <MessageSquare></MessageSquare>
-          </Link>
-          <div className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'>
-            <BellRing></BellRing>
-          </div>
+          {profile?.roles !== Roles?.Guest && <>
+            <Link
+              to='/message'
+              className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'
+            >
+              <MessageSquare></MessageSquare>
+            </Link>
+            <Notification></Notification>
+          </>}
 
           <Popover>
             <PopoverTrigger asChild className='cursor-pointer'>

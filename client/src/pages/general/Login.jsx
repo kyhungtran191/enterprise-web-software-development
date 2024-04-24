@@ -24,11 +24,12 @@ import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
+import notificationNoticeSound from "/notification.mp3"
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+
+let connection = null;
+
 export default function Login() {
-
-
-
-
   const ability = useContext(AbilityContext)
   const [isOpen, setIsOpen] = useState(false)
   const navigate = useNavigate()
@@ -55,6 +56,8 @@ export default function Login() {
   const onSubmit = (data) => {
     mutate(data, {
       onSuccess(data) {
+        const sound = new Audio(notificationNoticeSound)
+        sound.play()
         let accessToken = data && data?.data?.accessToken
         let refreshToken = data && data?.data?.refreshToken
         const dataDetail = jwtDecode(accessToken)
@@ -103,6 +106,7 @@ export default function Login() {
         saveAccessTokenToLS(accessToken)
         saveRefreshTokenToLS(refreshToken)
         setIsAuthenticated(true)
+        window.location.reload();
         toast.success('Login Successfully!')
         navigate('/')
       },
@@ -203,3 +207,4 @@ export default function Login() {
     </div>
   )
 }
+export { connection }

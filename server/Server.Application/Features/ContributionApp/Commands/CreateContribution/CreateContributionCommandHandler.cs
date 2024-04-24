@@ -1,9 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Collections.Immutable;
+using AutoMapper;
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Server.Application.Common.Dtos.Announcement;
 using Server.Application.Common.Extensions;
+using Server.Application.Common.Interfaces.Hubs.Announcement;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Application.Wrappers;
@@ -25,8 +29,10 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
         private readonly IMediaService _mediaService;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly IHubContext<AnnouncementHub> _announcementHub;
+        private readonly IAnnouncementService _announcementService;
 
-        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService,IMediaService mediaService) 
+        public CreateContributionCommandHandler(IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, IEmailService emailService, IMediaService mediaService, IHubContext<AnnouncementHub> announcementHub, IAnnouncementService announcementService)
         {
             _unitOfWork = unitOfWork;
             _dateTimeProvider = dateTimeProvider;
@@ -34,6 +40,8 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             _userManager = userManager;
             _mediaService = mediaService;
             _roleManager = roleManager;
+            _announcementHub = announcementHub;
+            _announcementService = announcementService;
         }
 
         public async Task<ErrorOr<IResponseWrapper>> Handle(CreateContributionCommand request,
@@ -84,13 +92,13 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
             var thumbnailTypes = new List<string>();
 
             if (request.Thumbnail is not null || request.Files.Count > 0)
-                {
+            {
 
-                    thumbnailList.Add(request.Thumbnail);
+                thumbnailList.Add(request.Thumbnail);
                 //var thumbnailInfo = await _mediaService.UploadFiles(thumbnailList, FileType.Thumbnail);
                 //var fileInfo = await _mediaService.UploadFiles(request.Files, FileType.File);
-                var thumbnailInfo = await _mediaService.UploadFileCloudinary(thumbnailList, FileType.Thumbnail,contributon.Id);
-                var fileInfo = await _mediaService.UploadFileCloudinary(request.Files, FileType.File,contributon.Id);
+                var thumbnailInfo = await _mediaService.UploadFileCloudinary(thumbnailList, FileType.Thumbnail, contributon.Id);
+                var fileInfo = await _mediaService.UploadFileCloudinary(request.Files, FileType.File, contributon.Id);
                 //filePath = fileInfo.Select(x => x.Path).ToList();
                 //thumbnailPath = thumbnailInfo.Select(x => x.Path).ToList();
                 filePublicId = fileInfo.Select(x => x.PublicId).ToList();
@@ -98,29 +106,32 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 thumbnailPublicId = thumbnailInfo.Select(x => x.PublicId).ToList();
                 thumbnailTypes = thumbnailInfo.Select(x => x.Type).ToList();
                 foreach (var info in fileInfo.Concat(thumbnailInfo))
-                    {
-                        _unitOfWork.FileRepository.Add(new File
-                        {
-                            ContributionId = contributon.Id,
-                            Path = info.Path,
-                            Type = info.Type,
-                            Name = info.Name,
-                            PublicId = info.PublicId,
-                            Extension = info.Extension,
-                        });
-                    }
-                }
-
-                var user = await _userManager.FindByIdAsync(request.UserId.ToString());
-                if (user == null)
                 {
-                    await _mediaService.RemoveFromCloudinary(filePublicId,fileTypes);
-                    await _mediaService.RemoveFromCloudinary(thumbnailPublicId,thumbnailTypes);
-                    return Errors.User.CannotFound;
+                    _unitOfWork.FileRepository.Add(new File
+                    {
+                        ContributionId = contributon.Id,
+                        Path = info.Path,
+                        Type = info.Type,
+                        Name = info.Name,
+                        PublicId = info.PublicId,
+                        Extension = info.Extension,
+                    });
                 }
+            }
 
-                var coordinator = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
-                var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)user.FacultyId);
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
+            if (user == null)
+            {
+                await _mediaService.RemoveFromCloudinary(filePublicId, fileTypes);
+                await _mediaService.RemoveFromCloudinary(thumbnailPublicId, thumbnailTypes);
+                return Errors.User.CannotFound;
+            }
+
+            var coordinators = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
+            var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)user.FacultyId);
+
+            foreach (var coordinator in coordinators)
+            {
                 _emailService.SendEmail(new MailRequest
                 {
                     ToEmail = coordinator.Email,
@@ -137,11 +148,46 @@ namespace Server.Application.Features.ContributionApp.Commands.CreateContributio
                 // send to approve 
                 await _unitOfWork.ContributionRepository.SendToApprove(contributon.Id, user.Id);
                 await _unitOfWork.CompleteAsync();
-                return new ResponseWrapper
-                {
-                    IsSuccessfull = true,
-                    Messages = new List<string> { $"Create contribution successfully!" }
-                };
+
+
+            }
+
+            // notify
+            var notificationId = Guid.NewGuid().ToString();
+            var announcementDto = new AnnouncementDto()
+            {
+                Id = notificationId,
+                Title = "Contribution created",
+                DateCreated = DateTime.Now,
+                Content = $"Contribution has been created",
+                UserId = user.Id,
+                Type = "Contribution-CreateContribution",
+                Username = user.UserName,
+                Avatar = user.Avatar,
+                Slug = contributon.Slug
+            };
+            _announcementService.Add(announcementDto);
+
+            var announcementUsers = coordinators.Select(coordinator => new AnnouncementUserDto
+            {
+                AnnouncementId = notificationId,
+                HasRead = false,
+                UserId = coordinator.Id
+            });
+            _announcementService.AddToAnnouncementUsers(announcementUsers);
+
+            await _unitOfWork.CompleteAsync();
+
+            await _announcementHub
+                .Clients
+                .Users(coordinators.Select(x => x.Id.ToString()).ToImmutableList())
+                .SendAsync("GetNewAnnouncement", announcementDto);
+
+            return new ResponseWrapper
+            {
+                IsSuccessfull = true,
+                Messages = new List<string> { $"Create contribution successfully!" }
+            };
         }
     }
 }

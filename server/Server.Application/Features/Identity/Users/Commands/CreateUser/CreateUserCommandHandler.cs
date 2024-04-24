@@ -14,6 +14,7 @@ using Server.Application.Common.Interfaces.Services;
 using Server.Contracts.Common;
 using static Server.Domain.Common.Errors.Errors;
 using Microsoft.Extensions.Configuration;
+using Roles = Server.Domain.Common.Constants.Roles;
 
 namespace Server.Application.Features.Identity.Users.Commands.CreateUser;
 
@@ -56,21 +57,25 @@ public class CreateUserCommandHandler
         {
             return Errors.Roles.NotFound;
         }
-
         var facultyFromDb =
             await _unitOfWork
-            .FacultyRepository
-            .GetByIdAsync(request.FacultyId);
+                .FacultyRepository
+                .GetByIdAsync(request.FacultyId);
 
-        if (facultyFromDb is null)
+        if (role.Name != Roles.Admin && role.Name != Roles.Manager)
         {
-            return Errors.Faculty.CannotFound;
+            
+            if (facultyFromDb is null)
+            {
+                return Errors.Faculty.CannotFound;
+            }
         }
+      
         var newUser = new AppUser();
 
         _mapper.Map(request, newUser);
         newUser.Id = Guid.NewGuid();
-        newUser.FacultyId = facultyFromDb.Id;
+        newUser.FacultyId = facultyFromDb is not null ? facultyFromDb.Id : null;
         string randomPassword = RandomString(8);
         newUser.PasswordHash = new PasswordHasher<AppUser>().HashPassword(newUser, randomPassword);
 

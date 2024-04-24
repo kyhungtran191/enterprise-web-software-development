@@ -11,11 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Quartz;
 using Server.Application.Common.Interfaces.Authentication;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure.Authentication;
+using Server.Infrastructure.Jobs;
+using Server.Infrastructure.Jobs.JobSetup;
 using Server.Infrastructure.Mapper;
 using Server.Infrastructure.Mapper.Impl;
 using Server.Infrastructure.Persistence;
@@ -37,6 +40,9 @@ public static class DependencyInjection
         services.AddScoped<IContributionService, ContributionService>();
         services.AddScoped<IContributionReportMapper, ContributionReportMapper>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IAnnouncementService, AnnouncementService>();
+        services.AddHttpContextAccessor();
         
         // email settings
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
@@ -51,6 +57,13 @@ public static class DependencyInjection
             .AddDatabase(configuration)
             .AddDbIdentity()
             .AddAuth(configuration);
+        // add quartz
+        services.AddQuartz(options =>
+            {
+                options.UseMicrosoftDependencyInjectionJobFactory();
+            }); 
+        services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
+        services.ConfigureOptions<JobSetup>();
 
         // AddAuthentication must below AddIdentity because it will redirect to new page by Identity
 

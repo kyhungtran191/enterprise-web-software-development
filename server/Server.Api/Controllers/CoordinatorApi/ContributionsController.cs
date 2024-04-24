@@ -66,15 +66,6 @@ namespace Server.Api.Controllers.CoordinatorApi
             return result.Match(result => Ok(result), errors => Problem(errors));
 
         }
-        [HttpGet("activity-logs/{ContributionId}")]
-        [Authorize(Permissions.ActivityLogs.View)]
-        public async Task<IActionResult> GetActivityLogs([FromRoute] GetActivityLogRequest request)
-        {
-            var query = _mapper.Map<GetActivityLogQuery>(request);
-            var result = await _mediatorSender.Send(query);
-            return result.Match(result => Ok(result), errors => Problem(errors));
-
-        }
         [HttpGet]
         [Route("preview-contribution/{Slug}")]
         [Authorize(Permissions.Contributions.View)]

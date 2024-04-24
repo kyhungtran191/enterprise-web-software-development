@@ -61,6 +61,15 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
             {
                 return Errors.Contribution.AlreadyApproved;
             }
+            if (!(await _unitOfWork.AcademicYearRepository.CanEditAsync(_dateTimeProvider.UtcNow)))
+            {
+                return Errors.Contribution.CannotEdit;
+            }
+            var academicYear = await _unitOfWork.AcademicYearRepository.GetAcademicYearByDateAsync(_dateTimeProvider.UtcNow);
+            if (academicYear is null)
+            {
+                return Errors.Contribution.AcademicYearNotFound;
+            }
             _mapper.Map(request,itemFromDb);
             itemFromDb.DateEdited = _dateTimeProvider.UtcNow;
             await _unitOfWork.CompleteAsync();
@@ -124,21 +133,25 @@ namespace Server.Application.Features.ContributionApp.Commands.UpdateContributio
                 return Errors.User.CannotFound;
             }
             // add email service later
-            var coordinator = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
+            var coordinators = await _userManager.FindByFacultyIdAsync(_roleManager, (Guid)user.FacultyId!);
             var faculty = await _unitOfWork.FacultyRepository.GetByIdAsync((Guid)user.FacultyId);
-            _emailService.SendEmail(new MailRequest
+            foreach (var coordinator in coordinators)
             {
-                ToEmail = coordinator.Email,
-                Body= $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
-                $" <h2>Blog Edition request are pending</h2>\r\n " +
-                $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
-                $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
-                $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {user.UserName}</p>\r\n " +
-                $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
-                $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
-                Subject = "Edit CONTRIBUTION"
-            });
 
+                _emailService.SendEmail(new MailRequest
+                {
+                    ToEmail = coordinator.Email,
+                    Body = $"<div style=\"font-family: Arial, sans-serif; color: #800080; padding: 20px;\">\r\n " +
+                           $" <h2>Blog Edition request are pending</h2>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Blog Title: Web development 2</p>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Content: Development</p>\r\n" +
+                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">User: {user.UserName}</p>\r\n " +
+                           $"  <p style=\"margin: 5px 0; font-size: 18px;\">Faculty: {faculty.Name}</p>\r\n " +
+                           $" <p style=\"margin: 5px 0; font-size: 18px;\">Academic Year: 2024-2025</p>\r\n</div>",
+                    Subject = "Edit CONTRIBUTION"
+                });
+
+            }
             return new ResponseWrapper
             {
                 IsSuccessfull = true,

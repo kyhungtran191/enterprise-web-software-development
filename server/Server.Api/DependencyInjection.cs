@@ -8,6 +8,7 @@ using Server.Api.Authorization;
 using Server.Api.Common.Errors;
 using Server.Api.Common.Filters;
 using Server.Application.Common.Interfaces.Persistence;
+using Server.Application.Common.Interfaces.Services;
 using Server.Domain.Entity.Identity;
 using Server.Infrastructure;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -19,6 +20,7 @@ public static class DependencyInjection
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers();
+        services.AddSignalR();
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
@@ -65,9 +67,9 @@ public static class DependencyInjection
 
             c.ParameterFilter<SwaggerNullableParameterFilter>();
         });
-        
+
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        
+
         services.AddSingleton<ProblemDetailsFactory, ServerProblemDetailsFactory>();
 
         services.AddAuthorization();
@@ -112,12 +114,21 @@ public static class MigrationManager
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
         var contributionRepository = scope.ServiceProvider.GetRequiredService<IContributionRepository>();
         var ratingRepository = scope.ServiceProvider.GetRequiredService<IRatingRepository>();
+        var dateTimeProvider = scope.ServiceProvider.GetRequiredService<IDateTimeProvider>();
+        var privateChatRepository = scope.ServiceProvider.GetRequiredService<IPrivateChatRepository>();
+        var privateMessagesRepository = scope.ServiceProvider.GetRequiredService<IPrivateMessagesRepository>();
         //var facultyRepository = scope.ServiceProvider.GetRequiredService<IFacultyRepository>();
         //var academicYearRepository = scope.ServiceProvider.GetService<IAcademicYearRepository>();
         // applying update-database command
         appDbContext.Database.Migrate();
         // DataSeeder.SeedAsync(appDbContext, roleManager).GetAwaiter().GetResult();
-        DataSeeder.SeedContribution(appDbContext,roleManager,contributionRepository,ratingRepository).GetAwaiter().GetResult();
+        DataSeeder.SeedContribution(appDbContext,
+                                    roleManager,
+                                    contributionRepository,
+                                    ratingRepository,
+                                    dateTimeProvider,
+                                    privateChatRepository,
+                                    privateMessagesRepository).GetAwaiter().GetResult();
         //DataSeeder.SeedFaculty(appDbContext, facultyRepository).GetAwaiter().GetResult();
         //DataSeeder.SeedAcademicYear(appDbContext, academicYearRepository).GetAwaiter().GetResult();
         return app;

@@ -167,6 +167,74 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("AcademicYears");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entity.Content.Announcement", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Slug")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Announcements");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.AnnouncementUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnnouncementId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<bool?>("HasRead")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AnnouncementUsers");
+                });
+
             modelBuilder.Entity("Server.Domain.Entity.Content.Contribution", b =>
                 {
                     b.Property<Guid>("Id")
@@ -625,6 +693,55 @@ namespace Server.Infrastructure.Migrations
                     b.ToTable("Likes");
                 });
 
+            modelBuilder.Entity("Server.Domain.Entity.Content.PrivateChat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastActivity")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("User1Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("User2Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrivateChats");
+                });
+
+            modelBuilder.Entity("Server.Domain.Entity.Content.PrivateMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrivateMessages");
+                });
+
             modelBuilder.Entity("Server.Domain.Entity.Content.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -716,18 +833,19 @@ namespace Server.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastLoginDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 

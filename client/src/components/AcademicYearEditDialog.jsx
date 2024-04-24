@@ -123,8 +123,10 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
       finalClosureDate: finalClosureDate
     }
   })
+  console.log(form.getValues())
   function onSubmit(academicYearData) {
-    academicYearData.id = data.id
+    console.log(academicYearData)
+    academicYearData.academicYearId = data.id
     if (!Object.keys(form.formState.errors).length > 0) {
       mutate(academicYearData, {
         onSuccess: () => {
@@ -265,7 +267,7 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
                           selected={field.value}
                           onSelect={(date) => {
                             field.onChange(date)
-                            setStartClosureDate(date)
+                            setEndClosureDate(date)
                           }}
                           disabled={(date) => date < new Date('2000-01-01')}
                           initialFocus
@@ -310,7 +312,7 @@ export function AcademicYearEditDialog({ isOpen, handleOpenChange, data }) {
                           selected={field.value}
                           onSelect={(date) => {
                             field.onChange(date)
-                            setStartClosureDate(date)
+                            setFinalClosureDate(date)
                           }}
                           disabled={(date) => date < new Date('2000-01-01')}
                           initialFocus

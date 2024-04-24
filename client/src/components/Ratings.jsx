@@ -24,6 +24,10 @@ export default function Ratings({ id, currentRating }) {
         },
         onSettled() {
           queryClient.invalidateQueries(['detail-contributions']);
+        },
+        onError(data) {
+          const errorMessage = data && data?.response?.data?.title
+          toast.error(errorMessage)
         }
       })
     }

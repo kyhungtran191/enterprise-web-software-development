@@ -16,6 +16,8 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     }
 
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<PrivateChat> PrivateChats { get; set; }
+    public DbSet<PrivateMessage> PrivateMessages { get; set; }
     public DbSet<Contribution> Contributions { get; set; }
     public DbSet<ContributionComment> ContributionComments { get; set; }
     public DbSet<ContributionPublic> ContributionPublics { get; set; }
@@ -30,6 +32,8 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Setting> Settings { get; set; }
     public DbSet<File> Files { get; set; }
+    public DbSet<Announcement> Announcements { get; set; }
+    public DbSet<AnnouncementUser> AnnouncementUsers { get; set; }
     public DbSet<ContributionPublicRating> ContributionPublicRatings { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -50,6 +54,11 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         #endregion Identity Configuration
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
+    
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var entries = ChangeTracker

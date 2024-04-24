@@ -12,7 +12,7 @@ public class UserDto
     public string? Faculty { get; set; }
     public string? Email { get; set; }
     public string? PhoneNumber { get; set; }
-    public DateTime DateCreated { get; set; }
+    public DateTime? DateCreated { get; set; }
     public bool IsActive { get; set; }
     public IList<string> Roles { get; set; } = new List<string>();
     public DateTime? Dob { get; set; }

@@ -4,16 +4,15 @@ import AdminLayout from '@/layouts/AdminLayout'
 import { ArrowDown10Icon, Plus } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
 import Article from '@/components/article'
-import { createSearchParams, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useParamsVariables from '@/hooks/useParams'
 import { isUndefined, omitBy, omit, debounce } from 'lodash'
@@ -29,13 +28,27 @@ import { formatDate } from '@/utils/helper'
 
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
-
+import { Controller, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { EMAIL_REG } from '@/utils/regex'
+import * as yup from "yup"
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 export default function SettingGAC() {
-  const [position, setPosition] = React.useState('')
   const navigate = useNavigate()
   const queryParams = useParamsVariables()
   const [inputValue, setInputValue] = useState('')
   const [tableData, setTableData] = useState([])
+
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const closeDialog = () => setIsOpen(false)
+
+
+
+
   const handleChangeCheckbox = (data) => {
     setTableData((prev) => prev.map((item) => item.id == data.id ? { ...item, guestAllowed: !item.guestAllowed } : item))
   }
@@ -139,7 +152,7 @@ export default function SettingGAC() {
       keyword: queryParams.keyword,
       name: queryParams.name,
       year: queryParams.year,
-      pagesize: queryParams.pagesize || '4'
+      pagesize: queryParams.pagesize
     },
     isUndefined
   )
@@ -148,30 +161,25 @@ export default function SettingGAC() {
     queryFn: (_) => Contributions.MCContribution(queryConfig)
   })
 
-  const handleInputChange = debounce((value) => {
-    if (!value) {
-      return navigate({
-        pathname: '/coodinator-manage/setting-guest',
-        search: createSearchParams(
-          omit({ ...queryConfig }, ['keyword'])
-        ).toString()
-      })
-    }
-
-    navigate({
-      pathname: '/coodinator-manage/setting-guest',
-      search: createSearchParams(
-        omitBy(
-          {
-            ...queryConfig,
-            keyword: value
-          },
-          (value, key) =>
-            key === 'pageindex' || key === 'pagesize' || isUndefined(value)
-        )
-      ).toString()
+  const schema = yup
+    .object({
+      email: yup
+        .string()
+        .matches(EMAIL_REG, 'Please provide correct email type')
+        .required('Please provide your email'),
+      username: yup.string().required('Please provide username')
     })
-  }, 300)
+    .required()
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset
+  } = useForm({ resolver: yupResolver(schema) })
+
+  const addNewGuestMutation = useMutation({
+    mutationFn: (body) => Contributions.MCCreateGuest(body)
+  })
 
   const { mutate } = useMutation({
     mutationFn: (body) => Contributions.MCAllowGuest(body)
@@ -203,40 +211,68 @@ export default function SettingGAC() {
           onSuccess() {
             toast.success("Update Contribution for Guest Successfully!")
           },
-          onError(err) {
-            console.log(err)
+          onError(data) {
+            const errorMessage = data && data?.response?.data?.title
+            toast.error(errorMessage)
           }
         })
       }
     });
   }
-  console.log(tableData);
+  const onAddNewGuest = (data) => {
+    console.log(data)
+    const formData = new FormData();
+    formData.append('Email', data?.email);
+    formData.append('UserName', data?.username);
+    // If IsActive is boolean
+    formData.append('IsActive', true);
+    addNewGuestMutation.mutate(formData, {
+      onSuccess(data) {
+        toast.success("Add new guest account successfully!")
+        setIsOpen(false)
+        reset({
+          email: "",
+          username: "",
+        })
+      },
+      onError(data) {
+        console.log(data)
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
+      }
+    })
+  }
   return (
     <AdminLayout links={MC_OPTIONS}>
+      <Tabs defaultValue="contributions" className="">
+        <TabsList>
+          <TabsTrigger value="contributions">Allow Contribution</TabsTrigger>
+          <TabsTrigger value="guest">Faculty Guest List</TabsTrigger>
+        </TabsList>
+        <TabsContent value="contributions" className="w-ful">
+          {!isLoading && (
+            <div className="max-h-[70vh] overflow-auto">
+              <CustomTable
+                columns={columns}
+                data={tableData}
+                path={'/coodinator-manage/setting-guest'}
+                // queryConfig={queryConfig}
+                // pageCount={data.data?.responseData?.pageCount}
+                selectedRows={setSelectedRow}
+              ></CustomTable>
+            </div>
+          )}
+          {isLoading && (
+            <div className='flex justify-center min-h-screen mt-10'>
+              <Spinner></Spinner>
+            </div>
+          )}
 
-      {!isLoading && (
-        <>
-          <CustomTable
-            columns={columns}
-            data={tableData}
-            path={'/coodinator-manage/setting-guest'}
-            // queryConfig={queryConfig}
-            // pageCount={data.data?.responseData?.pageCount}
-            selectedRows={setSelectedRow}
-          ></CustomTable>
-        </>
-      )}
-      {isLoading && (
-        <div className='flex justify-center min-h-screen mt-10'>
-          <Spinner></Spinner>
-        </div>
-      )}
-
-      {!isLoading && tableData?.length < 0 && (
-        <div className='my-10 text-3xl font-semibold text-center '>No Data</div>
-      )}
-      <div className='flex flex-wrap items-center gap-3 my-5'>
-        {/* <div
+          {!isLoading && tableData?.length < 0 && (
+            <div className='my-10 text-3xl font-semibold text-center '>No Data</div>
+          )}
+          <div className='flex flex-wrap items-center gap-3 my-5'>
+            {/* <div
           className={`flex items-center px-5 py-4 border rounded-lg gap-x-2 w-[50vw]`}
         >
           <Icon
@@ -254,8 +290,79 @@ export default function SettingGAC() {
             }}
           />
         </div> */}
-        <Button onClick={handleApproveArticle} className="w-full">Update</Button>
-      </div>
+            <Button onClick={handleApproveArticle} className="w-full">Update</Button>
+          </div>
+        </TabsContent>
+        <TabsContent value="guest">
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button className="max-w-[200px] my-5 ml-auto" onClick={() => setIsOpen(true)}>Add New Guest Account</Button>
+            </DialogTrigger>
+            <DialogContent className=' sm:max-w-md'>
+              {addNewGuestMutation.isLoading && !addNewGuestMutation.isError && <div className="absolute inset-0 z-30 flex items-center justify-center bg-white bg-opacity-50">
+                <Spinner></Spinner>
+              </div>}
+              <DialogHeader>
+                <DialogTitle>Add new guest</DialogTitle>
+              </DialogHeader>
+              <div className='flex items-center space-x-2'>
+                <form onSubmit={handleSubmit(onAddNewGuest)} className='w-full'>
+                  <div className='my-4'>
+                    <Label className='text-md'>Email</Label>
+                    <Controller
+                      control={control}
+                      name='email'
+                      render={({ field }) => (
+                        <Input
+                          className='p-4 mt-2 outline-none'
+                          placeholder='Student Email'
+                          {...field}
+                        ></Input>
+                      )}
+                    />
+                    <div className='h-5 mt-3 text-base font-semibold text-red-500'>
+                      {errors && errors?.email?.message}
+                    </div>
+                  </div>
+                  <div className='my-4'>
+                    <Label className='text-md'>Username</Label>
+                    <div className='relative'>
+                      <Controller
+                        control={control}
+                        name='username'
+                        render={({ field }) => (
+                          <Input
+                            className='p-4 mt-2 outline-none'
+                            placeholder='Username'
+                            type={isOpen ? 'text' : 'password'}
+                            {...field}
+                          ></Input>
+                        )}
+                      />
+
+                    </div>
+                    <div className='h-5 mt-3 text-base font-semibold text-red-500'>
+                      {errors && errors?.username?.message}
+                    </div>
+                  </div>
+                  <Button
+                    type='submit'
+                    className={`w-full py-6 mt-8 text-lg transition-all duration-300 ease-in-out bg-blue-600 hover:bg-blue-700 ${isLoading ? 'pointer-events-none bg-opacity-65' : ''}`}
+                  >
+                    {isLoading ? (
+                      <Spinner className={'border-white'}></Spinner>
+                    ) : (
+                      'Add new'
+                    )}
+                  </Button>
+                </form>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </TabsContent>
+      </Tabs>
+
+
     </AdminLayout>
   )
 }

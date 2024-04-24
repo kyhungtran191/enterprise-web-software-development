@@ -36,13 +36,15 @@ export default function Profile() {
       phoneNumber: yup
         .string()
         .matches(PHONE_REG, 'Please provide correct phone format'),
-      faculty: yup.string()
+      faculty: yup.string(),
+      dob: yup.string()
     })
     .required()
   const {
     handleSubmit,
     control,
     reset,
+    setError,
     formState: { errors }
   } = useForm({ resolver: yupResolver(schema) })
   const handleChangeImage = (e) => {
@@ -73,12 +75,14 @@ export default function Profile() {
     if (detailData?.avatar) {
       setCurrentThumbnail(detailData?.avatar)
     }
+    console.log(dateObject)
     setDate(dateObject)
   }, [detailData, reset])
 
   const dateString = date
 
   const onSubmit = async (data) => {
+    console.log(data)
     // TransferData
     const formData = new FormData()
     formData.append('FirstName', data.firstName)
@@ -92,6 +96,18 @@ export default function Profile() {
         dateObject &&
         new Date(dateObject.getTime() - dateObject.getTimezoneOffset() * 60000)
       const isoString = utcDateObject && utcDateObject?.toISOString()
+      const dob = new Date(dateString);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+
+      if (age < 18) {
+        toast.error("Invalid age, age should be more than 18 years old")
+        return;
+      }
       formData.append('Dob', isoString)
     }
     if (currentThumbnail?.startsWith('blob:')) {
@@ -111,8 +127,9 @@ export default function Profile() {
         toast.success('Update Profile Successfully!')
         queryClient.invalidateQueries(['profile'])
       },
-      onError(err) {
-        console.log(err)
+      onError(data) {
+        const errorMessage = data && data?.response?.data?.title
+        toast.error(errorMessage)
       }
     })
   }
@@ -129,7 +146,7 @@ export default function Profile() {
     <AdminLayout links={links}>
       {isLoading ||
         (updateMutation.isLoading && <ActionSpinner></ActionSpinner>)}
-      <div className='sm:p-10 rounded-lg shadow-2xl min-h-[80vh]'>
+      <div className='p-5 sm:p-10 rounded-lg shadow-2xl min-h-[80vh]'>
         <label htmlFor='image' className='mx-auto cursor-pointer '>
           <img
             src={currentThumbnail ? currentThumbnail : '../../user.jpg'}
@@ -239,6 +256,7 @@ export default function Profile() {
             <Label className='font-semibold text-md'>
               Date of Birth {date && `(${formatDate(date)})`}
             </Label>
+
             <DatePickerCustom
               mode='single'
               captionLayout='dropdown-buttons'

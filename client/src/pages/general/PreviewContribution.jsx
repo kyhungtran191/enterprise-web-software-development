@@ -26,6 +26,7 @@ import { Roles } from '@/constant/roles'
 import CustomRejectComponent from '@/components/CustomRejectComponent'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { IsOutDeadlineUpdate } from '@/hooks/useIsActiveAcademicYear';
+import SafeView from 'safeview';
 
 export default function PreviewContribution() {
   const [openOptions, setOpenOptions] = useState(true)
@@ -95,6 +96,10 @@ export default function PreviewContribution() {
           onSuccess() {
             toast.success("Approve Contribution successfully !")
             navigate("/coodinator-manage/contributions?status=APPROVE")
+          },
+          onError(data) {
+            const errorMessage = data && data?.response?.data?.title
+            toast.error(errorMessage)
           }
         })
       }

@@ -1,5 +1,6 @@
 using Server.Api;
 using Server.Application;
+using Server.Application.Common.Interfaces.Hubs.Announcement;
 using Server.Infrastructure;
 
 // http://localhost:5272/swagger/index.html
@@ -43,11 +44,26 @@ if (app.Environment.IsDevelopment())
 
     app.UseCors(serverCorsPolicy);
 
+    app.Use(async (context, next) =>
+         {
+             var accessToken = context.Request.Query["access_token"];
+             if (!string.IsNullOrEmpty(accessToken))
+             {
+                 context.Request.Headers["Authorization"] = "Bearer " + accessToken;
+             }
+
+             await next.Invoke().ConfigureAwait(false);
+         });
+
     app.UseAuthentication();
 
     app.UseAuthorization();
 
+
+
     app.MapControllers();
+
+    app.MapHub<AnnouncementHub>("/hubs/announcement");
 
     app.Run();
 }

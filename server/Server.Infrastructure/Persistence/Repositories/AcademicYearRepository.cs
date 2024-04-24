@@ -29,6 +29,18 @@ public class AcademicYearRepository : RepositoryBase<AcademicYear, Guid>, IAcade
 
         return academicYear;
     }
+    public async Task<AcademicYear> GetAcademicYearByCurrentYearAsync(DateTime date)
+    {
+        
+        var currentYear = date.Year;
+
+        var academicYear = await _dbContext.AcademicYears
+            .Where(a => currentYear >= a.StartClosureDate.Year && currentYear <= a.EndClosureDate.Year)
+            .FirstOrDefaultAsync();
+
+        return academicYear;
+    }
+
     public async Task<bool> CanSubmitAsync(DateTime date)
     {
         var academicYear = await _dbContext.AcademicYears

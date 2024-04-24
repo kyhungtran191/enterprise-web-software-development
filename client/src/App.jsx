@@ -5,7 +5,7 @@ import { UsersTable } from './components/UsersTable'
 import GeneralLayout from './layouts'
 import Home from './pages/general/Home'
 import StudentContribution from './pages/client/manage/StudentContribution'
-import Login from './pages/general/Login'
+import Login, { connection } from './pages/general/Login'
 import Profile from './pages/client/manage/Profile'
 import AddContribution from './pages/client/manage/contribution/AddContribution'
 import { useContext, useEffect, useState } from 'react'
@@ -32,11 +32,13 @@ import StudentDashboard from './pages/client/manage/contribution/StudentDashboar
 import ChatPage from './pages/ChatPage'
 import { routesConfig } from './constant/routeConfigs'
 import { useAppContext } from './hooks/useAppContext'
+
+import { getAccessTokenFromLS } from './utils/auth'
 function App() {
   // const routes = useRoutesElements()
   const [loading, setLoading] = useState(true)
   const location = useLocation()
-
+  // connection?.on("GetNewAnnouncement", (message) => console.log(message))
   useEffect(() => {
     setLoading(true)
     const timeoutId = setTimeout(() => {
@@ -58,6 +60,7 @@ function App() {
       permission[category][type] === `Permissions.${category}.${type}`
     return hasPermission
   }
+
 
   const renderRoute = (route, key) => {
     const {
@@ -271,6 +274,7 @@ function App() {
             path='/contributions/:id'
             element={<ContributionDetail></ContributionDetail>}
           ></Route>
+          <Route path='/view-file' element={<ViewFile></ViewFile>}></Route>
 
           <Route element={<IsGuestAccount />} path=''>
             {/* Student */}
@@ -318,7 +322,7 @@ function App() {
             </Route>
 
             {/* General */}
-            <Route path='/view-file' element={<ViewFile></ViewFile>}></Route>
+
             <Route path='/message' element={<ChatPage></ChatPage>}></Route>
             <Route path='/profile' element={<Profile></Profile>}></Route>
             <Route
