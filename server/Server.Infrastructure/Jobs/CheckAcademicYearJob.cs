@@ -35,8 +35,13 @@ namespace Server.Infrastructure.Jobs
             var date = DateTime.UtcNow;
             const string expiredRejectNote = "Academic Year is expired, your contribution is rejected";
             var currentAcademicYear = await _unitOfWork.AcademicYearRepository.GetAcademicYearByCurrentYearAsync(date);
+           
             if (currentAcademicYear.FinalClosureDate < date)
             {
+                if (currentAcademicYear.IsActive)
+                {
+                    currentAcademicYear.IsActive = false;
+                }
                 var pendingContributionInCurrentYear =  _unitOfWork.ContributionRepository.Find(x => x.AcademicYearId == currentAcademicYear.Id && x.Status == ContributionStatus.Pending).ToList();
                 foreach(var item in pendingContributionInCurrentYear)
                 {

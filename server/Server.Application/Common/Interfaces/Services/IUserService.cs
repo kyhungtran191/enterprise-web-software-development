@@ -5,6 +5,7 @@
         bool IsAuthenticated { get; }
 
         Guid UserId { get; }
+        Guid FacultyId { get; }
 
     }
 }

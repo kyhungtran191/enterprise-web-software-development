@@ -42,6 +42,7 @@ export const MCContributionsReject = `${URL}/coordinator/Contributions/reject`
 export const MCPreviewContribution = `${URL}/coordinator/Contributions/preview-contribution`
 export const MCComment = `${URL}/coordinator/Contributions/comment`
 export const MCAllowGuest = `${URL}/coordinator/Contributions/allow-guest`
+export const MCAddGuest = `${URL}/coordinator/Users/create-guest`
 // ADMIN
 // Academic Year
 export const getAllAcademicYearsPagingAPI = `${URL}${adminAPI}/AcademicYear/paging`
@@ -79,7 +80,7 @@ export const deleteFacultyAPI = `${URL}${adminAPI}/Faculties`
 
 // Contribution
 export const getAllContributionsPagingAPI = `${URL}${adminAPI}/Contributions/paging`
-export const getContributionActivityLogsAPI = `${URL}${coordinatorAPI}/Contributions/activity-logs`
+export const getContributionActivityLogsAPI = `${URL}/manager/Contributions/activity-logs`
 
 // Dashboard
 export const getTotalContributionsPerFacultyForAllAcademicYearsAPI = `${URL}${adminAPI}/Contributions/report-contributions-within-each-faculty-for-each-academic-year`

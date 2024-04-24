@@ -96,6 +96,10 @@ export default function PreviewContribution() {
           onSuccess() {
             toast.success("Approve Contribution successfully !")
             navigate("/coodinator-manage/contributions?status=APPROVE")
+          },
+          onError(data) {
+            const errorMessage = data && data?.response?.data?.title
+            toast.error(errorMessage)
           }
         })
       }
