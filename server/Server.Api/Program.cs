@@ -1,6 +1,7 @@
 using Server.Api;
 using Server.Application;
 using Server.Application.Common.Interfaces.Hubs.Announcement;
+using Server.Application.Common.Interfaces.Hubs.PrivateChat;
 using Server.Infrastructure;
 
 // http://localhost:5272/swagger/index.html
@@ -59,11 +60,10 @@ if (app.Environment.IsDevelopment())
 
     app.UseAuthorization();
 
-
-
     app.MapControllers();
 
     app.MapHub<AnnouncementHub>("/hubs/announcement");
+    app.MapHub<PrivateChatHub>("/hubs/privatechat");
 
     app.Run();
 }

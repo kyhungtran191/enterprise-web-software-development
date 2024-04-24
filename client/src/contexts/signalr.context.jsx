@@ -75,6 +75,16 @@ export const SignalRProvider = ({ children }) => {
       addConnection('AnnouncementHub', connect);
 
     }
+
+    if (accessToken && !connections["ChatHub"]) {
+      let connect = new HubConnectionBuilder()
+        .withUrl("http://localhost:5272/hubs/privatechat",
+          { accessTokenFactory: () => accessToken })
+        .withAutomaticReconnect()
+        .build();
+
+      addConnection('ChatHub', connect);
+    }
   }, [accessToken, connections]);
 
   useEffect(() => {
@@ -86,7 +96,9 @@ export const SignalRProvider = ({ children }) => {
       // Start connections
       for (let [key, connect] of Object.entries(connections)) {
         connect?.start().then(() => {
-          console.log(key + " successfully!");
+          console.log(key + " successfully!");       
+          
+       
         }).catch((err) => console.log(err));
       }
     }

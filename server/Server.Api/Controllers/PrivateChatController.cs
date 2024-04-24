@@ -2,10 +2,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Server.Application.Common.Dtos.PrivateChat;
+using Server.Application.Common.Interfaces.Hubs.PrivateChat;
 using Server.Application.Common.Interfaces.Persistence;
 using Server.Application.Common.Interfaces.Services;
+using Server.Domain.Common.Constants;
 using Server.Domain.Common.Errors;
 using Server.Domain.Entity.Content;
 using Server.Domain.Entity.Identity;
@@ -21,8 +24,15 @@ public class PrivateChatController : ApiController
     private readonly IUnitOfWork _unitOfWork;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IHubContext<PrivateChatHub> _privateChatHub;
 
-    public PrivateChatController(ISender mediatorSender, ICurrentUserService currentUserService, UserManager<AppUser> userManager, IUnitOfWork unitOfWork, RoleManager<AppRole> roleManager, IDateTimeProvider dateTimeProvider) : base(mediatorSender)
+    public PrivateChatController(ISender mediatorSender,
+                                 ICurrentUserService currentUserService,
+                                 UserManager<AppUser> userManager,
+                                 IUnitOfWork unitOfWork,
+                                 RoleManager<AppRole> roleManager,
+                                 IDateTimeProvider dateTimeProvider,
+                                 IHubContext<PrivateChatHub> privateChatHub) : base(mediatorSender)
     {
 
         _currentUserService = currentUserService;
@@ -30,6 +40,7 @@ public class PrivateChatController : ApiController
         _unitOfWork = unitOfWork;
         _roleManager = roleManager;
         _dateTimeProvider = dateTimeProvider;
+        _privateChatHub = privateChatHub;
     }
 
     [HttpGet]
@@ -66,17 +77,24 @@ public class PrivateChatController : ApiController
 
         foreach (var receiver in usersWithFaculty)
         {
+            if (receiver.Id.ToString() == currentUserId)
+            {
+                continue;
+            }
+
             var roles = await _userManager.GetRolesAsync(receiver);
 
-            result.Add(new PrivateChatUserDto
-            {
-                CurrentUserId = currentUserId,
-                Avatar = receiver.Avatar,
-                IsOnline = receiver.IsOnline,
-                ReceiverId = receiver.Id,
-                Username = receiver.UserName,
-                Role = roles[0]
-            });
+            if (roles[0] != Roles.Guest) {
+                result.Add(new PrivateChatUserDto
+                {
+                    CurrentUserId = currentUserId,
+                    Avatar = receiver.Avatar,
+                    IsOnline = receiver.IsOnline,
+                    ReceiverId = receiver.Id,
+                    Username = receiver.UserName,
+                    Role = roles[0]
+                });
+            }
         }
 
         return Ok(result);
@@ -97,11 +115,11 @@ public class PrivateChatController : ApiController
 
         var currentUserId = _currentUserService.UserId;
         // var hasConversation = await _unitOfWork.PrivateChatRepository.HasConversation(currentUserId, specificReceiverId);
-        var conversation = 
+        var conversation =
             _unitOfWork
             .PrivateChatRepository
-            .Find(privateChat => 
-                (privateChat.User1Id.ToString() == currentUserId && privateChat.User2Id.ToString() == specificReceiverId) || 
+            .Find(privateChat =>
+                (privateChat.User1Id.ToString() == currentUserId && privateChat.User2Id.ToString() == specificReceiverId) ||
                 (privateChat.User1Id.ToString() == specificReceiverId && privateChat.User2Id.ToString() == currentUserId))
             .FirstOrDefault();
 
@@ -208,6 +226,10 @@ public class PrivateChatController : ApiController
 
             var roles = await _userManager.GetRolesAsync(receiver);
 
+            if (roles[0] == Roles.Guest) {
+                continue;
+            }
+
             var privateChatUserDto = new PrivateChatUserDto
             {
                 CurrentUserId = currentUserId,
@@ -255,7 +277,7 @@ public class PrivateChatController : ApiController
             .Find(x =>
                 (x.SenderId.ToString() == userId && x.ReceiverId.ToString() == receiverId) ||
                 x.SenderId.ToString() == receiverId && x.ReceiverId.ToString() == userId)
-            .OrderByDescending(x => x.DateCreated);
+            .OrderBy(x => x.DateCreated);
 
         return messages.Select(x => new PrivateMessageDto
         {
@@ -271,10 +293,10 @@ public class PrivateChatController : ApiController
 
     [HttpPost]
     [Route("message")]
-    public async Task<IActionResult> SendMessage([FromBody] SendPrivateMessageDto privateMessageDto)
+    public async Task<IActionResult> SendMessage([FromBody] SendPrivateMessageDto sendPrivateMessageDto)
     {
         // var conversation = await _unitOfWork.PrivateChatRepository.HasConversation(privateMessageDto.SenderId!, privateMessageDto.ReceiverId!);
-        var conversation = _unitOfWork.PrivateChatRepository.Find(x => x.Id.ToString() == privateMessageDto.ChatId).FirstOrDefault();
+        var conversation = _unitOfWork.PrivateChatRepository.Find(x => x.Id.ToString() == sendPrivateMessageDto.ChatId).FirstOrDefault();
 
         if (conversation == null)
         {
@@ -283,8 +305,7 @@ public class PrivateChatController : ApiController
             });
         }
 
-
-        var sender = await _userManager.FindByIdAsync(privateMessageDto.SenderId!);
+        var sender = await _userManager.FindByIdAsync(sendPrivateMessageDto.SenderId!);
 
         if (sender == null)
         {
@@ -293,7 +314,7 @@ public class PrivateChatController : ApiController
             });
         }
 
-        var receiver = await _userManager.FindByIdAsync(privateMessageDto.ReceiverId!);
+        var receiver = await _userManager.FindByIdAsync(sendPrivateMessageDto.ReceiverId!);
 
         if (receiver == null)
         {
@@ -302,19 +323,58 @@ public class PrivateChatController : ApiController
             });
         }
 
+        // update last activiy of conversion 
         conversation.LastActivity = _dateTimeProvider.UtcNow;
 
-        _unitOfWork.PrivateMessagesRepository.Add(new PrivateMessage
+        var privateMessageToStore = new PrivateMessage
         {
-            ChatId = Guid.Parse(privateMessageDto.ChatId!),
+            ChatId = Guid.Parse(sendPrivateMessageDto.ChatId!),
             SenderId = sender.Id,
             ReceiverId = receiver.Id,
-            Content = privateMessageDto.Content,
-        });
+            Content = sendPrivateMessageDto.Content,
+        };
+        _unitOfWork.PrivateMessagesRepository.Add(privateMessageToStore);
 
         await _unitOfWork.CompleteAsync();
 
         // web socket
+
+        // map to private message dto
+        // var newPrivateMessageDto = 
+
+        var receiverIds = new List<string>()
+        {
+            receiver.Id.ToString(),
+            sender.Id.ToString()
+        };
+
+        await _privateChatHub
+        .Clients
+        .User(receiver.Id.ToString())
+        .SendAsync("ReceiveNewPrivateMessage", new PrivateMessageDto
+        {
+            ChatId = conversation.Id.ToString(),
+            Content = sendPrivateMessageDto.Content,
+            ReceiverId = receiver.Id,
+            SenderId = sender.Id,
+            DateCreated = privateMessageToStore.DateCreated,
+            AvatarReceiver = sender.Avatar,
+            AvatarSender = receiver.Avatar,
+        });
+
+        await _privateChatHub        
+        .Clients
+        .User(sender.Id.ToString())
+        .SendAsync("ReceiveNewPrivateMessage", new PrivateMessageDto
+        {
+            ChatId = conversation.Id.ToString(),
+            Content = sendPrivateMessageDto.Content,
+            ReceiverId = receiver.Id,
+            SenderId = sender.Id,
+            DateCreated = privateMessageToStore.DateCreated,
+            AvatarReceiver = receiver.Avatar,
+            AvatarSender = sender.Avatar,
+        });
 
         return Ok();
     }
