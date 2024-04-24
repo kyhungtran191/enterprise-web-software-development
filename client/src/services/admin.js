@@ -18,6 +18,7 @@ import {
   getContributionActivityLogsAPI,
   getContributionPercentageWithinFacultyByAcademicYearAPI,
   getFacultyByIdAPI,
+  getNotCommentContributionsPagingAPI,
   getPermissionsForRoleAPI,
   getRoleByIdAPI,
   getTotalContributionsPerFacultyForAllAcademicYearsAPI,
@@ -97,7 +98,11 @@ export const Contributions = {
   getContributionActivityLogs: async (contributionId) =>
     await instanceAxios.get(
       `${getContributionActivityLogsAPI}/${contributionId}`
-    )
+    ),
+  getNotCommentContributionsPaging: async (queryParams) =>
+    await instanceAxios.get(getNotCommentContributionsPagingAPI, {
+      params: queryParams
+    })
 }
 
 export const Report = {

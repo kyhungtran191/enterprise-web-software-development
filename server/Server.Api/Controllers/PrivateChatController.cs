@@ -96,9 +96,16 @@ public class PrivateChatController : ApiController
         }
 
         var currentUserId = _currentUserService.UserId;
-        var hasConversation = await _unitOfWork.PrivateChatRepository.HasConversation(currentUserId, specificReceiverId);
+        // var hasConversation = await _unitOfWork.PrivateChatRepository.HasConversation(currentUserId, specificReceiverId);
+        var conversation = 
+            _unitOfWork
+            .PrivateChatRepository
+            .Find(privateChat => 
+                (privateChat.User1Id.ToString() == currentUserId && privateChat.User2Id.ToString() == specificReceiverId) || 
+                (privateChat.User1Id.ToString() == specificReceiverId && privateChat.User2Id.ToString() == currentUserId))
+            .FirstOrDefault();
 
-        if (!hasConversation)
+        if (conversation == null)
         {
             try
             {
@@ -120,6 +127,12 @@ public class PrivateChatController : ApiController
             {
                 return Problem(new List<ErrorOr.Error> { Errors.Parse.CannotParse });
             }
+        }
+        else
+        {
+            conversation.LastActivity = _dateTimeProvider.UtcNow;
+
+            await _unitOfWork.CompleteAsync();
         }
 
         return Ok(false);

@@ -54,10 +54,10 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         #endregion Identity Configuration
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.EnableSensitiveDataLogging();
-    }
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     optionsBuilder.EnableSensitiveDataLogging();
+    // }
     
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
