@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
+import notificationNoticeSound from "/notification.mp3"
 // const messages = [
 //   {
 //     "SenderId": 1,
@@ -70,9 +71,11 @@ export default function ChatPage() {
   useEffect(() => {
     const connection = connections["ChatHub"];
     if (connection) {
-      
+
       const handleNewAnnouncement = (data) => {
-        console.log("data" + data);  
+        const sound = new Audio(notificationNoticeSound)
+        sound.play()
+        console.log("data" + data);
         // let newMessage = null;
         // if (profile?.id != data?.senderId) {
         //   newMessage = {
@@ -142,6 +145,8 @@ export default function ChatPage() {
     }
   }
 
+  console.log(allUsersData?.data)
+
   const handleChangeUserChat = async (item) => {
     setCurrentReceiver(item)
     const data = await getDetailConservations(item?.receiverId)
@@ -196,8 +201,9 @@ export default function ChatPage() {
               <div className="flex flex-row h-full p-3 overflow-hidden overflow-x-auto medium:overflow-y-auto medium:pb-10 medium:h-screen medium:mb-9 medium:flex-col">
                 {allUsersData?.data && allUsersData.data.map((item) => (
                   <div key={item?.receiverId} className="flex flex-col items-center p-2 rounded-md cursor-pointer medium:mb-4 hover:bg-gray-100 medium:flex-row" onClick={() => handleClickUser(item?.receiverId)}>
-                    <div className="flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full" key={item?.id}>
+                    <div className="relative flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full" key={item?.id}>
                       <img src={`${item?.avatar ? item?.avatar : "https://cdn-icons-png.freepik.com/256/1077/1077063.png?semt=ais_hybrid"}`} alt="User Avatar" className="w-12 h-12 rounded-full" />
+                      {item?.isOnline && <div className="absolute bottom-0 w-3 h-3 bg-green-400 rounded-full right-1"></div>}
                     </div>
                     <div className="flex-1 ">
                       <h2 className="text-lg font-semibold">{item?.username}</h2>
@@ -245,7 +251,7 @@ export default function ChatPage() {
                       </div>
                     </div>
                   )
-                } 
+                }
                 return (
                   <div className="flex mb-4 cursor-pointer" key={item.id}>
                     <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
