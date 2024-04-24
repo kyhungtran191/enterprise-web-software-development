@@ -18,6 +18,9 @@ namespace Server.Infrastructure.Services
                 .GetUserId() ??
             throw new ApplicationException("Invalid User Login");
 
+        public Guid FacultyId => _httpContextAccessor.HttpContext?.User.GetFacultyId() ??
+                                 throw new ApplicationException("Invalid user login");
+
         public bool IsAuthenticated =>
             _httpContextAccessor
                 .HttpContext?

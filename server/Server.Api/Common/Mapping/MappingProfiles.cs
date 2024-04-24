@@ -39,6 +39,7 @@ using Server.Application.Features.Identity.Users.Commands.ForgotPassword;
 using Server.Application.Features.Identity.Users.Commands.ResetPassword;
 using Server.Application.Features.Identity.Users.Commands.UpdateProfile;
 using Server.Application.Features.Identity.Users.Commands.UpdateUser;
+using Server.Application.Features.Identity.Users.Queries.GetAllGuestsPaging;
 using Server.Application.Features.Identity.Users.Queries.GetAllUsersPaging;
 using Server.Application.Features.Identity.Users.Queries.GetProfile;
 using Server.Application.Features.Identity.Users.Queries.GetUserById;
@@ -103,6 +104,8 @@ public class MappingProfiles : Profile
 
         // Get user paging
         CreateMap<GetAllUserPagingRequest, GetAllUserPagingQuery>();
+        // Get guest paging
+        CreateMap<GetAllUserPagingRequest, GetAllGuestsPagingQuery>();
 
         // Get User by id
         CreateMap<GetUserByIdRequest, GetUserByIdQuery>();
