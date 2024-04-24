@@ -1,5 +1,4 @@
-let permissions =
-{
+let permissions = {
   Dashboard: {
     View: 'Permissions.Dashboard.View'
   },
@@ -39,6 +38,9 @@ let permissions =
     Edit: 'Permissions.Contributions.Edit',
     Delete: 'Permissions.Contributions.Delete',
     Approve: 'Permissions.Contributions.Approve'
+  },
+  NotCommentContribution: {
+    View: 'Permissions.NotCommentContribution.View'
   }
 }
 export default permissions

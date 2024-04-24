@@ -96,17 +96,20 @@ export default function Profile() {
         dateObject &&
         new Date(dateObject.getTime() - dateObject.getTimezoneOffset() * 60000)
       const isoString = utcDateObject && utcDateObject?.toISOString()
-      const dob = new Date(dateString);
-      const today = new Date();
-      let age = today.getFullYear() - dob.getFullYear();
-      const monthDiff = today.getMonth() - dob.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-        age--;
+      const dob = new Date(dateString)
+      const today = new Date()
+      let age = today.getFullYear() - dob.getFullYear()
+      const monthDiff = today.getMonth() - dob.getMonth()
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < dob.getDate())
+      ) {
+        age--
       }
 
       if (age < 18) {
-        toast.error("Invalid age, age should be more than 18 years old")
-        return;
+        toast.error('Invalid age, age should be more than 18 years old')
+        return
       }
       formData.append('Dob', isoString)
     }
@@ -139,7 +142,7 @@ export default function Profile() {
       ? STUDENT_OPTIONS
       : profile.roles === Roles?.Coordinator
         ? MC_OPTIONS
-        : Roles?.Manager
+        : profile.roles === Roles?.Manager
           ? MM_OPTIONS
           : ADMIN_OPTIONS
   return (

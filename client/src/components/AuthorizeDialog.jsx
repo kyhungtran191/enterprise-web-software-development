@@ -78,7 +78,7 @@ export function AuthorizeDialog({ role }) {
       <DialogTrigger asChild>
         <Button>Authorize</Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-md'>
+      <DialogContent className='sm:max-w-md overflow-y-scroll h-full'>
         <DialogHeader>
           <DialogTitle>{role.displayName} permissions</DialogTitle>
         </DialogHeader>
@@ -87,6 +87,7 @@ export function AuthorizeDialog({ role }) {
             <Spinner className={'border-blue-500'}></Spinner>
           </div>
         )}
+
         {!isLoading &&
           permissions.map((permission) => (
             <div className='flex items-center space-x-2' key={permission.value}>
@@ -98,6 +99,7 @@ export function AuthorizeDialog({ role }) {
               <Label className='font-normal'>{permission.displayName}</Label>
             </div>
           ))}
+
         <DialogFooter className='sm:justify-end'>
           <DialogClose>
             <Button type='button' variant='ghost'>
