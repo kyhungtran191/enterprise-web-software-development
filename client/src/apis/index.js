@@ -88,3 +88,10 @@ export const getNotCommentContributionsPagingAPI = `${URL}/manager/Contributions
 export const getTotalContributionsPerFacultyForAllAcademicYearsAPI = `${URL}${adminAPI}/Contributions/report-contributions-within-each-faculty-for-each-academic-year`
 export const getTotalContributorsPerFacultyForAllAcademicYearsAPI = `${URL}${adminAPI}/Contributions/report-total-contributors-per-each-faculties-for-each-academic-years`
 export const getContributionPercentageWithinFacultyByAcademicYearAPI = `${URL}${adminAPI}/Contributions/report-percentages-contributions-within-each-faculty-by-academic-year`
+
+
+// Chat 
+// Private Chat
+export const allOnlineFacultyUsers = `http://localhost:5272/PrivateChat/faculty-users`
+export const conservationUsers = `http://localhost:5272/PrivateChat/conservation-users`
+export const messageAPI = `http://localhost:5272/PrivateChat/message`

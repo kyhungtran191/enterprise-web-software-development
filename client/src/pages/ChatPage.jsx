@@ -1,48 +1,140 @@
+import { conservationUsers, recentContributionAPI } from '@/apis'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppContext } from '@/hooks/useAppContext'
 import GeneralLayout from '@/layouts'
-import React, { useState } from 'react'
-const messages = [
-  {
-    "SenderId": 1,
-    "AvatarSender": "",
-    "ReceiverId": 2,
-    "AvatarReceiver": "",
-    "Content": "Hi Alice! I'm good, just finished a great book. How about you?",
-    "DateCreated": 1,
-  },
-  {
-    "SenderId": 1,
-    "AvatarSender": "",
-    "ReceiverId": 2,
-    "AvatarReceiver": "",
-    "Content": "How are you doing today?",
-    "DateCreated": 2,
-  },
-  {
-    "SenderId": 2,
-    "AvatarSender": "",
-    "ReceiverId": 1,
-    "AvatarReceiver": "",
-    "Content": "Hey Bob, how's it going?",
-    "DateCreated": 3,
-  },
-  {
-    "SenderId": 1,
-    "AvatarSender": "",
-    "ReceiverId": 2,
-    "AvatarReceiver": "",
-    "Content": "Did you watch the game last night?",
-    "DateCreated": 4,
-  }]
+import { addNewMessage, createNewConservation, getCurrentOnlineUser, getDetailConservations, getPrivateConservations } from '@/services/chat'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import * as yup from 'yup'
+// const messages = [
+//   {
+//     "SenderId": 1,
+//     "AvatarSender": "",
+//     "ReceiverId": 2,
+//     "AvatarReceiver": "",
+//     "Content": "Hi Alice! I'm good, just finished a great book. How about you?",
+//     "DateCreated": 1,
+//   },
+//   {
+//     "SenderId": 1,
+//     "AvatarSender": "",
+//     "ReceiverId": 2,
+//     "AvatarReceiver": "",
+//     "Content": "How are you doing today?",
+//     "DateCreated": 2,
+//   },
+//   {
+//     "SenderId": 2,
+//     "AvatarSender": "",
+//     "ReceiverId": 1,
+//     "AvatarReceiver": "",
+//     "Content": "Hey Bob, how's it going?",
+//     "DateCreated": 3,
+//   },
+//   {
+//     "SenderId": 1,
+//     "AvatarSender": "",
+//     "ReceiverId": 2,
+//     "AvatarReceiver": "",
+//     "Content": "Did you watch the game last night?",
+//     "DateCreated": 4,
+//   }]
 export default function ChatPage() {
+  const schema = yup
+    .object({
+      message: yup.string().required('')
+    })
+    .required()
+  const {
+    handleSubmit,
+    control,
+    reset,
+    register,
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(schema) })
+
+  const queryClient = useQueryClient()
   const [openNav, setOpenNav] = useState(true)
-  const [currentSelect, setCurrentSelect] = useState("online")
-  console.log(currentSelect)
+  const [currentSelect, setCurrentSelect] = useState("history")
+
   const { profile } = useAppContext()
   const [firstChatMessages, setFirstChatMessages] = useState()
   const [currentReceiver, setCurrentReceiver] = useState()
+
+  const { data: allUsersData } = useQuery({
+    queryKey: ['allUser'],
+    queryFn: (_) => getCurrentOnlineUser()
+  })
+
+  const { data: historyData } = useQuery({
+    queryKey: ['historyData'],
+    queryFn: (_) => getPrivateConservations(),
+    enabled: currentSelect == "history"
+  })
+
+  useEffect(() => {
+    if (historyData && historyData?.data) {
+      setCurrentReceiver(historyData?.data[0])
+      setFirstChatMessages(historyData?.data[0]?.currentMessagesReceiver)
+    }
+  }, [historyData])
+
+  const createConversationMutation = useMutation({
+    mutationFn: (receiverId) => createNewConservation(receiverId)
+  })
+
+
+
+
+  const handleClickUser = (receiverId) => {
+    if (receiverId) {
+      createConversationMutation.mutate(receiverId, {
+        onSuccess() {
+          setCurrentSelect("history")
+        },
+        onSettled() {
+          queryClient.invalidateQueries(['historyData'])
+        },
+        onError(err) {
+          console.log(err)
+        }
+      })
+    } else {
+      toast.error("Please provide receiver ID")
+    }
+  }
+
+  const handleChangeUserChat = async (item) => {
+    setCurrentReceiver(item)
+    const data = await getDetailConservations(item?.receiverId)
+    const currentReceiver = data?.data.find((listId) => listId.receiverId === item.receiverId)
+    setFirstChatMessages(currentReceiver?.currentMessagesReceiver)
+  }
+  const addMessage = useMutation({
+    mutationFn: (body) => addNewMessage(body)
+  })
+  console.log(firstChatMessages)
+  const onAddMessage = (data) => {
+    let message = {
+      senderId: currentReceiver?.currentUserId,
+      receiverId: currentReceiver?.receiverId,
+      content: data?.message,
+      chatId: currentReceiver?.chatId
+    }
+    addMessage.mutate(message, {
+      onSuccess(data) {
+        reset({ message: "" })
+      },
+      onError(err) {
+        console.log(err)
+      }
+    })
+  }
+
   return (
     <GeneralLayout>
       <div className="flex flex-wrap h-screen overflow-hidden medium:flex">
@@ -68,29 +160,32 @@ export default function ChatPage() {
             </TabsList>
             <TabsContent value="online">
               <div className="flex flex-row h-full p-3 overflow-hidden overflow-x-auto medium:overflow-y-auto medium:pb-10 medium:h-screen medium:mb-9 medium:flex-col">
-                {Array(10).fill(0).map((item) => (
-                  <div key={item} className="flex flex-col items-center p-2 rounded-md cursor-pointer medium:mb-4 hover:bg-gray-100 medium:flex-row" onClick={() => { setCurrentSelect("history") }}>
-                    <div className="flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full">
-                      <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" className="w-12 h-12 rounded-full" />
+                {allUsersData?.data && allUsersData.data.map((item) => (
+                  <div key={item?.receiverId} className="flex flex-col items-center p-2 rounded-md cursor-pointer medium:mb-4 hover:bg-gray-100 medium:flex-row" onClick={() => handleClickUser(item?.receiverId)}>
+                    <div className="flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full" key={item?.id}>
+                      <img src={`${item?.avatar ? item?.avatar : "https://cdn-icons-png.freepik.com/256/1077/1077063.png?semt=ais_hybrid"}`} alt="User Avatar" className="w-12 h-12 rounded-full" />
                     </div>
                     <div className="flex-1 ">
-                      <h2 className="text-lg font-semibold">Alice</h2>
-                      {openNav && <p className="text-gray-600">Hoorayy!!</p>}
+                      <h2 className="text-lg font-semibold">{item?.username}</h2>
+                      <span className="font-medium text-md">{item?.role}</span>
                     </div>
                   </div>))}
               </div>
             </TabsContent>
             <TabsContent value="history">
               <div className="flex flex-row h-full p-3 overflow-hidden overflow-x-auto medium:overflow-y-auto medium:pb-10 medium:h-screen medium:mb-9 medium:flex-col">
-                {Array(10).fill(0).map((item) => (<div key={item} className="flex flex-col items-center p-2 rounded-md cursor-pointer medium:mb-4 hover:bg-gray-100 medium:flex-row">
-                  <div className="flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full">
-                    <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" className="w-12 h-12 rounded-full" />
-                  </div>
-                  <div className="flex-1 ">
-                    <h2 className="text-lg font-semibold">Alice</h2>
-                    {openNav && <p className="text-gray-600">Hoorayy!!</p>}
-                  </div>
-                </div>))}
+                {historyData?.data && historyData?.data.map((item) => (
+                  <div key={item.receiverId} className={`flex flex-col items-center p-2 rounded-md cursor-pointer medium:mb-4 hover:bg-gray-100 medium:flex-row ${currentReceiver?.receiverId === item?.receiverId ? "bg-purple-400 text-white" : ""}`} onClick={() => { handleChangeUserChat(item) }}>
+                    <div className="flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full">
+                      <img src={item?.avatar} alt="User Avatar" className="w-12 h-12 rounded-full" />
+                    </div>
+                    <div className="flex-1 ">
+                      <h2 className="text-lg font-semibold">{item?.username}</h2>
+                      <p className="font-semibold text-black text-md">
+                        {item?.role}
+                      </p>
+                    </div>
+                  </div>))}
               </div>
             </TabsContent>
           </Tabs>
@@ -99,20 +194,20 @@ export default function ChatPage() {
         <div className="flex-1">
           {currentSelect === "history" && <div>
             <header className="p-4 text-white text-gray-700 bg-purple-500">
-              <h1 className="text-2xl font-semibold">Alice</h1>
+              <h1 className="text-2xl font-semibold">{currentReceiver?.username}</h1>
             </header>
             <div className="h-[50vh] medium:h-[70vh] p-4 overflow-y-auto pb-36 relative">
 
               {/* Receiver */}
-              {messages?.map((item) => {
-                if (item?.SenderId === 1) {
+              {firstChatMessages && firstChatMessages?.map((item) => {
+                if (item?.senderId === profile?.id) {
                   return (
                     <div className="flex justify-end mb-4 cursor-pointer" key={item.id}>
                       <div className="flex gap-3 p-3 text-white bg-indigo-500 rounded-lg max-w-96">
-                        <p>{item?.Content}</p>
+                        <p>{item?.content}</p>
                       </div>
                       <div className="flex items-center justify-center ml-2 rounded-full w-9 h-9">
-                        <img src="https://placehold.co/200x/b7a8ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="My Avatar" className="w-8 h-8 rounded-full" />
+                        <img src={item?.avatarSender} alt="My Avatar" className="w-8 h-8 rounded-full" />
                       </div>
                     </div>
                   )
@@ -120,10 +215,10 @@ export default function ChatPage() {
                 return (
                   <div className="flex mb-4 cursor-pointer" key={item.id}>
                     <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
-                      <img src="https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato" alt="User Avatar" className="w-8 h-8 rounded-full" />
+                      <img src={item?.avatarReceiver} alt="User Avatar" className="w-8 h-8 rounded-full" />
                     </div>
                     <div className="flex gap-3 p-3 bg-white rounded-lg max-w-96">
-                      <p className="text-gray-700">{item?.Content}</p>
+                      <p className="text-gray-700">{item?.content}</p>
                     </div>
                   </div>
                 )
@@ -136,10 +231,10 @@ export default function ChatPage() {
             <div className="flex items-center justify-center w-full">
               <div className="fixed bottom-0 w-full p-4 mx-auto bg-white border-gray-300 medium:absolute medium:w-3/4 ">
                 <Separator class></Separator>
-                <div className="flex items-center">
-                  <input type="text" placeholder="Type a message..." className="w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500" />
-                  <button className="px-4 py-2 ml-2 text-white bg-indigo-500 rounded-md">Send</button>
-                </div>
+                <form className="flex items-center" onSubmit={handleSubmit(onAddMessage)}>
+                  <input type="text" placeholder="Type a message..." className={`w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500`} {...register('message')} />
+                  <button className={`px-4 py-2 ml-2 text-white bg-indigo-500 rounded-md ${addMessage.isLoading ? "disabled" : ""}`}>Send</button>
+                </form>
               </div>
             </div>
           </div>}
