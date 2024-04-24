@@ -1,6 +1,7 @@
 import { conservationUsers, recentContributionAPI } from '@/apis'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useSignalRContext } from '@/contexts/signalr.context'
 import { useAppContext } from '@/hooks/useAppContext'
 import GeneralLayout from '@/layouts'
 import { addNewMessage, createNewConservation, getCurrentOnlineUser, getDetailConservations, getPrivateConservations } from '@/services/chat'
@@ -64,6 +65,41 @@ export default function ChatPage() {
   const { profile } = useAppContext()
   const [firstChatMessages, setFirstChatMessages] = useState()
   const [currentReceiver, setCurrentReceiver] = useState()
+  const { connections } = useSignalRContext();
+
+  useEffect(() => {
+    const connection = connections["ChatHub"];
+    if (connection) {
+      
+      const handleNewAnnouncement = (data) => {
+        console.log("data" + data);  
+        // let newMessage = null;
+        // if (profile?.id != data?.senderId) {
+        //   newMessage = {
+        //     senderId: data?.receiverId,
+        //     receiverId: data?.senderId,
+        //     avatarReceiver: data?.avatarSender,
+        //     avatarSender: data?.avatarReceiver,
+        //     content: data?.content,
+        //     chatId: currentReceiver?.chatId
+        //   }
+        // }
+        setFirstChatMessages((prev) => {
+          const currentData = [...prev]
+          currentData.push(data);
+          return currentData;
+        });
+      };
+
+      // Add event listener
+      connection.on("ReceiveNewPrivateMessage", handleNewAnnouncement);
+
+      // Cleanup: Remove event listener when component unmounts
+      return () => {
+        // connection.off("ReceiveNewPrivateMessage", handleNewAnnouncement);
+      };
+    }
+  }, [connections["ChatHub"]])
 
   const { data: allUsersData } = useQuery({
     queryKey: ['allUser'],
@@ -86,8 +122,6 @@ export default function ChatPage() {
   const createConversationMutation = useMutation({
     mutationFn: (receiverId) => createNewConservation(receiverId)
   })
-
-
 
 
   const handleClickUser = (receiverId) => {
@@ -211,7 +245,7 @@ export default function ChatPage() {
                       </div>
                     </div>
                   )
-                }
+                } 
                 return (
                   <div className="flex mb-4 cursor-pointer" key={item.id}>
                     <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
