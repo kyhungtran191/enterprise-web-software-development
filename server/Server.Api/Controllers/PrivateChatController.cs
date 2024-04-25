@@ -84,7 +84,8 @@ public class PrivateChatController : ApiController
 
             var roles = await _userManager.GetRolesAsync(receiver);
 
-            if (roles[0] != Roles.Guest) {
+            if (roles[0] != Roles.Guest)
+            {
                 result.Add(new PrivateChatUserDto
                 {
                     CurrentUserId = currentUserId,
@@ -226,7 +227,8 @@ public class PrivateChatController : ApiController
 
             var roles = await _userManager.GetRolesAsync(receiver);
 
-            if (roles[0] == Roles.Guest) {
+            if (roles[0] == Roles.Guest)
+            {
                 continue;
             }
 
@@ -362,7 +364,7 @@ public class PrivateChatController : ApiController
             AvatarSender = receiver.Avatar,
         });
 
-        await _privateChatHub        
+        await _privateChatHub
         .Clients
         .User(sender.Id.ToString())
         .SendAsync("ReceiveNewPrivateMessage", new PrivateMessageDto
@@ -376,7 +378,63 @@ public class PrivateChatController : ApiController
             AvatarSender = sender.Avatar,
         });
 
+        await _privateChatHub
+        .Clients
+        .Users(receiver.Id.ToString())
+        .SendAsync("ReceiverIsTyping", false);
+
         return Ok();
     }
 
+    [HttpPatch]
+    [Route("message")]
+    public async Task<IActionResult> MarkMessageHasRead(string chatId, string receiverId)
+    {
+        var conversation = _unitOfWork.PrivateChatRepository.Find(x => x.Id.ToString() == chatId).FirstOrDefault();
+
+        if (conversation == null)
+        {
+            return Problem(new List<ErrorOr.Error> {
+                Errors.Chat.CannotFound
+            });
+        }
+
+        var sender = await _userManager.FindByIdAsync(_currentUserService.UserId);
+
+        if (sender == null)
+        {
+            return Problem(new List<ErrorOr.Error> {
+                Errors.Chat.SenderCannotFound
+            });
+        }
+
+        var receiver = await _userManager.FindByIdAsync(receiverId);
+
+        if (receiver == null)
+        {
+            return Problem(new List<ErrorOr.Error> {
+                Errors.Chat.ReceiverCannotFound
+            });
+        }
+
+        var messageFromDb = _unitOfWork
+        .PrivateMessagesRepository
+        .Find(x => x.ChatId.ToString() == chatId &&
+              x.SenderId.ToString() == _currentUserService.UserId &&
+              x.ReceiverId.ToString() == receiverId)
+        .FirstOrDefault();
+
+        if (messageFromDb == null)
+        {
+            return Problem(new List<ErrorOr.Error> {
+                Errors.Chat.MessageCannotFound
+            });
+        }
+
+        messageFromDb.HasRead = true;
+
+        await _unitOfWork.CompleteAsync();        
+
+        return Ok(true);
+    }
 }
