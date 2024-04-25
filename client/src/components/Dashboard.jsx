@@ -19,9 +19,20 @@ import Spinner from './Spinner'
 const Dashboard = () => {
   const [selectedChartType, setSelectedChartType] = useState('contributions')
   const { academicYearsData } = useAcademicYearAdmin()
-  console.log(academicYearsData)
+  const getCurrentYearName = (academicYears) => {
+    const currentYear = new Date().getFullYear()
+    const currentAcademicYear = academicYears.find((year) => {
+      const startYear = parseInt(year.name.split('-')[0])
+      if (currentYear === startYear) {
+        return year
+      }
+    })
+    return currentAcademicYear?.name || academicYears[0]?.name
+  }
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(
-    academicYearsData[0]?.name
+    academicYearsData.length
+      ? getCurrentYearName(academicYearsData) || academicYearsData[0]?.name
+      : ''
   )
   const options =
     selectedChartType !== 'percentage'
@@ -69,16 +80,22 @@ const Dashboard = () => {
 
   const handleSelectChartType = (chartType) => {
     setSelectedChartType(chartType)
+    if (chartType === 'percentage') {
+      setSelectedAcademicYear(
+        academicYearsData.length
+          ? getCurrentYearName(academicYearsData) || academicYearsData[0]?.name
+          : ''
+      )
+    }
   }
   const handleSelectAcademicYear = (academicYear) => {
-    console.log(academicYear)
     setSelectedAcademicYear(academicYear)
   }
   const { data: chartData, isLoading } = useQuery({
     queryKey: [
       'adminChartData',
       selectedChartType,
-      selectedChartType === 'percentage' ? selectedAcademicYear : undefined
+      selectedChartType === 'percentage' ? selectedAcademicYear : ''
     ],
     queryFn: () => {
       switch (selectedChartType) {
@@ -97,7 +114,7 @@ const Dashboard = () => {
     keepPreviousData: true,
     staleTime: 3 * 60 * 1000,
     enabled: selectedChartType !== '',
-    refetchOnWindowFocus: false // Optionally set this to false to prevent refetch when window gains focus
+    refetchOnWindowFocus: false
   })
   const data = useMemo(() => {
     if (!chartData) return
