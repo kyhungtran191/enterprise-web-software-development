@@ -21,6 +21,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Clock, BellRing, MessageSquare } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import Notification from '@/components/Notification'
+import Message from '@/components/Message'
 
 export default function Header() {
   const queryClient = useQueryClient()
@@ -68,12 +69,7 @@ export default function Header() {
         </div>
         <div className='flex items-center gap-x-2'>
           {profile?.roles !== Roles?.Guest && <>
-            <Link
-              to='/message'
-              className='flex items-center justify-center w-12 h-12 transition-colors duration-300 ease-in-out rounded-full cursor-pointer hover:bg-slate-100'
-            >
-              <MessageSquare></MessageSquare>
-            </Link>
+            <Message></Message>
             <Notification></Notification>
           </>}
 
