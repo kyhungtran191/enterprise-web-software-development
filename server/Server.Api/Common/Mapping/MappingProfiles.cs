@@ -96,6 +96,7 @@ public class MappingProfiles : Profile
         CreateMap<CreateUserRequest, CreateUserCommand>();        
         CreateMap<CreateUserCommand, AppUser>();        
         CreateMap<CreateGuestRequest, CreateGuestCommand>();
+        CreateMap<CreateUserRequest, CreateGuestCommand>();
         CreateMap<CreateGuestCommand, AppUser>();
 
         // Update users
