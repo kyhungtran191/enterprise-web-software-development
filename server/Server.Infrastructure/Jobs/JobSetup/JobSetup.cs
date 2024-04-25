@@ -16,7 +16,7 @@ namespace Server.Infrastructure.Jobs.JobSetup
             options.AddJob<CheckAcademicYearJob>(jobBuilder => jobBuilder.WithIdentity(checkAcademicYearJobKey))
                 .AddTrigger(trigger =>
                     trigger.ForJob(checkAcademicYearJobKey)
-                        .WithSimpleSchedule(schedule => schedule.WithIntervalInHours(24).RepeatForever()));
+                        .WithSimpleSchedule(schedule => schedule.WithIntervalInSeconds(10).RepeatForever()));
         }
     }
 }

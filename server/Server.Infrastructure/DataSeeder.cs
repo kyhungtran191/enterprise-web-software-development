@@ -279,9 +279,9 @@ public static class DataSeeder
         {
             new()
             {
-                Id = Guid.NewGuid(), FirstName = "An", LastName = "Minh", Email = "student@gmail.com",
-                NormalizedEmail = "student@gmail.com".ToUpperInvariant(), UserName = "student",
-                NormalizedUserName = "student".ToUpperInvariant(), IsActive = true,
+                Id = Guid.NewGuid(), FirstName = "An", LastName = "Minh", Email = "student1@gmail.com",
+                NormalizedEmail = "student1@gmail.com".ToUpperInvariant(), UserName = "student1",
+                NormalizedUserName = "student1".ToUpperInvariant(), IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
@@ -292,9 +292,9 @@ public static class DataSeeder
             },
             new()
             {
-                Id = student1_gmail_com, FirstName = "Vu", LastName = "Nguyen", Email = "student1@gmail.com",
-                NormalizedEmail = "student1@gmail.com".ToUpperInvariant(), UserName = "student1",
-                NormalizedUserName = "student1".ToUpperInvariant(), IsActive = true,
+                Id = student1_gmail_com, FirstName = "Vu", LastName = "Nguyen", Email = "trankyhung225@gmail.com",
+                NormalizedEmail = "trankyhung225@gmail.com".ToUpperInvariant(), UserName = "trankyhung225",
+                NormalizedUserName = "trankyhung225".ToUpperInvariant(), IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
                 DateCreated = DateTime.Now,
@@ -305,8 +305,8 @@ public static class DataSeeder
             },
             new()
             {
-                Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "trankyhung225@gmail.com",
-                NormalizedEmail = "trankyhung225@gmail.com".ToUpperInvariant(), UserName = "student2",
+                Id = Guid.NewGuid(), FirstName = "Hung", LastName = "Tran", Email = "student2@gmail.com",
+                NormalizedEmail = "student2@gmail.com".ToUpperInvariant(), UserName = "student2",
                 NormalizedUserName = "student2".ToUpperInvariant(), IsActive = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 LockoutEnabled = false,
@@ -578,7 +578,7 @@ public static class DataSeeder
         {
             // admin
 
-            var userEmail = "admin@gmail.com";
+            var userEmail = "haodvgcs88@gmail.com";
             var userName = "admin";
             var user = new AppUser
             {
@@ -608,7 +608,7 @@ public static class DataSeeder
                 UserId = adminId
             });
             // manager
-            var managerEmail = "manager@gmail.com";
+            var managerEmail = "mushimushito2003@gmail.com";
             var managerUserName = "manager";
             var manager = new AppUser
             {
