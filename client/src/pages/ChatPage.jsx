@@ -61,12 +61,32 @@ export default function ChatPage() {
 
   const queryClient = useQueryClient()
   const [openNav, setOpenNav] = useState(true)
-  const [currentSelect, setCurrentSelect] = useState("history")
-  const [senderIsTyping, setSenderIsTyping] = useState(true)
+  const [currentSelect, setCurrentSelect] = useState("online")
+  const [senderIsTyping, setSenderIsTyping] = useState(false)
+  const [senderIsTypingAvatar, setSenderIsTypingAvatar] = useState("")
   const { profile } = useAppContext()
   const [firstChatMessages, setFirstChatMessages] = useState()
   const [currentReceiver, setCurrentReceiver] = useState()
+  // const [allUsers, setAllUsers] = useState([])
   const { connections } = useSignalRContext();
+
+  const { data: allUsersData } = useQuery({
+    queryKey: ['allUser'],
+    queryFn: (_) => getCurrentOnlineUser()
+  })
+
+  // useEffect(() => {
+  //   setAllUsers(allUsersData?.data)
+  // }, [allUsersData])
+
+  // console.log("allUsers", allUsers);
+
+  const { data: historyData } = useQuery({
+    queryKey: ['historyData'],
+    queryFn: (_) => getPrivateConservations(),
+    enabled: currentSelect == "history"
+  })
+
 
   useEffect(() => {
     const connection = connections["ChatHub"];
@@ -76,17 +96,6 @@ export default function ChatPage() {
         const sound = new Audio(notificationNoticeSound)
         sound.play()
         console.log("data" + data);
-        // let newMessage = null;
-        // if (profile?.id != data?.senderId) {
-        //   newMessage = {
-        //     senderId: data?.receiverId,
-        //     receiverId: data?.senderId,
-        //     avatarReceiver: data?.avatarSender,
-        //     avatarSender: data?.avatarReceiver,
-        //     content: data?.content,
-        //     chatId: currentReceiver?.chatId
-        //   }
-        // }
         setFirstChatMessages((prev) => {
           const currentData = [...prev]
           currentData.push(data);
@@ -94,8 +103,54 @@ export default function ChatPage() {
         });
       };
 
+      const handleIsTyping = (isTyping, senderAvatar) => {
+        setSenderIsTyping(isTyping);
+        setSenderIsTypingAvatar(senderAvatar);
+      }
+
+      const handleStopTyping = (isStopTyping) => {
+        setSenderIsTyping(isStopTyping);
+      }
+
+      // const handleIsOnline = (newUserConnected) => {
+      //   console.log("newUserConnected", newUserConnected);
+
+
+      //   // const result = allUsers
+      //   //   ?.map(x => x.receiverId == newUserConnected.userId ? { ...x, isOnline: !x.isOnline } : {...x});
+
+      //     let result  = [];
+
+      //     for (let item of allUsers) {
+      //       console.log(item);
+      //       if (item.receiverId == newUserConnected.userId) {
+      //         item.isOnline = true;
+      //       }
+      //       result.push(item);
+      //     }
+
+      //     console.log("result", result);
+      //   // setAllUsers(result);
+
+      // }
+
+      // const handleIsOffline = (newUserDisconnected) => {
+      //   console.log("newUserDisconnected", newUserDisconnected);
+
+      //   const result =
+      //     allUsers
+      //       .map(x => x.receiverId == newUserDisconnected.userId ? { ...x, isOnline: !x.isOnline } : {...x});
+
+      //       console.log("result", result);
+      //   // setAllUsers(result);
+      // }
+
       // Add event listener
       connection.on("ReceiveNewPrivateMessage", handleNewAnnouncement);
+      connection.on("ReceiverIsTyping", handleIsTyping);
+      connection.on("ReceiverStopTyping", handleStopTyping);
+      // connection.on("NewUserConnected", handleIsOnline);
+      // connection.on("NewUserDisonnected", handleIsOffline);
 
       // Cleanup: Remove event listener when component unmounts
       return () => {
@@ -104,16 +159,6 @@ export default function ChatPage() {
     }
   }, [connections["ChatHub"]])
 
-  const { data: allUsersData } = useQuery({
-    queryKey: ['allUser'],
-    queryFn: (_) => getCurrentOnlineUser()
-  })
-
-  const { data: historyData } = useQuery({
-    queryKey: ['historyData'],
-    queryFn: (_) => getPrivateConservations(),
-    enabled: currentSelect == "history"
-  })
 
   useEffect(() => {
     if (historyData && historyData?.data) {
@@ -172,6 +217,16 @@ export default function ChatPage() {
         console.log(err)
       }
     })
+  }
+
+  async function onTyping(event) {
+    const isMsgGreaterThan0 = event.target.value.length > 0;
+
+    if (isMsgGreaterThan0) {
+      connections["ChatHub"].invoke("IsTyping", currentReceiver?.receiverId);
+    } else {
+      connections["ChatHub"].invoke("StopTyping", currentReceiver?.receiverId);
+    }
   }
 
   return (
@@ -266,7 +321,7 @@ export default function ChatPage() {
               {/* Typing UI */}
               {senderIsTyping && <div className="flex mb-4 cursor-pointer">
                 <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
-                  <img src={"https://s120-ava-talk.zadn.vn/9/7/9/4/21/120/e0813d7d04dcb0ed3eba0438a00aa62b.jpg"} alt="User Avatar" className="w-8 h-8 rounded-full" />
+                  <img src={senderIsTypingAvatar} alt="User Avatar" className="w-8 h-8 rounded-full" />
                 </div>
                 <div className="flex gap-3 p-3 bg-white rounded-lg max-w-96">
                   <p className="text-gray-700">
@@ -292,7 +347,7 @@ export default function ChatPage() {
               <div className="fixed bottom-0 w-full p-4 mx-auto bg-white border-gray-300 medium:absolute medium:w-3/4 ">
                 <Separator class></Separator>
                 <form className="flex items-center" onSubmit={handleSubmit(onAddMessage)}>
-                  <input type="text" placeholder="Type a message..." className={`w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500`} {...register('message')} />
+                  <input type="text" placeholder="Type a message..." className={`w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500`} {...register('message')} onChange={onTyping} />
                   <button className={`px-4 py-2 ml-2 text-white bg-indigo-500 rounded-md ${addMessage.isLoading ? "disabled" : ""}`}>Send</button>
                 </form>
               </div>
