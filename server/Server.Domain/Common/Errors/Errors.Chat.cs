@@ -11,6 +11,11 @@ public static partial class Errors
             description: "The conversation can not found."
         );
 
+         public static Error MessageCannotFound => Error.NotFound(
+            code: "Chat.MessageCannotFound",
+            description: "The message can not found."
+        );
+
         public static Error SenderCannotFound => Error.NotFound(
           code: "Chat.SenderCannotFound",
           description: "The sender can not found."

@@ -105,4 +105,13 @@ public class PrivateChatHub : Hub
     public async Task Ping() {
         await Clients.Caller.SendAsync("Ping", "Ok");
     }
+
+    public async Task IsTyping(string receiverId) {
+        var currentUser = await _userManager.FindByIdAsync(_currentUserService.UserId);
+        await Clients.Users(receiverId).SendAsync("ReceiverIsTyping", true, currentUser?.Avatar);
+    }
+
+      public async Task StopTyping(string receiverId) {
+        await Clients.Users(receiverId).SendAsync("ReceiverStopTyping", false);
+    }
 }
