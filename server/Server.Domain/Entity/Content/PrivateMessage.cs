@@ -13,5 +13,6 @@ public class PrivateMessage
     public Guid ReceiverId { get; set; }
     public string? Content { get; set; }
     public DateTime DateCreated { get; set; }
+    public bool HasRead { get; set; }    
 }
 

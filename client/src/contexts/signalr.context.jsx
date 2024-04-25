@@ -96,9 +96,8 @@ export const SignalRProvider = ({ children }) => {
       // Start connections
       for (let [key, connect] of Object.entries(connections)) {
         connect?.start().then(() => {
-          console.log(key + " successfully!");       
+          console.log(key + " successfully!");                 
           
-       
         }).catch((err) => console.log(err));
       }
     }

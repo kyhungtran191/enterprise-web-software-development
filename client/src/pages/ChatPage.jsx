@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
+import notificationNoticeSound from "/notification.mp3"
 // const messages = [
 //   {
 //     "SenderId": 1,
@@ -60,30 +61,41 @@ export default function ChatPage() {
 
   const queryClient = useQueryClient()
   const [openNav, setOpenNav] = useState(true)
-  const [currentSelect, setCurrentSelect] = useState("history")
-
+  const [currentSelect, setCurrentSelect] = useState("online")
+  const [senderIsTyping, setSenderIsTyping] = useState(false)
+  const [senderIsTypingAvatar, setSenderIsTypingAvatar] = useState("")
   const { profile } = useAppContext()
   const [firstChatMessages, setFirstChatMessages] = useState()
   const [currentReceiver, setCurrentReceiver] = useState()
+  // const [allUsers, setAllUsers] = useState([])
   const { connections } = useSignalRContext();
+
+  const { data: allUsersData } = useQuery({
+    queryKey: ['allUser'],
+    queryFn: (_) => getCurrentOnlineUser()
+  })
+
+  // useEffect(() => {
+  //   setAllUsers(allUsersData?.data)
+  // }, [allUsersData])
+
+  // console.log("allUsers", allUsers);
+
+  const { data: historyData } = useQuery({
+    queryKey: ['historyData'],
+    queryFn: (_) => getPrivateConservations(),
+    enabled: currentSelect == "history"
+  })
+
 
   useEffect(() => {
     const connection = connections["ChatHub"];
     if (connection) {
-      
+
       const handleNewAnnouncement = (data) => {
-        console.log("data" + data);  
-        // let newMessage = null;
-        // if (profile?.id != data?.senderId) {
-        //   newMessage = {
-        //     senderId: data?.receiverId,
-        //     receiverId: data?.senderId,
-        //     avatarReceiver: data?.avatarSender,
-        //     avatarSender: data?.avatarReceiver,
-        //     content: data?.content,
-        //     chatId: currentReceiver?.chatId
-        //   }
-        // }
+        const sound = new Audio(notificationNoticeSound)
+        sound.play()
+        console.log("data" + data);
         setFirstChatMessages((prev) => {
           const currentData = [...prev]
           currentData.push(data);
@@ -91,8 +103,54 @@ export default function ChatPage() {
         });
       };
 
+      const handleIsTyping = (isTyping, senderAvatar) => {
+        setSenderIsTyping(isTyping);
+        setSenderIsTypingAvatar(senderAvatar);
+      }
+
+      const handleStopTyping = (isStopTyping) => {
+        setSenderIsTyping(isStopTyping);
+      }
+
+      // const handleIsOnline = (newUserConnected) => {
+      //   console.log("newUserConnected", newUserConnected);
+
+
+      //   // const result = allUsers
+      //   //   ?.map(x => x.receiverId == newUserConnected.userId ? { ...x, isOnline: !x.isOnline } : {...x});
+
+      //     let result  = [];
+
+      //     for (let item of allUsers) {
+      //       console.log(item);
+      //       if (item.receiverId == newUserConnected.userId) {
+      //         item.isOnline = true;
+      //       }
+      //       result.push(item);
+      //     }
+
+      //     console.log("result", result);
+      //   // setAllUsers(result);
+
+      // }
+
+      // const handleIsOffline = (newUserDisconnected) => {
+      //   console.log("newUserDisconnected", newUserDisconnected);
+
+      //   const result =
+      //     allUsers
+      //       .map(x => x.receiverId == newUserDisconnected.userId ? { ...x, isOnline: !x.isOnline } : {...x});
+
+      //       console.log("result", result);
+      //   // setAllUsers(result);
+      // }
+
       // Add event listener
       connection.on("ReceiveNewPrivateMessage", handleNewAnnouncement);
+      connection.on("ReceiverIsTyping", handleIsTyping);
+      connection.on("ReceiverStopTyping", handleStopTyping);
+      // connection.on("NewUserConnected", handleIsOnline);
+      // connection.on("NewUserDisonnected", handleIsOffline);
 
       // Cleanup: Remove event listener when component unmounts
       return () => {
@@ -101,16 +159,6 @@ export default function ChatPage() {
     }
   }, [connections["ChatHub"]])
 
-  const { data: allUsersData } = useQuery({
-    queryKey: ['allUser'],
-    queryFn: (_) => getCurrentOnlineUser()
-  })
-
-  const { data: historyData } = useQuery({
-    queryKey: ['historyData'],
-    queryFn: (_) => getPrivateConservations(),
-    enabled: currentSelect == "history"
-  })
 
   useEffect(() => {
     if (historyData && historyData?.data) {
@@ -142,6 +190,8 @@ export default function ChatPage() {
     }
   }
 
+  console.log(allUsersData?.data)
+
   const handleChangeUserChat = async (item) => {
     setCurrentReceiver(item)
     const data = await getDetailConservations(item?.receiverId)
@@ -167,6 +217,16 @@ export default function ChatPage() {
         console.log(err)
       }
     })
+  }
+
+  async function onTyping(event) {
+    const isMsgGreaterThan0 = event.target.value.length > 0;
+
+    if (isMsgGreaterThan0) {
+      connections["ChatHub"].invoke("IsTyping", currentReceiver?.receiverId);
+    } else {
+      connections["ChatHub"].invoke("StopTyping", currentReceiver?.receiverId);
+    }
   }
 
   return (
@@ -196,8 +256,9 @@ export default function ChatPage() {
               <div className="flex flex-row h-full p-3 overflow-hidden overflow-x-auto medium:overflow-y-auto medium:pb-10 medium:h-screen medium:mb-9 medium:flex-col">
                 {allUsersData?.data && allUsersData.data.map((item) => (
                   <div key={item?.receiverId} className="flex flex-col items-center p-2 rounded-md cursor-pointer medium:mb-4 hover:bg-gray-100 medium:flex-row" onClick={() => handleClickUser(item?.receiverId)}>
-                    <div className="flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full" key={item?.id}>
+                    <div className="relative flex-shrink-0 w-12 h-12 mr-3 bg-gray-300 rounded-full" key={item?.id}>
                       <img src={`${item?.avatar ? item?.avatar : "https://cdn-icons-png.freepik.com/256/1077/1077063.png?semt=ais_hybrid"}`} alt="User Avatar" className="w-12 h-12 rounded-full" />
+                      {item?.isOnline && <div className="absolute bottom-0 w-3 h-3 bg-green-400 rounded-full right-1"></div>}
                     </div>
                     <div className="flex-1 ">
                       <h2 className="text-lg font-semibold">{item?.username}</h2>
@@ -245,7 +306,7 @@ export default function ChatPage() {
                       </div>
                     </div>
                   )
-                } 
+                }
                 return (
                   <div className="flex mb-4 cursor-pointer" key={item.id}>
                     <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
@@ -257,8 +318,28 @@ export default function ChatPage() {
                   </div>
                 )
               })}
-
-
+              {/* Typing UI */}
+              {senderIsTyping && <div className="flex mb-4 cursor-pointer">
+                <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
+                  <img src={senderIsTypingAvatar} alt="User Avatar" className="w-8 h-8 rounded-full" />
+                </div>
+                <div className="flex gap-3 p-3 bg-white rounded-lg max-w-96">
+                  <p className="text-gray-700">
+                    <span className="flex items-center gap-1 jumping-dots">
+                      <span className="dot-1">
+                        <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                      </span>
+                      <span className="dot-2">
+                        <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                      </span>
+                      <span className="dot-3">
+                        <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                      </span>
+                    </span>
+                  </p>
+                </div>
+              </div>
+              }
               {/* Sender */}
 
             </div>
@@ -266,7 +347,7 @@ export default function ChatPage() {
               <div className="fixed bottom-0 w-full p-4 mx-auto bg-white border-gray-300 medium:absolute medium:w-3/4 ">
                 <Separator class></Separator>
                 <form className="flex items-center" onSubmit={handleSubmit(onAddMessage)}>
-                  <input type="text" placeholder="Type a message..." className={`w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500`} {...register('message')} />
+                  <input type="text" placeholder="Type a message..." className={`w-full p-2 border border-gray-400 rounded-md focus:outline-none focus:border-blue-500`} {...register('message')} onChange={onTyping} />
                   <button className={`px-4 py-2 ml-2 text-white bg-indigo-500 rounded-md ${addMessage.isLoading ? "disabled" : ""}`}>Send</button>
                 </form>
               </div>

@@ -95,3 +95,30 @@ picture,
   flex-direction: column !important;
   justify-content: center;
 }
+
+.jumping-dots span {
+  position: relative;
+  bottom: 0px;
+  animation: jump 1.5s infinite;
+}
+.jumping-dots .dot-1 {
+  animation-delay: 100ms;
+}
+.jumping-dots .dot-2 {
+  animation-delay: 300ms;
+}
+.jumping-dots .dot-3 {
+  animation-delay: 500ms;
+}
+
+@keyframes jump {
+  0% {
+    bottom: 0px;
+  }
+  20% {
+    bottom: 5px;
+  }
+  40% {
+    bottom: 0px;
+  }
+}
