@@ -62,7 +62,7 @@ export default function ChatPage() {
   const queryClient = useQueryClient()
   const [openNav, setOpenNav] = useState(true)
   const [currentSelect, setCurrentSelect] = useState("history")
-
+  const [senderIsTyping, setSenderIsTyping] = useState(true)
   const { profile } = useAppContext()
   const [firstChatMessages, setFirstChatMessages] = useState()
   const [currentReceiver, setCurrentReceiver] = useState()
@@ -263,8 +263,28 @@ export default function ChatPage() {
                   </div>
                 )
               })}
-
-
+              {/* Typing UI */}
+              {senderIsTyping && <div className="flex mb-4 cursor-pointer">
+                <div className="flex items-center justify-center mr-2 rounded-full w-9 h-9">
+                  <img src={"https://s120-ava-talk.zadn.vn/9/7/9/4/21/120/e0813d7d04dcb0ed3eba0438a00aa62b.jpg"} alt="User Avatar" className="w-8 h-8 rounded-full" />
+                </div>
+                <div className="flex gap-3 p-3 bg-white rounded-lg max-w-96">
+                  <p className="text-gray-700">
+                    <span className="flex items-center gap-1 jumping-dots">
+                      <span className="dot-1">
+                        <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                      </span>
+                      <span className="dot-2">
+                        <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                      </span>
+                      <span className="dot-3">
+                        <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                      </span>
+                    </span>
+                  </p>
+                </div>
+              </div>
+              }
               {/* Sender */}
 
             </div>
