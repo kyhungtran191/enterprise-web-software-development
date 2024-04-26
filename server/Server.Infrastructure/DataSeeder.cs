@@ -491,6 +491,19 @@ public static class DataSeeder
                 AvatarPublicId = "avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8"
 
             },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Khang 2", LastName = "Nguyen 2", Email = "coordinator4@gmail.com",
+                NormalizedEmail = "coordinator4@gmail.com".ToUpperInvariant(), UserName = "coordinator4",
+                NormalizedUserName = "coordinator4".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[4].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572623/avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8.jpg",
+                AvatarPublicId = "avatar/user-53555e63-6adc-4935-87a2-005c73af2a45/pxeslpvopryeg6v0prn8"
+
+            },
         };
         var guestList = new List<AppUser>
         {
@@ -546,6 +559,19 @@ public static class DataSeeder
                 AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
 
             },
+            new()
+            {
+                Id = Guid.NewGuid(), FirstName = "Khang 1", LastName = "Nguyen 1", Email = "guest4@gmail.com",
+                NormalizedEmail = "guest4@gmail.com".ToUpperInvariant(), UserName = "guest4",
+                NormalizedUserName = "guest4".ToUpperInvariant(), IsActive = true,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                LockoutEnabled = false,
+                DateCreated = DateTime.Now,
+                FacultyId = facultiesList[4].Id,
+                Avatar = "http://res.cloudinary.com/dlqxj0ibb/image/upload/v1712572892/avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5.jpg",
+                AvatarPublicId = "avatar/user-aebb36e4-de2f-4d97-8985-199910cedb9e/y4u6isgtypvplhekz3d5"
+
+            }
         };
         foreach (var user in studentList)
         {
