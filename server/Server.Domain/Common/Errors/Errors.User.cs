@@ -5,7 +5,7 @@ namespace Server.Domain.Common.Errors;
 
 public static partial class Errors
 {
-    public static class User 
+    public static class User
     {
         public static Error DuplicateEmail => Error.Validation(
             code: "User.DuplicateEmail",
@@ -16,6 +16,8 @@ public static partial class Errors
             code: "User.CannotFound",
             description: "User can not found."
         );
+
+
 
         public static Error CannotCreateNewUser => Error.Failure(
             code: "User.CannotCreateNewUser",
@@ -34,5 +36,13 @@ public static partial class Errors
 
         public static Error NotBelongContribution => Error.Conflict(code: "User.NotBelongContribution",
             description: "This is not your contribution");
+    }
+
+    public static class CurrentUser
+    {
+        public static Error CannotFound => Error.NotFound(
+            code: "CurrentUser.CannotFound",
+            description: "Current user can not found."
+        );
     }
 }
