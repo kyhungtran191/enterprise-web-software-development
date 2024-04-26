@@ -42,7 +42,7 @@ namespace Server.Infrastructure.Persistence.Repositories
         {
             var currentDate = DateTime.UtcNow;
             var query = from c in _dbContext.Contributions
-                where c.DateDeleted == null
+                where c.DateDeleted == null && c.IsCoordinatorComment == false
                 join u in _dbContext.Users on c.UserId equals u.Id
                 join f in _dbContext.Faculties on c.FacultyId equals f.Id
                 join a in _dbContext.AcademicYears on c.AcademicYearId equals a.Id
