@@ -163,7 +163,8 @@ namespace Server.Infrastructure.Persistence.Repositories
                 RejectedReason = GetRejectReason(x.c).GetAwaiter().GetResult(),
                 ShortDescription = x.c.ShortDescription,
                 GuestAllowed = x.c.AllowedGuest,
-                AverageRating = publicContributions.Where(p=>p.Id == x.c.Id).FirstOrDefault()?.AverageRating
+                AverageRating = publicContributions.Where(p=>p.Id == x.c.Id).FirstOrDefault()?.AverageRating,
+                Avatar = x.u.Avatar
             }).ToList();
 
 

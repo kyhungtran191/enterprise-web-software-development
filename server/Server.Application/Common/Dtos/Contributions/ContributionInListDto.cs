@@ -19,6 +19,7 @@ namespace Server.Application.Common.Dtos.Contributions
         public string? RejectedReason { get; set; }
         public bool? GuestAllowed { get; set; }
         public double? AverageRating { get; set; }
+        public string? Avatar { get; set; }
 
     }
 }
