@@ -75,6 +75,7 @@ namespace Server.Application.Features.CommentApp.Commands
             item.IsCoordinatorComment = true;
             await _unitOfWork.CompleteAsync();
 
+
             // notify
             var notificationId = Guid.NewGuid().ToString();
             var announcementDto = new AnnouncementDto()
@@ -91,7 +92,17 @@ namespace Server.Application.Features.CommentApp.Commands
             };
             _announcementService.Add(announcementDto);
 
-            var receiverId = isStudent ? request.UserId : item.UserId;
+            ContributionComment? corComment = null;        
+            if (isStudent)
+            {
+                var allComments = _unitOfWork.CommentRepository
+                    .Find(x => x.ContributionId == request.ContributionId)
+                    .OrderByDescending(x => x.DateCreated)
+                    .ToList();
+
+                corComment = allComments.Count == 1 ? allComments[0] : allComments[1];
+            }
+            var receiverId = isStudent ? corComment.UserId : item.UserId;
 
             var announcementUserDto = new AnnouncementUserDto
             {
